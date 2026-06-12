@@ -12,14 +12,16 @@ class AgentOrchestrator:
         
         Response = []
         
-        greeting_response = self.greeting_agent.run(query)
-        if greeting_response.is_greeting:
-            Response.append(greeting_response.reply)
-            return Response
+
         
         guardrail_response = self.guardrail_agent.run(query)
         Response.append(guardrail_response.reply)
         if not guardrail_response.allowed:
+            return Response
+        
+        greeting_response = self.greeting_agent.run(query)
+        if greeting_response.is_greeting:
+            Response.append(greeting_response.reply)
             return Response
 
         return Response
