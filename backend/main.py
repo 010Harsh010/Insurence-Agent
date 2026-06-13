@@ -1,10 +1,13 @@
 import flask
 import flask_cors
 from sub_agent.agent import orchestrator
-
+import db.db as db
+import services.data_ingestion
 app = flask.Flask(__name__)
 
 flask_cors.CORS(app)
+
+data_loader = services.data_ingestion.PolicyLoader()
 
 @app.route("/claim",methods=["POST"])
 def claim():
@@ -46,5 +49,20 @@ def health():
     }
     return res 
 
+@app.route("/addPolicy",methods=["GET","POST"])
+def addPolicy():
+    PATH="C:/Users/hs250/vscode/BTP/Plum Assignment - 12-04-2026/policy_terms.json"
+    data_loader.load_policy_file(PATH)
+    res = {
+        "status": 200,
+        "message": "Policy added successfully"
+    }
+    return res 
+    
+
 if __name__ == "__main__":
-    app.run(debug=True, port=8000)
+    try:
+        db.Database().initialize_schema()
+        app.run(debug=True, port=8000)
+    except Exception as e:
+        print(f"Error initializing database: {e}")
