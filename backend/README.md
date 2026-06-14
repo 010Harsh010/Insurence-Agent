@@ -46,3 +46,13 @@ Claim Submission
 13. Decision Generation
         
 14. Explanation Generation
+
+# Document Requirements
+
+0. Member Name
+1. Hospital Name
+2. Doctor Name
+3. opd_categories
+4. Claim Amount
+5. Date of Bills And Prespition
+6. pre_authorization

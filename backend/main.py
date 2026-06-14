@@ -1,8 +1,9 @@
 import flask
 import flask_cors
 from sub_agent.agent import orchestrator
-import db.db as db
+# import db.db as db
 import services.data_ingestion
+import document_agent.document_identifier
 app = flask.Flask(__name__)
 
 flask_cors.CORS(app)
@@ -16,6 +17,13 @@ def claim():
         "message": "Claim processed successfully"
     }
     return res
+
+@app.route("/upload",methods=["POST","GET"])
+def upload():
+    txt = document_agent.document_identifier.docling_document_to_text("C://Users//hs250//vscode//BTP//Plum Assignment - 12-04-2026//backend//document_agent//medicine_bill.png")
+    with open("docking_output.md","w", encoding="utf-8") as f:
+        f.write(txt)
+    return txt
 
 @app.route("/chat",methods=["GET"])
 def chat():
@@ -62,7 +70,7 @@ def addPolicy():
 
 if __name__ == "__main__":
     try:
-        db.Database().initialize_schema()
+        # db.Database().initialize_schema()
         app.run(debug=True, port=8000)
     except Exception as e:
         print(f"Error initializing database: {e}")
