@@ -1,0 +1,287 @@
+{
+    "data": {
+        "approved_amount": 1800.0,
+        "claim_id": "EMP001",
+        "claimed_amount": 5679.12,
+        "confidence_score": 0.939,
+        "created_at": "2026-06-15T14:13:34.816164",
+        "decision": "MANUAL_REVIEW",
+        "explanation": "We have reviewed your claim for consultation and approved an amount of ₹1800.00. The decision was made after a manual review due to the high value of the claim and potential fraud risk. However, our checks found no significant fraud indicators and your policy is active. The claimed amount exceeded the sub-limit for consultation, so we applied capping. If you believe there's an error, please contact us with more information or documentation to support your claim.",
+        "fraud_score": 0.25,
+        "inferred_amount": 5679.12,
+        "inferred_category": "CONSULTATION",
+        "inferred_diagnosis": "Ear Infection",
+        "missing_documents": [],
+        "needs_manual_review": true,
+        "rejection_reason": "Manual review required due to fraud risk, pre-auth requirement, or high value.",
+        "trace": [
+            {
+                "confidence": 1.0,
+                "details": {
+                    "join_date": "2024-04-01",
+                    "name": "Rajesh Kumar",
+                    "policy_id": "PLUM_GHI_2024",
+                    "relationship": "SELF"
+                },
+                "fatal": false,
+                "passed": true,
+                "reason": "Member 'Rajesh Kumar' (ID: EMP001) is active under policy 'PLUM_GHI_2024'.",
+                "status": "PASSED",
+                "step_name": "Member Validation"
+            },
+            {
+                "confidence": 1.0,
+                "details": {
+                    "end": "2027-03-31",
+                    "insurer": "ICICI Lombard General Insurance",
+                    "start": "2024-04-01"
+                },
+                "fatal": false,
+                "passed": true,
+                "reason": "Policy 'PLUM_GHI_2024' is ACTIVE and valid.",
+                "status": "PASSED",
+                "step_name": "Policy Validation"
+            },
+            {
+                "confidence": 1.0,
+                "details": {
+                    "required": [
+                        "PRESCRIPTION",
+                        "HOSPITAL_BILL"
+                    ],
+                    "uploaded": [
+                        "HOSPITAL_BILL",
+                        "PRESCRIPTION"
+                    ]
+                },
+                "fatal": false,
+                "passed": true,
+                "reason": "All required documents for CONSULTATION are present.",
+                "status": "PASSED",
+                "step_name": "Document Verification"
+            },
+            {
+                "confidence": 0.98,
+                "details": {
+                    "avg_confidence": 0.98,
+                    "issues": []
+                },
+                "fatal": false,
+                "passed": true,
+                "reason": "Document quality is good (avg confidence: 0.98).",
+                "status": "PASSED",
+                "step_name": "Document Quality Check"
+            },
+            {
+                "confidence": 0.95,
+                "details": {
+                    "extracted": {
+                        "confidence": 0.98,
+                        "date": "2026-06-12",
+                        "diagnosis": "Ear Infection",
+                        "doctor_name": "Jitendra Kumar",
+                        "doctor_registration": "MH-123456",
+                        "document_type": "PRESCRIPTION",
+                        "hospital_name": null,
+                        "line_items": [
+                            {
+                                "amount": 130.68,
+                                "batch_number": "80H",
+                                "description": "Cap Novoclox",
+                                "expiry_date": null,
+                                "maker": "Cipla",
+                                "quantity": null
+                            },
+                            {
+                                "amount": 510.6,
+                                "batch_number": "8011a13",
+                                "description": "Tab Enzofiam",
+                                "expiry_date": null,
+                                "maker": "Begen",
+                                "quantity": null
+                            },
+                            {
+                                "amount": 950.78,
+                                "batch_number": "8604",
+                                "description": "Tab Neuribicr",
+                                "expiry_date": null,
+                                "maker": "A066",
+                                "quantity": null
+                            },
+                            {
+                                "amount": 3120,
+                                "batch_number": "42057018",
+                                "description": "Candibiotic Eardrop",
+                                "expiry_date": null,
+                                "maker": "Mujesta",
+                                "quantity": null
+                            },
+                            {
+                                "amount": 56.93,
+                                "batch_number": "32097b",
+                                "description": "Crocin 500 mg",
+                                "expiry_date": null,
+                                "maker": "Lup",
+                                "quantity": null
+                            },
+                            {
+                                "amount": 910.13,
+                                "batch_number": "22029",
+                                "description": "St. yailegra 180g",
+                                "expiry_date": null,
+                                "maker": "Evenhy",
+                                "quantity": null
+                            }
+                        ],
+                        "medicines": [
+                            "Cap Novoclox",
+                            "Crocin 500 mg",
+                            "Tab Enzofiam",
+                            "Tab Neuribicr",
+                            "Candibiotic Eardrop",
+                            "St. yailegra 180g"
+                        ],
+                        "patient_name": "LALITKUMAR CHAUDHARI",
+                        "tests_ordered": [],
+                        "total_amount": null
+                    }
+                },
+                "fatal": false,
+                "passed": true,
+                "reason": "Extracted data from PRESCRIPTION for patient 'LALITKUMAR CHAUDHARI'.",
+                "status": "PASSED",
+                "step_name": "OCR + Extraction"
+            },
+            {
+                "confidence": 0.7,
+                "details": {
+                    "issues": [
+                        "Patient name on document ('LALITKUMAR CHAUDHARI') does not match member name ('Rajesh Kumar')."
+                    ]
+                },
+                "fatal": false,
+                "passed": true,
+                "reason": "Consistency issues found: Patient name on document ('LALITKUMAR CHAUDHARI') does not match member name ('Rajesh Kumar').",
+                "status": "WARNING",
+                "step_name": "Consistency Validation"
+            },
+            {
+                "confidence": 0.9,
+                "details": {
+                    "capped_to": 2000.0,
+                    "claimed": 5679.12,
+                    "sub_limit": 2000.0
+                },
+                "fatal": false,
+                "passed": true,
+                "reason": "Claimed amount ₹5679.12 exceeds sub-limit ₹2000.0 for 'CONSULTATION'. Will apply capping.",
+                "status": "WARNING",
+                "step_name": "Coverage Validation"
+            },
+            {
+                "confidence": 1.0,
+                "details": {
+                    "days_since_join": 802,
+                    "initial_wp": 30,
+                    "triggered_conditions": []
+                },
+                "fatal": false,
+                "passed": true,
+                "reason": "Waiting period check passed. Member has been active for 802 days.",
+                "status": "PASSED",
+                "step_name": "Waiting Period Check"
+            },
+            {
+                "confidence": 1.0,
+                "details": {
+                    "exclusions_checked": 15,
+                    "inferred_conditions": [
+                        "Ear infection",
+                        "Bacterial infection",
+                        "Fungal infection",
+                        "Nerve pain",
+                        "Inflammation"
+                    ]
+                },
+                "fatal": false,
+                "passed": true,
+                "reason": "No excluded conditions or procedures detected.",
+                "status": "PASSED",
+                "step_name": "Exclusion Check"
+            },
+            {
+                "confidence": 1.0,
+                "details": {
+                    "requires_pre_auth": false
+                },
+                "fatal": false,
+                "passed": true,
+                "reason": "No pre-authorization required for this claim.",
+                "status": "PASSED",
+                "step_name": "Pre-Auth Check"
+            },
+            {
+                "confidence": 0.75,
+                "details": {
+                    "fraud_score": 0.25,
+                    "llm_explanation": "Low fraud risk due to a single duplicate bill signal, indicating possible error rather than intentional fraud.",
+                    "recent_claims_count": 2,
+                    "signals": [
+                        {
+                            "description": "Found 1 recent claim(s) with identical amount ₹5679.12",
+                            "signal": "duplicate_bills",
+                            "weight": 0.25
+                        }
+                    ]
+                },
+                "fatal": false,
+                "passed": true,
+                "reason": "No significant fraud indicators. Fraud score: 0.25.",
+                "status": "PASSED",
+                "step_name": "Fraud Check"
+            },
+            {
+                "confidence": 0.98,
+                "details": {
+                    "approved_amount": 1800.0,
+                    "calculation_steps": [
+                        "Capped at sub-limit: ₹2000.0",
+                        "Co-pay 10.0%: -₹200.00"
+                    ],
+                    "claimed_amount": 5679.12,
+                    "copay_amount": 200.0,
+                    "copay_percent": 10.0,
+                    "per_claim_limit": 5000.0,
+                    "sub_limit": 2000.0
+                },
+                "fatal": false,
+                "passed": true,
+                "reason": "Approved amount: ₹1800.00 (claimed: ₹5679.12). Capped at sub-limit: ₹2000.0; Co-pay 10.0%: -₹200.00",
+                "status": "PASSED",
+                "step_name": "Financial Calculation"
+            },
+            {
+                "confidence": 0.9383333333333334,
+                "details": {},
+                "fatal": false,
+                "passed": true,
+                "reason": "Decision: MANUAL_REVIEW — high-value or flagged claim.",
+                "status": "PASSED",
+                "step_name": "Decision Generation"
+            },
+            {
+                "confidence": 0.95,
+                "details": {
+                    "explanation_length": 466
+                },
+                "fatal": false,
+                "passed": true,
+                "reason": "Explanation generated successfully.",
+                "status": "PASSED",
+                "step_name": "Explanation Generation"
+            }
+        ]
+    },
+    "message": "Adjudication complete",
+    "status": 200
+}

@@ -2,7 +2,7 @@
   "data": {
     "classification": {
       "confidence": 0.99,
-      "document_type": "PHARMACY_BILL",
+      "document_type": "HOSPITAL_BILL",
       "reasoning": "The document contains a table with columns for quantity, description, maker, batch number, expiration date, and prices, which is consistent with a pharmacy bill. The presence of a patient's name, doctor's name, and date also supports this classification."
     },
     "document": {

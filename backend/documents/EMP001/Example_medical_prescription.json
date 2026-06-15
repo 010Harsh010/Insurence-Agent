@@ -1,0 +1,37 @@
+{
+  "data": {
+    "classification": {
+      "confidence": 0.98,
+      "document_type": "PRESCRIPTION",
+      "reasoning": "The document contains doctor instructions, diagnosis information, prescribed medicines, patient details, and a physician signature."
+    },
+    "document": {
+      "confidence": 0.94,
+      "document_type": "PRESCRIPTION",
+
+      "patient_name": "LALITKUMAR CHAUDHARI",
+
+      "doctor_name": "Jitendra Kumar",
+      "doctor_registration": "MH-123456",
+
+      "diagnosis": "Ear Infection",
+
+      "hospital_name": null,
+
+      "date": "2017-01-12",
+
+      "total_amount": null,
+
+      "medicines": [
+        "Cap Novoclox",
+        "Crocin 500 mg"
+      ],
+
+      "line_items": [],
+
+      "tests_ordered": []
+    }
+  },
+  "message": "Feature extracted successfully",
+  "status": 200
+}

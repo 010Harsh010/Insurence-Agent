@@ -29,6 +29,7 @@ class PolicyLoader:
         try:
             db = self.__db_connect()
             cur = db.cursor()
+            
 
             cur.execute("""
                 INSERT INTO policies (
