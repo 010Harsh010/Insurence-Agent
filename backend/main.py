@@ -4,11 +4,13 @@ from sub_agent.agent import orchestrator
 # import db.db as db
 import services.data_ingestion
 import document_agent.document_identifier
+
 app = flask.Flask(__name__)
 
 flask_cors.CORS(app)
 
 data_loader = services.data_ingestion.PolicyLoader()
+document_agents = document_agent.document_identifier.DocumentAgent()
 
 @app.route("/claim",methods=["POST"])
 def claim():
@@ -25,6 +27,22 @@ def upload():
         f.write(txt)
     return txt
 
+@app.route("/extract",methods=["POST","GET"])
+def extract():
+    try:
+        path = r"C:\Users\hs250\vscode\BTP\Plum Assignment - 12-04-2026\backend\output\docling_medicine_bill.md"
+        response = document_agents.process_document(path)
+        return {
+            "status": 200,
+            "message": "Feature extracted successfully",
+            "data": response
+        }
+    except Exception as e:
+        return {
+            "status": 500,
+            "message": f"An error occurred: {str(e)}"
+        }
+        
 @app.route("/chat",methods=["GET"])
 def chat():
     try:
