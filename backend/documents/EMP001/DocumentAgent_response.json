@@ -7,12 +7,12 @@
     },
     "document": {
       "confidence": 0.95,
-      "date": "2017-01-12",
+      "date": "2026-06-12",
       "diagnosis": null,
       "doctor_name": "Jitendra Kumar",
       "doctor_registration": null,
-      "document_type": "PHARMACY_BILL",
-      "hospital_name": null,
+      "document_type": "HOSPITAL_BILL",
+      "hospital_name": "APOLLO",
       "line_items": [
         {
           "amount": 130.68,
@@ -71,7 +71,7 @@
         "Crocin 500 mg",
         "St. yailegra 180g"
       ],
-      "patient_name": "LALITKUMAR CHAUDHARI",
+      "patient_name": "Rajesh Kumar",
       "tests_ordered": [],
       "total_amount": null
     },

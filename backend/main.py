@@ -5,6 +5,7 @@ from sub_agent.decision_maker import adjudicate_claim
 import db.db as db
 import services.data_ingestion
 import document_agent.document_identifier
+import sub_agent.policyAgent
 
 app = flask.Flask(__name__)
 
@@ -149,6 +150,28 @@ def addPolicy():
     }
     return res 
     
+    
+@app.route("/checks",methods=["GET","POST"])
+def checks():
+    try:
+        agent = sub_agent.policyAgent.PolicyClaim()
+        emp = flask.request.args.get("emp",type=str)
+        if not emp:
+            return {
+                "status": 400,
+                    "message": "Emp ID is required"
+            }, 400
+        output = agent.run(member=emp)
+        return {
+            "status": 200,
+            "data": output.dict()
+        }
+    except Exception as e:
+        print(e)
+        return {
+            "status":404,
+            "message": e
+        }
 
 if __name__ == "__main__":
     try:

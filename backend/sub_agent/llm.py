@@ -2,6 +2,7 @@ import dotenv
 import os
 dotenv.load_dotenv()
 import openai
+import json
 
 class LLMClient:
     def __init__(self):   
@@ -24,3 +25,40 @@ class LLMClient:
             except Exception as e:
                 print(f"Error calling LLM: {e}")
                 return None
+            
+    def call_llm_json(
+    self,
+    messages,
+    fallback=None,
+    temperature=0.0
+):
+        fallback = fallback or {}
+
+        try:
+            response = self.client.chat.completions.create(
+                model=self.model,
+                messages=messages,
+                temperature=temperature,
+                response_format={
+                    "type": "json_object"
+                }
+            )
+
+            content = (
+                response.choices[0]
+                .message
+                .content
+            )
+
+            if not content:
+                return fallback
+
+            return json.loads(content)
+
+        except Exception as e:
+
+            print(
+                f"Error calling LLM JSON: {e}"
+            )
+
+            return fallback
