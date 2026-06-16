@@ -4,7 +4,6 @@ import sub_agent.llm as llm
 
 
 class RouteType(str, Enum):
-    DOCUMENT_UPLOAD = "DOCUMENT_UPLOAD"
     CLAIM_PROCESSING = "CLAIM_PROCESSING"
     QUESTION_ANSWERING = "QUESTION_ANSWERING"
 
@@ -20,15 +19,6 @@ class RouterAgent:
     You are an Insurance Claim Router Agent.
 
     Classify the user query into exactly one route.
-
-    DOCUMENT_UPLOAD
-    - User wants to upload/add/submit documents.
-    - User mentions invoice, prescription, bill,
-      discharge summary, report, receipt.
-    - User says:
-      "I want to upload documents"
-      "Add bill to my claim"
-      "Submit medical report"
 
     CLAIM_PROCESSING
     - User wants to create, track,

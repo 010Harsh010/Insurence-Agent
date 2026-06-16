@@ -17,6 +17,61 @@ flask_cors.CORS(app)
 data_loader = services.data_ingestion.PolicyLoader()
 document_agents = DocumentAgent()
 
+
+def response_cleaner(response):
+
+    if response.get("Greeting"):
+        return {
+            "ui": {
+                "type": "message",
+                "message": response["Greeting"]
+            }
+        }
+
+    if response.get("Garudrail"):
+        return {
+            "ui": {
+                "type": "message",
+                "message": response["Garudrail"]
+            }
+        }
+
+    if response.get("Router") == "CLAIM_PROCESSING":
+
+        claim = response.get("ClaimAgent", {})
+
+        if claim.get("decision"):
+            return {
+                "ui": {
+                    "type": "decision",
+                    "message": claim["decision"]
+                }
+            }
+
+        if claim.get("error"):
+            return {
+                "ui": {
+                    "type": "error",
+                    "message": claim.get("error_message")
+                }
+            }
+
+    if response.get("Router") == "QUESTION_ANSWERING":
+        return {
+            "ui": {
+                "type": "answer",
+                "message": response.get("Answer")
+            }
+        }
+
+    return {
+        "ui": {
+            "type": "error",
+            "message": "Unable to process response"
+        }
+    }
+    
+    
 @app.route("/upload", methods=["POST"])
 def upload():
     file = request.files.get("document")
@@ -75,22 +130,6 @@ def upload():
         "markdown_path": md_path,
         "message": "File uploaded successfully"
     }
-
-@app.route("/extract",methods=["POST","GET"])
-def extract():
-    try:
-        path = r"C:\Users\hs250\vscode\BTP\Plum Assignment - 12-04-2026\backend\output\docling_medicine_bill.md"
-        response = document_agents.process_document(path)
-        return {
-            "status": 200,
-            "message": "Feature extracted successfully",
-            "data": response
-        }
-    except Exception as e:
-        return {
-            "status": 500,
-            "message": f"An error occurred: {str(e)}"
-        }
         
 @app.route("/chat",methods=["GET"])
 def chat():
@@ -104,9 +143,12 @@ def chat():
             
         # Orchestrate the agents
         response = orchestrator.run(query)
+        
+        clean_res = response_cleaner(response)
+        clean_res["data"] = response
         res = {
             "status": 200,
-            "data": response
+            "data": clean_res
         }
         return res
     except Exception as e:
@@ -142,7 +184,7 @@ def addPolicy():
     return res 
     
 @app.route("/claimPolicy",methods=["GET","POST"])
-def checks():
+def claimPolicy():
     try:
         agent = sub_agent.policyAgent.PolicyClaim()
         emp = flask.request.args.get("employeeID",type=str)

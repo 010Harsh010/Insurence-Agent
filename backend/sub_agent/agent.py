@@ -11,35 +11,35 @@ class AgentOrchestrator:
         if not query:
             raise ValueError("Query cannot be empty")
         
-        Response = []
+        Response = {}
         
-        # guardrail_response = self.guardrail_agent.run(query)
-        # Response.append(guardrail_response.reply)
-        # if not guardrail_response.allowed:
-        #     return Response
+        greeting_response = self.greeting_agent.run(query)
+        if greeting_response.is_greeting:
+            Response["Greeting"] =  greeting_response.reply
+            return Response
         
-        # greeting_response = self.greeting_agent.run(query)
-        # if greeting_response.is_greeting:
-        #     Response.append(greeting_response.reply)
-        #     return Response
+        guardrail_response = self.guardrail_agent.run(query)
+        if not guardrail_response.allowed:
+            Response["Garudrail"] = guardrail_response.reply
+            return Response
+        
+        
 
-        # router_response = self.router_agent.route(query)
-        # Response.append(router_response.route)
+        router_response = self.router_agent.route(query)
+        Response["Router"] = router_response.route
         
-        # if router_response.route == routerAgent.RouteType.DOCUMENT_UPLOAD:
-        #     pass
-        # elif router_response.route == routerAgent.RouteType.CLAIM_PROCESSING:
-        claim_bot = policyAgent.ClaimProcessingPipeline(
-            member_id="EMP002",
-            claim_category="CONSULTATIO",
-            output_dir="./output"
-        )
-        result = claim_bot.run()
-        Response.append(result)
-        # elif router_response.route == routerAgent.RouteType.QUESTION_ANSWERING:
-        #     pass
-        # else:
-        #     raise ValueError(f"Unknown route: {router_response.route}")
+        if router_response.route == routerAgent.RouteType.CLAIM_PROCESSING:
+            claim_bot = policyAgent.ClaimProcessingPipeline(
+                member_id="EMP001",
+                claim_category="CONSULTATION",
+                output_dir="./output"
+            )
+            result = claim_bot.run()
+            Response["ClaimAgent"]  = result
+        elif router_response.route == routerAgent.RouteType.QUESTION_ANSWERING:
+            pass
+        else:
+            raise ValueError(f"Unknown route: {router_response.route}")
         
         return Response
     

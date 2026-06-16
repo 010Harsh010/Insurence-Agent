@@ -2392,7 +2392,7 @@ Claim Processing Error:
             messages)
         
         print(response)
-        self.response["message"] = response
+        self.response["error_message"] = response
         return response
         
 if __name__ == "__main__":
