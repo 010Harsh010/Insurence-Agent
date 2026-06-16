@@ -4,86 +4,77 @@ from sub_agent.agent import orchestrator
 from sub_agent.decision_maker import adjudicate_claim
 import db.db as db
 import services.data_ingestion
-import document_agent.document_identifier
+from document_agent.document_identifier import DocumentAgent
 import sub_agent.policyAgent
+from flask import Flask, request
+import os
+import json
 
 app = flask.Flask(__name__)
 
 flask_cors.CORS(app)
 
 data_loader = services.data_ingestion.PolicyLoader()
-document_agents = document_agent.document_identifier.DocumentAgent()
+document_agents = DocumentAgent()
 
-
-
-@app.route("/claim",methods=["POST"])
-def claim():
-    res = {
-        "status": 200,
-        "message": "Claim processed successfully"
-    }
-    return res
-
-
-@app.route("/adjudicate", methods=["POST"])
-def adjudicate():
-    """
-    Full 14-step AI adjudication pipeline (document-driven).
-
-    Expected JSON body:
-    {
-      "member_id": "EMP001"
-    }
-
-    Documents are auto-loaded from backend/documents/{member_id}/.
-    Everything else (policy_id, claim_category, claimed_amount,
-    treatment_date, hospital_name) is derived automatically from
-    the member's DB record and the extracted document data.
-    """
-    try:
-        body = flask.request.get_json(force=True)
-        if not body:
-            return flask.jsonify({"status": 400, "message": "Request body is required"}), 400
-
-        if "member_id" not in body:
-            return flask.jsonify({
-                "status": 400,
-                "message": "Missing required field: member_id"
-            }), 400
-
-        # Supports two calling styles:
-        #   NEW → { "member_id": "EMP001", "documents": [doc1, doc2, ...] }
-        #   OLD → { "member_id": "EMP001", "document": doc1, "extra_documents": [doc2] }
-        if "documents" in body:
-            result = adjudicate_claim(
-                member_id=body["member_id"],
-                documents=body["documents"],         # flat array — all docs together
-            )
-        else:
-            result = adjudicate_claim(
-                member_id=body["member_id"],
-                document_agent_response=body.get("document"),
-                extra_documents=body.get("extra_documents") or [],
-            )
-
-        return flask.jsonify({
-            "status":  200,
-            "message": "Adjudication complete",
-            "data":    result.model_dump(mode="json"),
-        })
-
-    except Exception as e:
-        return flask.jsonify({
-            "status":  500,
-            "message": f"Adjudication pipeline error: {str(e)}"
-        }), 500
-
-@app.route("/upload",methods=["POST","GET"])
+@app.route("/upload", methods=["POST"])
 def upload():
-    txt = document_agent.document_identifier.docling_document_to_text("C://Users//hs250//vscode//BTP//Plum Assignment - 12-04-2026//backend//document_agent//medicine_bill.png")
-    with open("docking_output.md","w", encoding="utf-8") as f:
-        f.write(txt)
-    return txt
+    file = request.files.get("document")
+    member_id = request.args.get("member_id")
+
+    if not member_id:
+        return {"error": "member_id is required"}, 400
+
+    if not file or file.filename == "":
+        return {"error": "No file selected"}, 400
+
+    upload_folder = os.path.join(
+        "documents",
+        member_id
+    )
+    
+    print(f"Upload folder {upload_folder}")
+
+    os.makedirs(upload_folder, exist_ok=True)
+    filepath = os.path.join(upload_folder, file.filename)
+    file.save(filepath)
+    
+    print("File Uploaded")
+
+    try:
+        response = document_agents.process_document(
+            filepath
+        )
+        print("Process Document")
+
+        json_path = os.path.join(
+            upload_folder,
+            f"{os.path.splitext(file.filename)[0]}.json"
+        )
+        md_path = os.path.join(
+            upload_folder,
+            f"{os.path.splitext(file.filename)[0]}.md"
+        )
+                
+        with open(md_path, "w", encoding="utf-8") as f:
+            f.write(response["markdown"])
+
+        with open(json_path, "w", encoding="utf-8") as f:
+            json.dump(response, f, indent=2, ensure_ascii=False)
+            
+    except Exception as e:
+        return {
+            "filename": file.filename,
+            "path": filepath,
+            "error": str(e)
+        }, 500
+
+    return {
+        "filename": file.filename,
+        "path": filepath,
+        "markdown_path": md_path,
+        "message": "File uploaded successfully"
+    }
 
 @app.route("/extract",methods=["POST","GET"])
 def extract():
@@ -150,12 +141,12 @@ def addPolicy():
     }
     return res 
     
-    
-@app.route("/checks",methods=["GET","POST"])
+@app.route("/claimPolicy",methods=["GET","POST"])
 def checks():
     try:
         agent = sub_agent.policyAgent.PolicyClaim()
-        emp = flask.request.args.get("emp",type=str)
+        emp = flask.request.args.get("employeeID",type=str)
+        category = flask.request.args.get("category",type=str)
         if not emp:
             return {
                 "status": 400,

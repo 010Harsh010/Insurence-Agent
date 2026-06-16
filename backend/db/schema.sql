@@ -219,6 +219,25 @@ CREATE TABLE IF NOT EXISTS claim_trace_steps (
         ON DELETE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS schema_metadata (
+    id SERIAL PRIMARY KEY,
+
+    table_name VARCHAR(255) NOT NULL,
+    column_name VARCHAR(255),
+
+    description TEXT NOT NULL,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT uq_schema_metadata
+    UNIQUE(table_name, column_name)
+);
+
+CREATE INDEX IF NOT EXISTS idx_schema_metadata_table
+ON schema_metadata(table_name);
+
+CREATE INDEX IF NOT EXISTS idx_schema_metadata_column
+ON schema_metadata(column_name);
 -- =====================================================
 -- INDEXES
 -- =====================================================

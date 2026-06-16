@@ -2,6 +2,7 @@ import os
 import psycopg2
 import dotenv
 dotenv.load_dotenv()
+import json
 
 class Database:
     def __init__(self):
@@ -11,6 +12,62 @@ class Database:
             database=os.getenv("DB_NAME"),
             user=os.getenv("DB_USER"),
             password=os.getenv("DB_PASSWORD")
+        )
+
+    def load_schema_metadata(
+        self,
+        metadata_file: str
+    ):
+        """
+        Load metadata.json into schema_metadata table.
+        """
+
+        with open(
+            metadata_file,
+            "r",
+            encoding="utf-8"
+        ) as f:
+            metadata = json.load(f)
+
+        cursor = self.conn.cursor()
+
+        query = """
+        INSERT INTO schema_metadata
+        (
+            table_name,
+            column_name,
+            description
+        )
+        VALUES
+        (
+            %s,
+            %s,
+            %s
+        )
+        ON CONFLICT
+        (
+            table_name,
+            column_name
+        )
+        DO UPDATE
+        SET description = EXCLUDED.description;
+        """
+
+        for row in metadata:
+
+            cursor.execute(
+                query,
+                (
+                    row["table_name"],
+                    row["column_name"],
+                    row["description"]
+                )
+            )
+
+        self.conn.commit()
+
+        print(
+            f"Loaded {len(metadata)} metadata entries"
         )
 
     def initialize_schema(self):
@@ -23,6 +80,10 @@ class Database:
 
         self.conn.commit()
         print("Database schema initialized successfully.")
+        
+        self.load_schema_metadata(
+            metadata_file="db/metadata.json"
+        )
 
     def close(self):
         self.conn.close()

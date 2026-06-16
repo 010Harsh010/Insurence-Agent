@@ -20,7 +20,37 @@
             "relationship": "SELF",
             "join_date": "2024-04-01"
         },
-        "fatal": false
+        "fatal": false,
+        "checks": [
+            {
+                "check_name": "Member Input Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "Member DB Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "Member Policy Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "Member Name Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            }
+        ]
     },
     "policy": {
         "policy_id": "PLUM_GHI_2024",
@@ -167,7 +197,44 @@
             "policy_name": "Group Health Insurance \u2014 Standard Plan",
             "insurer_name": "ICICI Lombard General Insurance"
         },
-        "fatal": false
+        "fatal": false,
+        "checks": [
+            {
+                "check_name": "Policy DB Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "Policy Start Date Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "Policy End Date Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "Policy Renewal Status Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "Policy Data Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            }
+        ]
     },
     "document": {
         "uploaded_document_types": [
@@ -199,7 +266,65 @@
             "hospital_name": "APOLLO",
             "warnings": []
         },
-        "fatal": false
+        "fatal": false,
+        "checks": [
+            {
+                "check_name": "Document Uploads Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "Claim Category Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "HOSPITAL_BILL Document Confidence Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "PRESCRIPTION Document Confidence Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "Patient Name Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "Hospital Name Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "Duplicate Document Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "Missing Documents Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            }
+        ]
     },
     "coverage": {
         "relationship_covered": true,
@@ -222,14 +347,65 @@
             "claimed_amount": 5679.12,
             "treatment_date": "2026-06-12"
         },
-        "fatal": false
+        "fatal": false,
+        "checks": [
+            {
+                "check_name": "Items Claimed Amount Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "Relationship Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "Treatment Date Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "Specific Waiting Period Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "Exclusion Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "Minimum Amount Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "Submission Window Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            }
+        ]
     },
     "finance": {
         "claimed_amount": 5679.12,
         "eligible_amount": 5679.12,
         "approved_amount": 5000,
-        "annual_limit_remaining": 48200.0,
-        "family_limit_remaining": 148200.0,
+        "annual_limit_remaining": 50000.0,
+        "family_limit_remaining": 150000.0,
         "per_claim_limit_applied": true,
         "annual_limit_applied": false,
         "family_floater_limit_applied": false,
@@ -244,16 +420,46 @@
         "details": {
             "claimed_amount": 5679.12,
             "approved_amount": 5000,
-            "annual_remaining": 48200.0,
-            "family_remaining": 148200.0,
+            "annual_remaining": 50000.0,
+            "family_remaining": 150000.0,
             "per_claim_limit": 5000
         },
-        "fatal": false
+        "fatal": false,
+        "checks": [
+            {
+                "check_name": "Claimed Amount Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "Per Claim Limit Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "Annual Limit Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "Family Floater Limit Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            }
+        ]
     },
     "fraud": {
         "fraud_score": 0.0,
-        "monthly_claims_count": 4,
-        "same_day_claims_count": 2,
+        "monthly_claims_count": 0,
+        "same_day_claims_count": 0,
         "manual_review_required": false,
         "warnings": []
     },
@@ -265,12 +471,49 @@
         "reason": "Fraud validation completed.",
         "details": {
             "fraud_score": 0.0,
-            "monthly_claims": 4,
-            "same_day_claims": 2,
+            "monthly_claims": 0,
+            "same_day_claims": 0,
             "manual_review": false,
             "warnings": []
         },
-        "fatal": false
+        "fatal": false,
+        "checks": [
+            {
+                "check_name": "Monthly Claim Count Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "Same-day Claim Count Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "High-value Claim Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "Manual Review Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "Fraud Score Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            }
+        ]
     },
     "decision": {
         "decision": "PARTIALLY_APPROVED",
@@ -294,6 +537,22 @@
             "needs_manual_review": false,
             "explanation": "Your claim is partially approved for $5000, reduced from $5679.12 due to excess amount over coverage limit."
         },
-        "fatal": false
+        "fatal": false,
+        "checks": [
+            {
+                "check_name": "Decision Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "Explanation Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            }
+        ]
     }
 }

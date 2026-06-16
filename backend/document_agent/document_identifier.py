@@ -58,9 +58,6 @@ class ExtractedDocument(BaseModel):
 
     confidence: float = 0.0
     
-    
-
-
 class DocumentAgent:
 
     def __init__(self):
@@ -232,12 +229,12 @@ DOCUMENT CONTENT:
         self,
         path: str
     ):
-        # markdown = self._document_to_text(
-        #     path
-        # )
-        markdown = None
-        with open(path,"r",encoding="utf-8") as f:
-            markdown = f.read()
+        print("Start Markdown")
+        markdown = self._document_to_text(
+            path
+        )
+        
+        print(markdown)
 
         classification = self._classify(
             markdown

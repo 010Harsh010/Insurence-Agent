@@ -1,0 +1,384 @@
+[
+  {
+    "table_name": "policies",
+    "column_name": null,
+    "description": "Insurance policy master data"
+  },
+  {
+    "table_name": "policies",
+    "column_name": "policy_id",
+    "description": "Unique policy identifier"
+  },
+  {
+    "table_name": "policies",
+    "column_name": "policy_name",
+    "description": "Policy plan name"
+  },
+  {
+    "table_name": "policies",
+    "column_name": "insurer_name",
+    "description": "Insurance provider name"
+  },
+  {
+    "table_name": "policies",
+    "column_name": "company_name",
+    "description": "Employer company name"
+  },
+  {
+    "table_name": "policies",
+    "column_name": "employee_count",
+    "description": "Covered employee count"
+  },
+  {
+    "table_name": "policies",
+    "column_name": "policy_start_date",
+    "description": "Policy effective date"
+  },
+  {
+    "table_name": "policies",
+    "column_name": "policy_end_date",
+    "description": "Policy expiry date"
+  },
+  {
+    "table_name": "policies",
+    "column_name": "renewal_status",
+    "description": "Policy renewal state"
+  },
+  {
+    "table_name": "policies",
+    "column_name": "coverage",
+    "description": "Coverage benefit rules"
+  },
+  {
+    "table_name": "policies",
+    "column_name": "opd_categories",
+    "description": "Eligible OPD categories"
+  },
+  {
+    "table_name": "policies",
+    "column_name": "waiting_periods",
+    "description": "Applicable waiting periods"
+  },
+  {
+    "table_name": "policies",
+    "column_name": "exclusions",
+    "description": "Non covered treatments"
+  },
+  {
+    "table_name": "policies",
+    "column_name": "pre_authorization",
+    "description": "Pre approval requirements"
+  },
+  {
+    "table_name": "policies",
+    "column_name": "submission_rules",
+    "description": "Claim submission rules"
+  },
+  {
+    "table_name": "policies",
+    "column_name": "document_requirements",
+    "description": "Required claim documents"
+  },
+  {
+    "table_name": "policies",
+    "column_name": "fraud_thresholds",
+    "description": "Fraud scoring limits"
+  },
+
+  {
+    "table_name": "members",
+    "column_name": null,
+    "description": "Insured member records"
+  },
+  {
+    "table_name": "members",
+    "column_name": "member_id",
+    "description": "Unique member identifier"
+  },
+  {
+    "table_name": "members",
+    "column_name": "policy_id",
+    "description": "Associated policy identifier"
+  },
+  {
+    "table_name": "members",
+    "column_name": "primary_member_id",
+    "description": "Primary insured member"
+  },
+  {
+    "table_name": "members",
+    "column_name": "name",
+    "description": "Member full name"
+  },
+  {
+    "table_name": "members",
+    "column_name": "date_of_birth",
+    "description": "Member birth date"
+  },
+  {
+    "table_name": "members",
+    "column_name": "gender",
+    "description": "Member gender"
+  },
+  {
+    "table_name": "members",
+    "column_name": "relationship",
+    "description": "Relation to employee"
+  },
+  {
+    "table_name": "members",
+    "column_name": "join_date",
+    "description": "Coverage enrollment date"
+  },
+
+  {
+    "table_name": "hospitals",
+    "column_name": null,
+    "description": "Hospital master records"
+  },
+  {
+    "table_name": "hospitals",
+    "column_name": "hospital_id",
+    "description": "Unique hospital identifier"
+  },
+  {
+    "table_name": "hospitals",
+    "column_name": "hospital_name",
+    "description": "Hospital registered name"
+  },
+  {
+    "table_name": "hospitals",
+    "column_name": "is_network_hospital",
+    "description": "Cashless network hospital"
+  },
+  {
+    "table_name": "hospitals",
+    "column_name": "address",
+    "description": "Hospital address details"
+  },
+  {
+    "table_name": "hospitals",
+    "column_name": "city",
+    "description": "Hospital city"
+  },
+  {
+    "table_name": "hospitals",
+    "column_name": "state",
+    "description": "Hospital state"
+  },
+
+  {
+    "table_name": "claims",
+    "column_name": null,
+    "description": "Insurance claim records"
+  },
+  {
+    "table_name": "claims",
+    "column_name": "claim_id",
+    "description": "Unique claim identifier"
+  },
+  {
+    "table_name": "claims",
+    "column_name": "member_id",
+    "description": "Claiming member identifier"
+  },
+  {
+    "table_name": "claims",
+    "column_name": "policy_id",
+    "description": "Related policy identifier"
+  },
+  {
+    "table_name": "claims",
+    "column_name": "hospital_id",
+    "description": "Treatment hospital identifier"
+  },
+  {
+    "table_name": "claims",
+    "column_name": "claim_category",
+    "description": "Claim treatment category"
+  },
+  {
+    "table_name": "claims",
+    "column_name": "treatment_date",
+    "description": "Treatment service date"
+  },
+  {
+    "table_name": "claims",
+    "column_name": "submission_date",
+    "description": "Claim submission date"
+  },
+  {
+    "table_name": "claims",
+    "column_name": "claimed_amount",
+    "description": "Requested reimbursement amount"
+  },
+  {
+    "table_name": "claims",
+    "column_name": "claim_status",
+    "description": "Current claim status"
+  },
+  {
+    "table_name": "claims",
+    "column_name": "confidence_score",
+    "description": "Decision confidence score"
+  },
+  {
+    "table_name": "claims",
+    "column_name": "fraud_score",
+    "description": "Fraud risk score"
+  },
+
+  {
+    "table_name": "claim_documents",
+    "column_name": null,
+    "description": "Claim supporting documents"
+  },
+  {
+    "table_name": "claim_documents",
+    "column_name": "document_id",
+    "description": "Unique document identifier"
+  },
+  {
+    "table_name": "claim_documents",
+    "column_name": "claim_id",
+    "description": "Associated claim identifier"
+  },
+  {
+    "table_name": "claim_documents",
+    "column_name": "document_type",
+    "description": "Document category type"
+  },
+  {
+    "table_name": "claim_documents",
+    "column_name": "file_name",
+    "description": "Stored file name"
+  },
+  {
+    "table_name": "claim_documents",
+    "column_name": "storage_url",
+    "description": "Document storage location"
+  },
+  {
+    "table_name": "claim_documents",
+    "column_name": "extraction_status",
+    "description": "OCR extraction status"
+  },
+  {
+    "table_name": "claim_documents",
+    "column_name": "quality_score",
+    "description": "Document quality score"
+  },
+  {
+    "table_name": "claim_documents",
+    "column_name": "extracted_data",
+    "description": "Extracted document fields"
+  },
+
+  {
+    "table_name": "claim_decisions",
+    "column_name": null,
+    "description": "Claim approval outcomes"
+  },
+  {
+    "table_name": "claim_decisions",
+    "column_name": "decision_id",
+    "description": "Unique decision identifier"
+  },
+  {
+    "table_name": "claim_decisions",
+    "column_name": "claim_id",
+    "description": "Associated claim identifier"
+  },
+  {
+    "table_name": "claim_decisions",
+    "column_name": "decision",
+    "description": "Approval decision status"
+  },
+  {
+    "table_name": "claim_decisions",
+    "column_name": "approved_amount",
+    "description": "Approved payout amount"
+  },
+  {
+    "table_name": "claim_decisions",
+    "column_name": "confidence_score",
+    "description": "Decision confidence score"
+  },
+  {
+    "table_name": "claim_decisions",
+    "column_name": "rejection_reason",
+    "description": "Claim rejection reason"
+  },
+  {
+    "table_name": "claim_decisions",
+    "column_name": "explanation",
+    "description": "Decision explanation text"
+  },
+  {
+    "table_name": "claim_decisions",
+    "column_name": "trace",
+    "description": "Decision audit trace"
+  },
+
+  {
+    "table_name": "network_hospitals",
+    "column_name": null,
+    "description": "Policy network hospitals"
+  },
+  {
+    "table_name": "network_hospitals",
+    "column_name": "hospital_name",
+    "description": "Network hospital name"
+  },
+  {
+    "table_name": "network_hospitals",
+    "column_name": "policy_id",
+    "description": "Associated policy identifier"
+  },
+
+  {
+    "table_name": "claim_trace_steps",
+    "column_name": null,
+    "description": "Claim processing audit"
+  },
+  {
+    "table_name": "claim_trace_steps",
+    "column_name": "trace_id",
+    "description": "Unique trace identifier"
+  },
+  {
+    "table_name": "claim_trace_steps",
+    "column_name": "claim_id",
+    "description": "Associated claim identifier"
+  },
+  {
+    "table_name": "claim_trace_steps",
+    "column_name": "step_name",
+    "description": "Pipeline step name"
+  },
+  {
+    "table_name": "claim_trace_steps",
+    "column_name": "step_status",
+    "description": "Pipeline step status"
+  },
+  {
+    "table_name": "claim_trace_steps",
+    "column_name": "confidence_score",
+    "description": "Step confidence score"
+  },
+  {
+    "table_name": "claim_trace_steps",
+    "column_name": "input_data",
+    "description": "Step input payload"
+  },
+  {
+    "table_name": "claim_trace_steps",
+    "column_name": "output_data",
+    "description": "Step output payload"
+  },
+  {
+    "table_name": "claim_trace_steps",
+    "column_name": "reason",
+    "description": "Decision reasoning text"
+  }
+]
