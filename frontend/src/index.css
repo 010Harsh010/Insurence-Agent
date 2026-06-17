@@ -579,6 +579,54 @@ body {
   letter-spacing: 0.5px;
 }
 
+/* ─── Panel Editable Inputs ──────────────────────────────────────────────────── */
+.panel-editable-input {
+  width: 100%;
+  background: var(--surface-2);
+  border: 1px solid var(--border-hover);
+  border-radius: var(--radius-sm);
+  padding: 7px 12px;
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  letter-spacing: 0.4px;
+}
+
+.panel-editable-input::placeholder {
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+.panel-editable-input:focus {
+  border-color: rgba(99, 102, 241, 0.55);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.emp-input {
+  color: #a5b4fc;
+  border-color: rgba(99, 102, 241, 0.35);
+  background: rgba(99, 102, 241, 0.08);
+}
+
+.emp-input:focus {
+  border-color: rgba(99, 102, 241, 0.6);
+}
+
+.category-input {
+  color: #67e8f9;
+  border-color: rgba(6, 182, 212, 0.35);
+  background: rgba(6, 182, 212, 0.07);
+  text-transform: uppercase;
+}
+
+.category-input:focus {
+  border-color: rgba(6, 182, 212, 0.55);
+  box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.12);
+}
+
 .panel-section__header {
   display: flex;
   align-items: center;

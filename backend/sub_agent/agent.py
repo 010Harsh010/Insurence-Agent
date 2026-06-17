@@ -1,11 +1,12 @@
 import sub_agent.llm as llm
-from sub_agent import greetingAgent, gaurdrailAgent, routerAgent, policyAgent
+from sub_agent import greetingAgent, gaurdrailAgent, routerAgent, policyAgent,text_sqlAgent
 
 class AgentOrchestrator:
     def __init__(self,client: llm.LLMClient):
         self.greeting_agent = greetingAgent.GreetingAgent(client)
         self.guardrail_agent = gaurdrailAgent.GuardrailAgent(client)
         self.router_agent = routerAgent.RouterAgent()
+        self.sql_agent = text_sqlAgent.PostgreSQLQueryAgent()
     
     def run(self, query):
         if not query:
@@ -37,7 +38,8 @@ class AgentOrchestrator:
             result = claim_bot.run()
             Response["ClaimAgent"]  = result
         elif router_response.route == routerAgent.RouteType.QUESTION_ANSWERING:
-            pass
+            response = self.sql_agent.run(query)
+            Response["Answer"] = response
         else:
             raise ValueError(f"Unknown route: {router_response.route}")
         

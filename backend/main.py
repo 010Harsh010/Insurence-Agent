@@ -57,10 +57,11 @@ def response_cleaner(response):
             }
 
     if response.get("Router") == "QUESTION_ANSWERING":
+        print(response.get("Answer"))
         return {
             "ui": {
                 "type": "answer",
-                "message": response.get("Answer")
+                "message": response.get("answer").get("data")
             }
         }
 
@@ -135,6 +136,9 @@ def upload():
 def chat():
     try:
         query = flask.request.args.get("query",type=str)
+        member_id = flask.request.args.get("member_id",type=str)
+        claim_category = flask.request.args.get("claim_category",type=str)
+
         if not query:
             return {
                 "status": 400,
@@ -150,13 +154,13 @@ def chat():
             "status": 200,
             "data": clean_res
         }
+        print(res)
         return res
     except Exception as e:
         return {
             "status": 500,
             "message": f"An error occurred: {str(e)}"
         }
-    
 
 @app.route("/health")
 def health():
@@ -208,7 +212,7 @@ def claimPolicy():
 
 if __name__ == "__main__":
     try:
-        db.Database().initialize_schema()
+        # db.Database().initialize_schema()
         app.run(debug=True, port=8000)
     except Exception as e:
         print(f"Error initializing database: {e}")

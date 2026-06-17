@@ -239,92 +239,42 @@
     "document": {
         "uploaded_document_types": [
             "HOSPITAL_BILL",
-            "PRESCRIPTION"
+            "PRESCRIPTION",
+            "PHARMACY_BILL"
         ],
         "inferred_claim_category": "CONSULTATION",
         "patient_name": "Rajesh Kumar",
         "hospital_name": "APOLLO",
         "missing_document_types": [],
-        "issues": [],
+        "issues": [
+            "Patient mismatch detected: 'Rajesh Kumar' vs 'LALITKUMAR CHAUDHARI'",
+            "Hospital Name not Found"
+        ],
         "warnings": [],
-        "validation_passed": true
+        "validation_passed": false
     },
     "document_result": {
         "step_name": "Document Validation",
-        "status": "PASSED",
-        "passed": true,
-        "confidence": 1.0,
-        "reason": "All documents validated successfully.",
+        "status": "FAILED",
+        "passed": false,
+        "confidence": 0.0,
+        "reason": "Patient mismatch detected: 'Rajesh Kumar' vs 'LALITKUMAR CHAUDHARI'; Hospital Name not Found",
         "details": {
             "claim_category": "CONSULTATION",
-            "document_count": 2,
+            "missing_documents": [],
+            "issues": [
+                "Patient mismatch detected: 'Rajesh Kumar' vs 'LALITKUMAR CHAUDHARI'",
+                "Hospital Name not Found"
+            ],
+            "warnings": [],
             "uploaded_document_types": [
                 "HOSPITAL_BILL",
-                "PRESCRIPTION"
-            ],
-            "patient_name": "Rajesh Kumar",
-            "hospital_name": "APOLLO",
-            "warnings": []
+                "PRESCRIPTION",
+                "PHARMACY_BILL"
+            ]
         },
-        "fatal": false,
-        "checks": [
-            {
-                "check_name": "Document Uploads Check",
-                "status": "PASSED",
-                "passed": true,
-                "confidence": 1.0,
-                "details": {}
-            },
-            {
-                "check_name": "Claim Category Check",
-                "status": "PASSED",
-                "passed": true,
-                "confidence": 1.0,
-                "details": {}
-            },
-            {
-                "check_name": "HOSPITAL_BILL Document Confidence Check",
-                "status": "PASSED",
-                "passed": true,
-                "confidence": 1.0,
-                "details": {}
-            },
-            {
-                "check_name": "PRESCRIPTION Document Confidence Check",
-                "status": "PASSED",
-                "passed": true,
-                "confidence": 1.0,
-                "details": {}
-            },
-            {
-                "check_name": "Patient Name Check",
-                "status": "PASSED",
-                "passed": true,
-                "confidence": 1.0,
-                "details": {}
-            },
-            {
-                "check_name": "Hospital Name Check",
-                "status": "PASSED",
-                "passed": true,
-                "confidence": 1.0,
-                "details": {}
-            },
-            {
-                "check_name": "Duplicate Document Check",
-                "status": "PASSED",
-                "passed": true,
-                "confidence": 1.0,
-                "details": {}
-            },
-            {
-                "check_name": "Missing Documents Check",
-                "status": "PASSED",
-                "passed": true,
-                "confidence": 1.0,
-                "details": {}
-            }
-        ]
+        "fatal": true,
+        "checks": []
     },
     "coverage": {
         "relationship_covered": true,
@@ -458,8 +408,8 @@
     },
     "fraud": {
         "fraud_score": 0.0,
-        "monthly_claims_count": 0,
-        "same_day_claims_count": 0,
+        "monthly_claims_count": 1,
+        "same_day_claims_count": 1,
         "manual_review_required": false,
         "warnings": []
     },
@@ -471,8 +421,8 @@
         "reason": "Fraud validation completed.",
         "details": {
             "fraud_score": 0.0,
-            "monthly_claims": 0,
-            "same_day_claims": 0,
+            "monthly_claims": 1,
+            "same_day_claims": 1,
             "manual_review": false,
             "warnings": []
         },

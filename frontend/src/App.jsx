@@ -18,7 +18,6 @@ import {
   XCircle,
 } from "lucide-react";
 
-const MEMBER_ID = "EMP001";
 const BASE_URL = ""; // Vite proxy forwards /chat and /upload to Flask:8000
 
 // ─── Typing Indicator ───────────────────────────────────────────────────────
@@ -150,12 +149,34 @@ const MessageBubble = ({ msg }) => {
 };
 
 // ─── Right Panel ─────────────────────────────────────────────────────────────
-const ClaimPanel = ({ lastClaim, uploadedCount, isUploading }) => (
+const ClaimPanel = ({ lastClaim, uploadedCount, isUploading, memberId, claimCategory, onMemberIdChange, onClaimCategoryChange }) => (
   <aside className="right-panel">
-    {/* Member info */}
+    {/* Member ID – editable */}
     <div className="panel-section">
       <p className="panel-label">Member ID</p>
-      <p className="panel-value emp-badge">{MEMBER_ID}</p>
+      <input
+        id="member-id-input"
+        className="panel-editable-input emp-input"
+        value={memberId}
+        onChange={(e) => onMemberIdChange(e.target.value)}
+        placeholder="e.g. EMP001"
+        spellCheck={false}
+      />
+    </div>
+
+    <div className="divider" />
+
+    {/* Claim Category – editable */}
+    <div className="panel-section">
+      <p className="panel-label">Claim Category</p>
+      <input
+        id="claim-category-input"
+        className="panel-editable-input category-input"
+        value={claimCategory}
+        onChange={(e) => onClaimCategoryChange(e.target.value.toUpperCase())}
+        placeholder="e.g. PHARMACY"
+        spellCheck={false}
+      />
     </div>
 
     <div className="divider" />
@@ -262,6 +283,8 @@ const App = () => {
   const [uploadedCount, setUploadedCount] = useState(0);
   const [lastClaim, setLastClaim] = useState(null);
   const [dragOver, setDragOver] = useState(false);
+  const [memberId, setMemberId] = useState("EMP001");
+  const [claimCategory, setClaimCategory] = useState("PHARMACY");
 
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
@@ -306,7 +329,7 @@ const App = () => {
       formData.append("document", file);
 
       try {
-        const res = await fetch(`${BASE_URL}/upload?member_id=${MEMBER_ID}`, {
+        const res = await fetch(`${BASE_URL}/upload?member_id=${encodeURIComponent(memberId)}`, {
           method: "POST",
           body: formData,
         });
@@ -395,7 +418,7 @@ const App = () => {
     if (text) {
       try {
         const res = await fetch(
-          `${BASE_URL}/chat?query=${encodeURIComponent(text)}`
+          `${BASE_URL}/chat?query=${encodeURIComponent(text)}&member_id=${encodeURIComponent(memberId)}&claim_category=${encodeURIComponent(claimCategory)}`
         );
         const data = await res.json();
 
@@ -414,7 +437,16 @@ const App = () => {
 
           } else if (ui.type === "answer") {
             // Question-answering response
-            responseText += ui.message;
+            if (typeof ui.message === "string") {
+              responseText += ui.message;
+            }
+            else {
+              responseText += JSON.stringify(
+                ui.message,
+                null,
+                2
+              );
+            }
 
           } else if (ui.type === "decision") {
             // Claim processing result — show decision card
@@ -497,7 +529,7 @@ const App = () => {
         <div className="app-header__status">
           <div className="status-dot" />
           <span>Online</span>
-          <div className="member-pill">{MEMBER_ID}</div>
+          <div className="member-pill">{memberId || "—"}</div>
         </div>
       </header>
 
@@ -607,6 +639,10 @@ const App = () => {
           lastClaim={lastClaim}
           uploadedCount={uploadedCount}
           isUploading={isUploading}
+          memberId={memberId}
+          claimCategory={claimCategory}
+          onMemberIdChange={setMemberId}
+          onClaimCategoryChange={setClaimCategory}
         />
       </div>
     </div>

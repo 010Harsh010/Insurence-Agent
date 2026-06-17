@@ -21,13 +21,12 @@ class RouterAgent:
     Classify the user query into exactly one route.
 
     CLAIM_PROCESSING
-    - User wants to create, track,
+    - User wants to create,
       continue or process a claim.
     - User says:
       "File a claim"
       "Create claim"
       "Start reimbursement"
-      "Check my claim status"
 
     QUESTION_ANSWERING
     - User is asking information.
@@ -36,6 +35,7 @@ class RouterAgent:
       "How much deductible?"
       "Is consultation covered?"
       "What documents are required?"
+      "My recents Claims"
 
     Return JSON:
     {

@@ -25,23 +25,10 @@ class SchemaLinkOutput(BaseModel):
 # ============================================================
 # POSTGRES TEXT TO SQL AGENT
 # ============================================================
-
 class PostgreSQLQueryAgent:
 
     def __init__(
-        self,
-        host: str,
-        port: int,
-        database: str,
-        user: str,
-        password: str
-    ):
-        self.host = host
-        self.port = port
-        self.database = database
-        self.user = user
-        self.password = password
-
+        self):
         self.llm_client = llm.LLMClient()
 
         self.schema_json = {}
@@ -55,15 +42,13 @@ class PostgreSQLQueryAgent:
 
     def _connect_db(self):
 
-        conn = psycopg2.connect(
-            host=self.host,
-            port=self.port,
-            database=self.database,
-            user=self.user,
-            password=self.password
+        return psycopg2.connect(
+            host=os.getenv("DB_HOST", "localhost"),
+            port=os.getenv("DB_PORT", "5432"),
+            database=os.getenv("DB_NAME", "claims"),
+            user=os.getenv("DB_USER", "admin"),
+            password=os.getenv("DB_PASSWORD", "admin"),
         )
-
-        return conn
 
     def disconnect_db(self, conn):
 
@@ -476,26 +461,12 @@ Question:
                 .strip()
             )
 
-        denied_keywords = [
-            "DROP",
-            "DELETE",
-            "UPDATE",
-            "INSERT",
-            "ALTER",
-            "TRUNCATE",
-            "CREATE",
-            "REPLACE"
-        ]
+        sql = sql_query.strip().upper()
 
-        sql_upper = sql_query.upper()
-
-        for keyword in denied_keywords:
-
-            if keyword in sql_upper:
-
-                raise ValueError(
-                    f"Denied SQL keyword: {keyword}"
-                )
+        if not sql.startswith("SELECT"):
+            raise ValueError(
+                "Only SELECT queries are allowed"
+            )
 
         return sql_query
 
@@ -603,13 +574,7 @@ if __name__ == "__main__":
 
     llm_client = LLMClient()
 
-    agent = PostgreSQLQueryAgent(
-        host=os.getenv("DB_HOST"),
-        port=os.getenv("DB_PORT"),
-        database=os.getenv("DB_NAME"),
-        user=os.getenv("DB_USER"),
-        password=os.getenv("DB_PASSWORD")
-    )
+    agent = PostgreSQLQueryAgent()
 
     while True:
 

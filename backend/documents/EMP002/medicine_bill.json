@@ -2,7 +2,7 @@
   "classification": {
     "document_type": "PHARMACY_BILL",
     "confidence": 0.99,
-    "reasoning": "The document contains a list of medications with their quantities, descriptions, manufacturers, batch numbers, expiration dates, and prices, which is typical of a pharmacy bill."
+    "reasoning": "The document contains a list of medications with their respective quantities, descriptions, manufacturers, batch numbers, expiration dates, and prices, which is consistent with a pharmacy bill."
   },
   "document": {
     "document_type": "PHARMACY_BILL",
@@ -23,51 +23,51 @@
     ],
     "line_items": [
       {
-        "quantity": 24,
+        "quantity": null,
         "description": "Cap Novoclox",
         "maker": "Cipla",
         "batch_number": "80H",
-        "expiry_date": "2016-12",
+        "expiry_date": null,
         "amount": 130.68
       },
       {
-        "quantity": 24,
+        "quantity": null,
         "description": "Tab Enzofiam",
         "maker": "Begen",
         "batch_number": "8011a13",
-        "expiry_date": "2017-03",
+        "expiry_date": null,
         "amount": 510.6
       },
       {
-        "quantity": 60,
+        "quantity": null,
         "description": "Tab Neuribicr",
         "maker": "A066",
         "batch_number": "8604",
-        "expiry_date": "2017-12",
+        "expiry_date": null,
         "amount": 950.78
       },
       {
-        "quantity": 100,
+        "quantity": null,
         "description": "Candibiotic Eardrop",
         "maker": "Mujesta",
         "batch_number": "42057018",
-        "expiry_date": "2017-10",
+        "expiry_date": null,
         "amount": 3120.0
       },
       {
-        "quantity": 15,
+        "quantity": null,
         "description": "Crocin 500 mg",
         "maker": "Lup",
         "batch_number": "32097b",
-        "expiry_date": "2017-02",
+        "expiry_date": null,
         "amount": 56.93
       },
       {
-        "quantity": 10,
+        "quantity": null,
         "description": "St. yailegra 180g",
         "maker": "Evenhy",
         "batch_number": "22029",
-        "expiry_date": "2017-10",
+        "expiry_date": null,
         "amount": 910.13
       }
     ],

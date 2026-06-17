@@ -248,6 +248,8 @@ class BaseAgent:
             ) as cur:
                 cur.execute(query, values)
                 row = cur.fetchone()
+                
+            conn.commit()
 
             return dict(row) if row else None
 
@@ -1575,9 +1577,21 @@ class FraudAgent(BaseAgent):
         member_id: str,
         treatment_date: date | None
     ) -> int:
-
+        print(treatment_date)
         if not treatment_date:
-            return 0
+            result = self.fetch_one(
+        """
+        SELECT COUNT(*) AS total
+        FROM claims
+        WHERE member_id = %s
+        AND DATE(submission_date) = CURRENT_DATE
+        """,
+        (member_id,)
+            )
+
+            print("Not Treatment same day query result:", result)
+
+            return int(result["total"]) if result else 0
 
         result = self.fetch_one(
             """
@@ -1591,10 +1605,8 @@ class FraudAgent(BaseAgent):
                 treatment_date
             )
         )
-
-        return int(
-            result.get("total", 0)
-        ) if result else 0
+        print("same day query result:", result)
+        return int(result["total"]) if result else 0
 
     def _extract_treatment_date(
         self,
@@ -1663,7 +1675,7 @@ class FraudAgent(BaseAgent):
             )
         )
 
-        if monthly_claims > monthly_limit:
+        if monthly_claims >= monthly_limit:
 
             output.fraud_score += 0.30
 
@@ -1697,17 +1709,17 @@ class FraudAgent(BaseAgent):
                 999
             )
         )
-
-        if same_day_claims > same_day_limit:
-
+        print(f"check the {same_day_claims}")
+        if same_day_claims >= same_day_limit:
             output.fraud_score += 0.25
-
+            output.manual_review_required = True
             output.warnings.append(
                 f"Same-day claim count "
                 f"({same_day_claims}) "
                 f"exceeds limit "
                 f"({same_day_limit})."
             )
+            print("Give warning")
             
         checks.append(
             self.check_pass(
@@ -1837,12 +1849,16 @@ class ClaimRepository(BaseAgent):
         
         treatment_date = None
 
+        print("Get treatment date form Docuemnt")
+        print(documents)
         for doc in documents:
 
             value = (
                 doc["document"]
                 .get("date")
             )
+            
+            print(f"Got value {value}")
 
             if value:
 
@@ -1857,6 +1873,7 @@ class ClaimRepository(BaseAgent):
                 except Exception:
                     pass
 
+        print("Insert claim")
         result = self.fetch_one(
             """
             INSERT INTO claims (
@@ -1891,9 +1908,42 @@ class ClaimRepository(BaseAgent):
                 0.0
             )
         )
-
+        print(result)
+        
+        print("Get claim id")
+        print(result["claim_id"])
+        
         return str(
             result["claim_id"]
+        )
+        
+    def update_claim(
+        self,
+        claim_id: str,
+        decision_output: DecisionOutput
+    ):
+        if not claim_id:
+            return ValueError("Claim Id was not initlize")
+
+        print(decision_output.decision.value)
+        self.fetch_one(
+            """
+            UPDATE claims
+            SET
+                claim_status = %s,
+                claimed_amount = %s,
+                confidence_score = %s,
+                fraud_score = %s
+            WHERE claim_id = %s
+            RETURNING claim_id
+            """,
+            (
+                decision_output.decision.value,
+                decision_output.claimed_amount,
+                1.0,
+                decision_output.fraud_score,
+                claim_id,
+            )
         )
         
 class DecisionAgent(BaseAgent):
@@ -2058,6 +2108,104 @@ Rules:
             output
         )
 
+import json
+import psycopg2
+from psycopg2.extras import Json
+
+class TraceRepository:
+
+    def __init__(self, db_connect):
+        self._db_connect = db_connect
+
+    def save_step(
+        self,
+        claim_id: str,
+        step_name: str,
+        step_result,
+        input_data: dict | None = None,
+        output_data: dict | None = None
+    ):
+        conn = self._db_connect()
+
+        try:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    INSERT INTO claim_trace_steps (
+                        claim_id,
+                        step_name,
+                        step_status,
+                        confidence_score,
+                        input_data,
+                        output_data,
+                        reason
+                    )
+                    VALUES (
+                        %s,%s,%s,%s,%s,%s,%s
+                    )
+                    """,
+                    (
+                        claim_id,
+                        step_name,
+                        step_result.status.value,
+                        step_result.confidence,
+                        Json(input_data or {}),
+                        Json(output_data or {}),
+                        step_result.reason
+                    )
+                )
+
+            conn.commit()
+
+        finally:
+            conn.close()
+
+class DecisionRepository:
+
+    def __init__(self, db_connect):
+        self._db_connect = db_connect
+
+    def save_decision(
+        self,
+        claim_id: str,
+        decision_output,
+        trace: dict
+    ):
+        conn = self._db_connect()
+
+        try:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    INSERT INTO claim_decisions (
+                        claim_id,
+                        decision,
+                        approved_amount,
+                        confidence_score,
+                        rejection_reason,
+                        explanation,
+                        trace
+                    )
+                    VALUES (
+                        %s,%s,%s,%s,%s,%s,%s
+                    )
+                    """,
+                    (
+                        claim_id,
+                        decision_output.decision.value,
+                        decision_output.approved_amount,
+                        1.0,
+                        None,
+                        decision_output.explanation,
+                        Json(trace)
+                    )
+                )
+
+            conn.commit()
+
+        finally:
+            conn.close()
+            
 class ClaimProcessingPipeline:
 
     def __init__(
@@ -2091,17 +2239,84 @@ class ClaimProcessingPipeline:
         self.fraud_output = None
         self.decision_output = None
 
+        self.trace_repo = TraceRepository(
+            MemberValidationAgent()._db_connect
+        )
+        
+        self.decision_repo = DecisionRepository(
+            MemberValidationAgent()._db_connect
+        )
+        
+    def _save_step_trace(
+    self,
+    result,
+    input_data=None,
+    output_data=None
+):
+        if not self.claim_id:
+            return
+
+        self.trace_repo.save_step(
+            claim_id=self.claim_id,
+            step_name=result.step_name,
+            step_result=result,
+            input_data=input_data,
+            output_data=output_data
+        )
+
     def run(self):
         try:
             self._validate_member()
             self._validate_policy()
             self._load_documents()
-            print("Document Validation")
+            repo = ClaimRepository()
+            self.claim_id = repo.create_claim(
+                member=self.member,
+                policy=self.policy,
+                documents=self.documents,
+                document_output=DocumentValidationOutput(),
+                financial_output=FinancialValidationOutput()
+            )
             self._validate_documents()
+            self._save_step_trace(
+                self.document_result,
+                input_data={
+                    "claim_category": self.claim_category
+                },
+                output_data=self.response["document"]
+            )
+            
             self._validate_coverage()
+            self._save_step_trace(
+                self.coverage_result,
+                output_data=self.response["coverage"]
+            )
+            
             self._validate_finance()
+            self._save_step_trace(
+                self.finance_result,
+                output_data=self.response["finance"]
+            )
+            
             self._validate_fraud()
+            self._save_step_trace(
+                self.fraud_result,
+                output_data=self.response["fraud"]
+            )
             self._make_decision()
+            self._save_step_trace(
+                self.decision_result,
+                output_data=self.response["decision"]
+            )
+            self.decision_repo.save_decision(
+                claim_id=self.claim_id,
+                decision_output=self.decision_output,
+                trace=self.response
+            )
+            repo.update_claim(
+                claim_id=self.claim_id,
+                decision_output=self.decision_output,
+            )
             self._save_output()
         except Exception as e:
             self.response["error"] = str(e)
@@ -2356,7 +2571,7 @@ class ClaimProcessingPipeline:
             )
 
         print(f"Output saved to {output_file}")
-
+    
     def _generate_message(self):
         messages = [
     {
