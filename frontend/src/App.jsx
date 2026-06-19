@@ -29,6 +29,189 @@ const TypingDots = () => (
   </div>
 );
 
+// ─── Answer Table (multi-section, recursive) ─────────────────────────────────
+const _fmtKey = (k) =>
+  k.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+
+const _isObj = (v) => v !== null && typeof v === "object" && !Array.isArray(v);
+
+const getDecisionVariant = (decision) => {
+  switch (decision) {
+    case "APPROVED":
+      return "approved";
+    case "REJECTED":
+      return "denied";
+    case "PARTIALLY_APPROVED":
+      return "partial";
+    case "MANUAL_REVIEW":
+      return "pending";
+    default:
+      return "pending";
+  }
+};
+
+const formatDecisionLabel = (decision) =>
+  typeof decision === "string" ? decision.replace(/_/g, " ") : "UNKNOWN";
+
+const _renderPrimitive = (v) => {
+  if (v === null || v === undefined) return <span className="ans-null">—</span>;
+  if (typeof v === "boolean") return <span className={v ? "ans-bool-true" : "ans-bool-false"}>{v ? "Yes" : "No"}</span>;
+  return <span>{String(v)}</span>;
+};
+
+const _renderAnyValue = (v, depth = 0) => {
+  if (v === null || v === undefined) return <span className="ans-null">—</span>;
+
+  // Array
+  if (Array.isArray(v)) {
+    if (v.length === 0) return <span className="ans-null">empty</span>;
+    // Array of objects → mini table
+    if (_isObj(v[0])) {
+      const cols = Object.keys(v[0]);
+      return (
+        <div className="ans-mini-wrap">
+          <table className="ans-mini-table">
+            <thead>
+              <tr>{cols.map((c) => <th key={c} className="ans-mini-th">{_fmtKey(c)}</th>)}</tr>
+            </thead>
+            <tbody>
+              {v.map((row, i) => (
+                <tr key={i} className={i % 2 === 0 ? "ans-mini-tr" : "ans-mini-tr ans-mini-tr--alt"}>
+                  {cols.map((c) => (
+                    <td key={c} className="ans-mini-td">
+                      {_isObj(row[c]) || Array.isArray(row[c])
+                        ? _renderAnyValue(row[c], depth + 1)
+                        : _renderPrimitive(row[c])}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      );
+    }
+    // Array of primitives → tag list
+    return (
+      <div className="ans-tag-list">
+        {v.map((item, i) => (
+          <span key={i} className="ans-tag">{_renderPrimitive(item)}</span>
+        ))}
+      </div>
+    );
+  }
+
+  // Plain object → recursive key-value rows
+  if (_isObj(v)) {
+    return (
+      <div className={depth === 0 ? "ans-kv-grid" : "ans-kv-sub"}>
+        {Object.entries(v).map(([k, val]) => (
+          <div key={k} className={depth === 0 ? "ans-kv-row" : "ans-kv-sub__row"}>
+            <span className={depth === 0 ? "ans-kv-key" : "ans-kv-sub__key"}>{_fmtKey(k)}</span>
+            <span className={depth === 0 ? "ans-kv-val" : "ans-kv-sub__val"}>
+              {_renderAnyValue(val, depth + 1)}
+            </span>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  return _renderPrimitive(v);
+};
+
+const AnswerTable = ({ data }) => {
+  if (!Array.isArray(data) || data.length === 0) return null;
+
+  return (
+    <div className="ans-root">
+      {data.map((record, ri) => {
+        const flatEntries = Object.entries(record).filter(
+          ([, v]) => !_isObj(v) && !Array.isArray(v)
+        );
+        const nestedEntries = Object.entries(record).filter(
+          ([, v]) => _isObj(v) || Array.isArray(v)
+        );
+
+        return (
+          <div key={ri} className="ans-record">
+            {data.length > 1 && (
+              <div className="ans-record__header">Record {ri + 1} of {data.length}</div>
+            )}
+
+            {/* ── Overview: flat primitive fields ── */}
+            {flatEntries.length > 0 && (
+              <div className="ans-section">
+                <div className="ans-section__title">Overview</div>
+                <div className="ans-kv-grid">
+                  {flatEntries.map(([k, v]) => (
+                    <div key={k} className="ans-kv-row">
+                      <span className="ans-kv-key">{_fmtKey(k)}</span>
+                      <span className="ans-kv-val">{_renderPrimitive(v)}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* ── One section per nested field ── */}
+            {nestedEntries.map(([k, v]) => (
+              <div key={k} className="ans-section">
+                <div className="ans-section__title">{_fmtKey(k)}</div>
+                <div className="ans-section__body">{_renderAnyValue(v, 0)}</div>
+              </div>
+            ))}
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
+// ─── Financial Breakdown Ledger ─────────────────────────────────────────────
+const FinancialBreakdown = ({ claim, compact = false }) => {
+  const breakdown = claim?.financial_breakdown || [];
+  const claimedAmt  = claim?.claimed_amount  ?? 0;
+  const approvedAmt = claim?.approved_amount ?? 0;
+
+  // Only show deduction rows where amount > 0
+  const activeDeductions = breakdown.filter((d) => d.amount > 0);
+
+  const fmt = (n) =>
+    `₹${Number(n).toLocaleString("en-IN", { minimumFractionDigits: 0 })}`;
+
+  return (
+    <div className={`fb-wrap${compact ? " fb-wrap--compact" : ""}`}>
+      {/* Header row */}
+      <div className="fb-row fb-row--header">
+        <span className="fb-label">Claim Amount</span>
+        <span className="fb-amount">{fmt(claimedAmt)}</span>
+      </div>
+
+      {/* Deduction rows */}
+      {activeDeductions.length > 0 && (
+        <>
+          {activeDeductions.map((d, i) => (
+            <div key={i} className="fb-row fb-row--deduction">
+              <span className="fb-label">{d.step}</span>
+              <span className="fb-amount fb-amount--deduction">− {fmt(d.amount)}</span>
+            </div>
+          ))}
+        </>
+      )}
+
+      {/* Divider */}
+      <div className="fb-divider" />
+
+      {/* Approved total */}
+      <div className="fb-row fb-row--total">
+        <span className="fb-label fb-label--total">Approved Amount</span>
+        <span className="fb-amount fb-amount--total">{fmt(approvedAmt)}</span>
+      </div>
+    </div>
+  );
+};
+
 // ─── File Badge ──────────────────────────────────────────────────────────────
 const FileBadge = ({ file, onRemove, status }) => {
   const icons = {
@@ -64,6 +247,7 @@ const FileBadge = ({ file, onRemove, status }) => {
 // ─── Message Bubble ──────────────────────────────────────────────────────────
 const MessageBubble = ({ msg }) => {
   const isUser = msg.role === "user";
+  const claimDecisionVariant = msg.claim ? getDecisionVariant(msg.claim.decision) : null;
 
   return (
     <div className={`message-row ${isUser ? "message-row--user" : "message-row--ai"}`}>
@@ -87,7 +271,10 @@ const MessageBubble = ({ msg }) => {
         {msg.loading ? (
           <TypingDots />
         ) : (
-          <div className="bubble-text">{msg.text}</div>
+          <>
+            {msg.text && <div className="bubble-text">{msg.text}</div>}
+            {msg.tableData && <AnswerTable data={msg.tableData} />}
+          </>
         )}
 
         {/* Claim Decision Card */}
@@ -96,42 +283,17 @@ const MessageBubble = ({ msg }) => {
             <div className="claim-card__header">
               <ShieldCheck size={16} className="text-green-400" />
               <span>Claim Analysis</span>
+              <span
+                className={`claim-card__badge claim-card__badge--${claimDecisionVariant}`}
+              >
+                {formatDecisionLabel(msg.claim.decision)}
+              </span>
             </div>
-
-            <div className="claim-card__grid">
-              <div className="claim-stat">
-                <span className="claim-stat__label">Status</span>
-                <span
-                  className={`claim-stat__value ${
-                    msg.claim.decision === "APPROVED"
-                      ? "text-green-400"
-                      : msg.claim.decision === "DENIED"
-                      ? "text-red-400"
-                      : "text-yellow-400"
-                  }`}
-                >
-                  {msg.claim.decision}
-                </span>
-              </div>
-
-              {msg.claim.approved_amount !== undefined && (
-                <div className="claim-stat">
-                  <span className="claim-stat__label">Approved Amount</span>
-                  <span className="claim-stat__value">
-                    ₹{msg.claim.approved_amount?.toLocaleString("en-IN")}
-                  </span>
-                </div>
-              )}
-
-              {msg.claim.confidence !== undefined && (
-                <div className="claim-stat">
-                  <span className="claim-stat__label">Confidence</span>
-                  <span className="claim-stat__value">
-                    {(msg.claim.confidence * 100).toFixed(0)}%
-                  </span>
-                </div>
-              )}
-            </div>
+            {
+              msg.claim.decision !== "REJECTED" &&
+                <FinancialBreakdown claim={msg.claim} />
+            }
+            
           </div>
         )}
 
@@ -214,42 +376,12 @@ const ClaimPanel = ({ lastClaim, uploadedCount, isUploading, memberId, claimCate
       {lastClaim ? (
         <div className="decision-card">
           <div
-            className={`decision-badge ${
-              lastClaim.decision === "APPROVED"
-                ? "decision-badge--approved"
-                : lastClaim.decision === "DENIED"
-                ? "decision-badge--denied"
-                : "decision-badge--pending"
-            }`}
+            className={`decision-badge decision-badge--${getDecisionVariant(lastClaim.decision)}`}
           >
-            {lastClaim.decision}
+            {formatDecisionLabel(lastClaim.decision)}
           </div>
 
-          {lastClaim.approved_amount !== undefined && (
-            <div className="decision-row">
-              <span className="decision-label">Amount</span>
-              <span className="decision-val">
-                ₹{lastClaim.approved_amount?.toLocaleString("en-IN")}
-              </span>
-            </div>
-          )}
-
-          {lastClaim.confidence !== undefined && (
-            <div className="decision-row">
-              <span className="decision-label">Confidence</span>
-              <div className="confidence-bar-wrap">
-                <div className="confidence-bar">
-                  <div
-                    className="confidence-bar__fill"
-                    style={{ width: `${(lastClaim.confidence * 100).toFixed(0)}%` }}
-                  />
-                </div>
-                <span className="decision-val">
-                  {(lastClaim.confidence * 100).toFixed(0)}%
-                </span>
-              </div>
-            </div>
-          )}
+          <FinancialBreakdown claim={lastClaim} compact />
 
           {lastClaim.reasoning && (
             <div className="decision-reasoning">
@@ -334,6 +466,11 @@ const App = () => {
           body: formData,
         });
         const data = await res.json();
+        if (!res.ok) {
+          throw new Error(
+            data.error || "Upload failed"
+          );
+        }
         results.push({ file, ok: res.ok, data });
       } catch (err) {
         results.push({ file, ok: false, error: err.message });
@@ -386,12 +523,17 @@ const App = () => {
         const failures = uploadResults.filter((r) => !r.ok);
 
         if (successes.length > 0) {
-          uploadSummary = `✅ Successfully uploaded ${successes.length} document(s). `;
+          uploadSummary = `✅ Successfully uploaded ${successes.length} document(s). \n`;
         }
         if (failures.length > 0) {
-          uploadSummary += `⚠️ ${failures.length} document(s) failed to upload. `;
+          uploadSummary += `⚠️ ${failures.length} document(s) failed to upload. \n`;
         }
-
+        uploadResults.map(r => {
+          if(!r.ok){
+            uploadSummary+= `${r.error}`
+          }
+        })
+        
         // Update file statuses in user message
         setMessages((prev) => {
           const copy = [...prev];
@@ -414,6 +556,7 @@ const App = () => {
     // Types: "message" | "decision" | "error" | "answer"
     let responseText = uploadSummary;
     let claimData = null;
+    let tableData = null;
 
     if (text) {
       try {
@@ -421,6 +564,8 @@ const App = () => {
           `${BASE_URL}/chat?query=${encodeURIComponent(text)}&member_id=${encodeURIComponent(memberId)}&claim_category=${encodeURIComponent(claimCategory)}`
         );
         const data = await res.json();
+
+        console.log(`Chat Data: ${data}`)
 
         if (res.ok && data.status === 200) {
           const ui = data.data?.ui;
@@ -437,15 +582,13 @@ const App = () => {
 
           } else if (ui.type === "answer") {
             // Question-answering response
-            if (typeof ui.message === "string") {
+            if (Array.isArray(ui.message)) {
+              // Array data → render as table, no raw text
+              tableData = ui.message;
+            } else if (typeof ui.message === "string") {
               responseText += ui.message;
-            }
-            else {
-              responseText += JSON.stringify(
-                ui.message,
-                null,
-                2
-              );
+            } else {
+              responseText += JSON.stringify(ui.message, null, 2);
             }
 
           } else if (ui.type === "decision") {
@@ -480,9 +623,10 @@ const App = () => {
     // Replace typing indicator
     updateLastMessage(() => ({
       role: "assistant",
-      text: responseText || "Done! Anything else I can help you with?",
+      text: tableData ? responseText : (responseText || "Done! Anything else I can help you with?"),
       loading: false,
       claim: claimData,
+      tableData: tableData,
       time: now(),
     }));
 

@@ -1,0 +1,24 @@
+{
+  "classification": {
+    "document_type": "HOSPITAL_BILL",
+    "confidence": 0.95,
+    "reasoning": "The document contains a provisional bill, detailed breakdown of charges, and payer details, which are typical characteristics of a hospital bill."
+  },
+  "document": {
+    "document_type": "PRESCRIPTION",
+    "patient_name": "Rajesh Kumar",
+    "doctor_name": "Dt Akshara Raje",
+    "doctor_registration": null,
+    "diagnosis": "MRI Lumbar Spine",
+    "hospital_name": null,
+    "date": "2026-06-17",
+    "total_amount": 15000.0,
+    "medicines": [],
+    "line_items": [],
+    "tests_ordered": [
+        "MRI Lumbar Spine"
+    ],
+    "confidence": 0.95
+  },
+  "markdown": "Patient UID: 1\n\nDate: 19-Jan-2023\n\nName:DUMMY PATTENT (Male)\n\nAdmissionNo:000001\n\nAge: 22 years\n\nAdmissionDate:18-Jan-2023,12:19PM\n\nAddress:Pune,PUNE-411051, Contact No: 9403265989\n\nDischarge Date: -- / -- / --\n\nPayer Details\n\nBed No(s): GEN001(GENERAL)\n\nName:DUMMYPATIENT\n\nAddress:Pune,PUNE-411051\n\nConsulting Doctors:\n\n- Dt Akshara Raje (General Physician)\n\n## PROVISIONAL BILL\n\n|   Primary Code | Particulars            |   Amount |\n|----------------|------------------------|----------|\n|         100000 | Room & Nursing Charges |  1650.00 |\n|         300000 | OT Charges             |  1000.00 |\n|         500000 | Professional Fees      |  1000.00 |\n\nTotal Bill Amount:3650.00\n\nAmoumt Payable: 3650.00\n\nAmount Paid: 0.00\n\nBalance: 3650.00\n\nPaid amount in words : Zero\n\n## DETAILEDBREAKUP\n\n| Code              | Date & Time       | Particulars                                 |    Rate | Units     |   Amount |\n|-------------------|-------------------|---------------------------------------------|---------|-----------|----------|\n| Room/Bed Charges  | Room/Bed Charges  |                                             |         |           |          |\n| 100000            | 18-01-23 12:19 PM | Bed Charges - GENERAL (GEN001)              |  200.00 | 11/4      |   250.00 |\n|                   |                   |                                             |         | Subtotal: |   250.00 |\n| Nursing Charges   | Nursing Charges   |                                             |         |           |          |\n| 102001            | 18-01-23 12:19 PM | Nursing Fees - GENERAL (GEN001)             |  200.00 | 11/4      |   250.00 |\n| 102003            | 19-01-23 12:54 PM | Nebulization-GENERAL (GEN001)               |  100.00 | 1         |   100.00 |\n| 102004            | 19-01-23 12:19 PM | Injection Charges - GENERAL (GEN001)        |   50.00 | 1         |    50.00 |\n| 102007            | 19-01-23 12:19 PM | Blocd Transfusion Charges - GENERAL(GEN001) | 1000.00 | 1         |  1000.00 |\n|                   |                   |                                             |         | Subtotal: |  1400.00 |\n| OT Charges        | OT Charges        |                                             |         |           |          |\n| 301001            | 19-01-23 12:54 PM | Major OT Charge - GENERAL (GEN001)          | 1000.00 | 1         |  1000.00 |\n|                   |                   |                                             |         | Subtotal: |  1000.00 |\n| Professional Fees | Professional Fees |                                             |         |           |          |\n| 500000            | 18-01-2312:22 PM  | Dr. Akshara Raje                            |  500.00 | 1         |   500.00 |"
+}

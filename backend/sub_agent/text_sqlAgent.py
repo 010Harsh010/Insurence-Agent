@@ -482,13 +482,19 @@ Question:
         conn = self._connect_db()
 
         try:
+            cursor = conn.cursor()
 
-            result = pd.read_sql_query(
-                sql_query,
-                conn
-            )
+            cursor.execute(sql_query)
 
-            return result
+            db_results = cursor.fetchall()
+            if cursor.description:
+                columns = [desc[0] for desc in cursor.description]
+                response_df = pd.DataFrame(db_results, columns=columns)
+            else:
+                response_df = pd.DataFrame(db_results)
+            
+            print(response_df)
+            return response_df
 
         finally:
 

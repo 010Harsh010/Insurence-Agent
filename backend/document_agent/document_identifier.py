@@ -1,6 +1,7 @@
 from enum import Enum
 from pathlib import Path
 from pydantic import BaseModel, Field
+from dataclasses import dataclass
 
 from langchain_docling.loader import DoclingLoader
 from langchain_docling.loader import ExportType
@@ -16,8 +17,44 @@ class DocumentType(str, Enum):
     LAB_REPORT = "LAB_REPORT"
     DIAGNOSTIC_REPORT = "DIAGNOSTIC_REPORT"
     DISCHARGE_SUMMARY = "DISCHARGE_SUMMARY"
+    CONSULTATION= "CONSULTATION"
     DENTAL_REPORT = "DENTAL_REPORT"
     UNKNOWN = "UNKNOWN"
+    
+REQUIRED_FIELDS = {
+    DocumentType.HOSPITAL_BILL: [
+        "hospital_name",
+        "date",
+    ],
+
+    DocumentType.PRESCRIPTION: [
+        "patient_name",
+        "doctor_name",
+        "diagnosis",
+    ],
+
+    DocumentType.DISCHARGE_SUMMARY: [
+        "patient_name",
+        "hospital_name",
+        "doctor_name",
+        "diagnosis",
+        "date"
+    ],
+
+    DocumentType.LAB_REPORT: [
+        "patient_name",
+        "hospital_name",
+        "tests_ordered",
+        "date"
+    ],
+
+    DocumentType.CONSULTATION: [
+        "patient_name",
+        "doctor_name",
+        "diagnosis",
+        "date"
+    ]
+}
 
 
 class LineItem(BaseModel):
@@ -57,7 +94,202 @@ class ExtractedDocument(BaseModel):
     tests_ordered: list[str] = Field(default_factory=list)
 
     confidence: float = 0.0
+
+@dataclass
+class ValidationResult:
+    is_valid: bool
+    missing_fields: list[str]
     
+    
+from dataclasses import dataclass
+import cv2
+import numpy as np
+
+
+@dataclass
+class QualityResult:
+    score: float
+    quality: str
+
+    blur_score: float
+    contrast_score: float
+    brightness_score: float
+    resolution_score: float
+
+    width: int
+    height: int
+
+
+class QualityAgent:
+
+    def __init__(self):
+        pass
+
+    def _blur_score(
+        self,
+        gray: np.ndarray
+    ) -> float:
+
+        variance = cv2.Laplacian(
+            gray,
+            cv2.CV_64F
+        ).var()
+
+        if variance >= 500:
+            return 100
+
+        if variance >= 200:
+            return 80
+
+        if variance >= 100:
+            return 60
+
+        if variance >= 50:
+            return 40
+
+        return 10
+
+    def _contrast_score(
+        self,
+        gray: np.ndarray
+    ) -> float:
+
+        std = gray.std()
+
+        if std >= 70:
+            return 100
+
+        if std >= 50:
+            return 80
+
+        if std >= 35:
+            return 60
+
+        if std >= 20:
+            return 40
+
+        return 10
+
+    def _brightness_score(
+        self,
+        gray: np.ndarray
+    ) -> float:
+
+        mean = gray.mean()
+
+        if 80 <= mean <= 180:
+            return 100
+
+        if 60 <= mean <= 200:
+            return 70
+
+        if 40 <= mean <= 220:
+            return 50
+
+        return 20
+
+    def _resolution_score(
+        self,
+        width: int,
+        height: int
+    ) -> float:
+
+        pixels = width * height
+
+        if pixels >= 3000000:
+            return 100
+
+        if pixels >= 1500000:
+            return 80
+
+        if pixels >= 800000:
+            return 60
+
+        if pixels >= 400000:
+            return 40
+
+        return 10
+
+    def check(
+        self,
+        image_path: str
+    ) -> QualityResult:
+
+        image = cv2.imread(image_path)
+
+        if image is None:
+            raise ValueError(
+                f"Unable to read image: {image_path}"
+            )
+
+        height, width = image.shape[:2]
+
+        gray = cv2.cvtColor(
+            image,
+            cv2.COLOR_BGR2GRAY
+        )
+
+        blur_score = self._blur_score(
+            gray
+        )
+
+        contrast_score = self._contrast_score(
+            gray
+        )
+
+        brightness_score = self._brightness_score(
+            gray
+        )
+
+        resolution_score = self._resolution_score(
+            width,
+            height
+        )
+
+        final_score = (
+            blur_score * 0.40 +
+            contrast_score * 0.20 +
+            brightness_score * 0.10 +
+            resolution_score * 0.30
+        )
+
+        if final_score >= 75:
+            quality = "GOOD"
+
+        elif final_score >= 50:
+            quality = "OK"
+
+        else:
+            quality = "POOR"
+
+        return QualityResult(
+            score=round(final_score, 2),
+            quality=quality,
+
+            blur_score=round(
+                blur_score,
+                2
+            ),
+
+            contrast_score=round(
+                contrast_score,
+                2
+            ),
+
+            brightness_score=round(
+                brightness_score,
+                2
+            ),
+
+            resolution_score=round(
+                resolution_score,
+                2
+            ),
+
+            width=width,
+            height=height
+        )
+        
 class DocumentAgent:
 
     def __init__(self):
@@ -76,6 +308,41 @@ class DocumentAgent:
 
         data = json.loads(response)
         return data
+    
+    def validate_document(
+        self,
+    document: ExtractedDocument
+) -> ValidationResult:
+
+        required_fields = REQUIRED_FIELDS.get(
+            document.document_type,
+            []
+        )
+
+        missing_fields = []
+
+        for field_name in required_fields:
+
+            value = getattr(
+                document,
+                field_name,
+                None
+            )
+
+            if value is None:
+                missing_fields.append(field_name)
+                continue
+
+            if isinstance(value, str) and not value.strip():
+                missing_fields.append(field_name)
+
+            elif isinstance(value, list) and len(value) == 0:
+                missing_fields.append(field_name)
+
+        return ValidationResult(
+            is_valid=len(missing_fields) == 0,
+            missing_fields=missing_fields
+        )
 
     def _document_to_text(self, path: str):
 
@@ -116,7 +383,7 @@ Document:
         res_llm = self.llm_client.call_llm(message)
         
         response = self.parse_llm_response(res_llm)
-        print(response)
+        # print(response)
 
         return DocumentClassification.model_validate(
             response
@@ -220,7 +487,7 @@ DOCUMENT CONTENT:
         )
         response = self.parse_llm_response(res)
 
-        print(response)
+        # print(response)
         return ExtractedDocument.model_validate(
             response
         )
@@ -229,24 +496,47 @@ DOCUMENT CONTENT:
         self,
         path: str
     ):
-        print("Start Markdown")
-        markdown = self._document_to_text(
-            path
-        )
+            suffix = Path(path).suffix.lower()
+
+            if suffix != ".pdf":
+                print("Start Quality")
+                agent = QualityAgent()
+
+                quality_result = agent.check(path)
+                
+                print(f"Quality Check Result: {quality_result}")
+
+                if quality_result.quality == "POOR" or quality_result.score < 70 or quality_result.blur_score>50:
+                    raise ValueError(
+                        "Document quality is Poor. Please upload a Clear Document."
+                    )
+            # print("Start Markdown")
+            markdown = self._document_to_text(
+                path
+            )
+            
+            # print(markdown)
+
+            classification = self._classify(
+                markdown
+            )
+
+            extracted = self._extract(
+                markdown,
+                classification.document_type
+            )
+            
+            result = self.validate_document(extracted)
+
+            # print(result.is_valid)
+            # print(result.missing_fields)
+            if not result.is_valid:
+                raise ValueError(f"Required Fields Missing: {result.missing_fields}")
+            
+            return {
+                    "Quality": quality_result.model_dump(mode="json"),
+                    "classification": classification.model_dump(mode="json"),
+                    "document": extracted.model_dump(mode="json"),                    
+                    "markdown": markdown
+            }
         
-        print(markdown)
-
-        classification = self._classify(
-            markdown
-        )
-
-        extracted = self._extract(
-            markdown,
-            classification.document_type
-        )
-
-        return {
-                "classification": classification.model_dump(),
-                "document": extracted.model_dump(),
-                "markdown": markdown
-        }

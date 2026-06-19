@@ -1,0 +1,29 @@
+{
+  "classification": {
+    "document_type": "PRESCRIPTION",
+    "confidence": 0.99,
+    "reasoning": "The document contains a patient's name, date, age, gender, patient ID, consulting doctor, department, chief complaints, clinical findings, diagnosis, prescription, investigations advised, and advice, which are all typical components of a medical prescription."
+  },
+  "document": {
+    "document_type": "PHARMACY_BILL",
+    "patient_name": "Rajesh Kumar",
+    "doctor_name": "Dr. Akshara Raje",
+    "doctor_registration": "DR86486",
+    "diagnosis": "mri",
+    "hospital_name": "Jeevan Hospital",
+    "date": "2026-06-16",
+    "total_amount": null,
+    "medicines": [
+      "Paracetamol 650 mg",
+      "ORS Sachet",
+      "Vitamin C 500 mg",
+      "Pantoprazole 40 mg"
+    ],
+    "line_items": [],
+    "tests_ordered": [
+      "mri test"
+    ],
+    "confidence": 0.98
+  },
+  "markdown": "## Jeevan Hospital\n\nDP Road, Pune - 411056 Reg. No. DR86486 Ph: 08208064299\n\n## MEDICAL PRESCRIPTION\n\nPatient Name:\n\nDUMMY PATIENT\n\nDate:\n\n18-Jan-2023\n\nAge:\n\n22 Years\n\nGender:\n\nMale\n\nPatient ID:\n\n1\n\nConsulting Doctor:\n\nDr. Akshara\n\nRaje\n\nAddress:\n\nPune, Maharashtra\n\nDepartment:\n\nGeneral Medicine\n\n## Chief Complaints\n\n- Fever for 3 days\n- General weakness\n- Body ache\n\n## Clinical Findings\n\n- Mild dehydration\n- Elevated temperature\n- Stable blood pressure\n\n## Diagnosis\n\nAcute Viral Fever with Mild Dehydration\n\n## Prescription\n\n|   S.No | Medicine           | Dosage   | Instructions                                  |\n|--------|--------------------|----------|-----------------------------------------------|\n|      1 | Paracetamol 650 mg | 1 Tablet | Three times daily af- ter food for 5 days     |\n|      2 | ORS Sachet         | 1 Sachet | Mix with water and consume throughout the day |\n|      3 | Vitamin C 500 mg   | 1 Tablet | Once daily after breakfast for 7 days         |\n|      4 | Pantoprazole 40 mg | 1 Tablet | Before breakfast for 5 days                   |\n\n## Investigations Advised\n\n- Complete Blood Count (CBC)\n- Blood Sugar Level\n\n## Advice\n\n- Take adequate rest.\n- Drink plenty of fluids.\n- Follow prescribed medication schedule.\n- Review after 5 days or earlier if symptoms worsen.\n\nDr. Akshara Raje General Physician Reg. No. DR86486\n\nDoctor's Signature"
+}

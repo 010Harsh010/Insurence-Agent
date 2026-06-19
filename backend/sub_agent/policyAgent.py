@@ -1,7 +1,6 @@
 from __future__ import annotations
 from pathlib import Path
 import json
-import json
 import os
 from datetime import date
 from enum import Enum
@@ -9,6 +8,7 @@ from typing import Any, Optional
 
 import psycopg2
 import psycopg2.extras
+from psycopg2.extras import Json
 from pydantic import BaseModel, Field
 
 import sub_agent.llm
@@ -16,6 +16,8 @@ import sub_agent.llm
 from collections import Counter
 from difflib import SequenceMatcher
 from document_agent.document_identifier import DocumentType
+
+
 
 class StepStatus(str, Enum):
     PASSED = "PASSED"
@@ -133,12 +135,26 @@ class FinancialValidationOutput(BaseModel):
     per_claim_limit_applied: bool = False
 
     annual_limit_applied: bool = False
+    
+    co_pay: float = 0.0
+    
+    hospital_network: float = 0.0
 
     family_floater_limit_applied: bool = False
 
     rejection_reasons: list[str] = Field(
         default_factory=list
     )
+    
+    family_limit: float = 0.0
+
+    annual_limit: float = 0.0
+
+    per_claim_limit: float = 0.0
+    
+    reduct_items: list = []
+
+    sub_limit: float = 0.0
       
 class FraudValidationOutput(BaseModel):
 
@@ -172,7 +188,9 @@ class DecisionOutput(BaseModel):
 
     needs_manual_review: bool = False
 
-    explanation: str = ""        
+    explanation: str = ""  
+    
+    financial_breakdown: list     
         
 class BaseAgent:
     def __init__(self):
@@ -790,9 +808,10 @@ class DocumentValidationAgent(BaseAgent):
         )
 
         if output.missing_document_types:
-
+            
             output.issues.append(
-                "Missing required documents: "
+                "Uploaded Documents: ".join(output.uploaded_document_types)+"\n"
+                " Missing required documents: "
                 + ", ".join(
                     output.missing_document_types
                 )
@@ -846,6 +865,11 @@ class CoverageAgent(BaseAgent):
 
     def __init__(self):
         super().__init__()
+
+    def get_opd_category(self,policy_id):
+        query = "select opd_categories from policies where policy_id = %s";
+        results = self.fetch_one(query,(policy_id,))
+        return results.get("opd_categories")
 
     def validate(
         self,
@@ -1018,6 +1042,92 @@ class CoverageAgent(BaseAgent):
                 "Treatment Date Check"
             )
         )
+        
+        # PRE AUTH CHECK
+        print("Dignose")
+        print(claimed_amount)
+        if claim_category.upper() == "DIAGNOSTIC":
+            print("Start")
+            category_rules = self.get_opd_category(
+                policy.policy_id
+            ).get(
+                "diagnostic",
+                {}
+            )
+            
+            print("Rules", category_rules)
+
+            threshold = category_rules.get(
+                "pre_auth_threshold",
+                0
+            )
+
+            high_value_tests = (
+                category_rules.get(
+                    "high_value_tests_requiring_pre_auth",
+                    []
+                )
+            )
+
+            tests = []
+
+            for doc in documents:
+
+                extracted = doc["document"]
+
+                tests.extend(
+                    extracted.get(
+                        "tests_ordered",
+                        []
+                    ) or []
+                )
+
+                for item in (
+                    extracted.get(
+                        "line_items",
+                        []
+                    ) or []
+                ):
+
+                    desc = (
+                        item.get(
+                            "description"
+                        ) or ""
+                    )
+
+                    tests.append(
+                        desc
+                    )
+
+            print("Tests: ", tests)
+            requires_pre_auth = any(
+                required.lower() in test.lower()
+                for required in high_value_tests
+                for test in tests
+            )
+            
+            print("Require Pre-Auth", requires_pre_auth)
+
+            has_pre_auth = any(
+                doc["classification"]
+                .get(
+                    "document_type"
+                ) == "PRE_AUTH"
+                for doc in documents
+            )
+
+            print("Has Pre-Auth", has_pre_auth)
+
+            if (
+                requires_pre_auth
+                and claimed_amount > threshold
+                and not has_pre_auth
+            ):
+                print("Rejected  now")
+
+                output.rejection_reasons.append(
+                    f"Pre-authorization was required for {', '.join(tests)} because the claim amount ₹{claimed_amount} exceeds ₹{threshold}."           
+                )
 
         if (
             diagnosis
@@ -1040,6 +1150,8 @@ class CoverageAgent(BaseAgent):
                     {}
                 )
             )
+            
+            print("Conditions ", conditions)
 
             for (
                 condition,
@@ -1050,7 +1162,6 @@ class CoverageAgent(BaseAgent):
                     condition.lower()
                     in diagnosis_lower
                 ):
-
                     if (
                         days_since_join
                         < waiting_days
@@ -1072,11 +1183,38 @@ class CoverageAgent(BaseAgent):
             )
         )
         
+        search_text = ""
+        
+        # print("Start Searching")
+        
         if diagnosis:
-
             diagnosis_lower = (
                 diagnosis.lower()
             )
+            search_text += diagnosis.lower() or ""
+            
+            test_order = extracted.get(
+                "tests_ordered"
+            ) or []
+            
+            for test in test_order:
+                test_lower = test.lower()
+                search_text += test_lower + " "
+            
+            line_items = extracted.get(
+                "line_items",
+            ) or []
+            
+            for item in line_items:
+                search_text += (
+                    (item.get(
+                        "description",
+                        ""
+                    )
+                    + " ").lower()
+                )
+                
+            # print("Search Text", search_text)
 
             exclusions = (
                 policy.exclusions.get(
@@ -1084,21 +1222,29 @@ class CoverageAgent(BaseAgent):
                     []
                 )
             )
-
+            # print("Get Conditions", exclusions)
+            
             for exclusion in exclusions:
 
-                if (
-                    exclusion.lower()
-                    in diagnosis_lower
-                ):
+                exclusion_words = [
+                    word.strip()
+                    for word in exclusion.lower().split()
+                    if len(word) > 4
+                ]
 
-                    output.exclusion_found = True
+                matched = any(
+                    word in search_text
+                    for word in exclusion_words
+                )
+                for word in exclusion_words:
+                    if word in search_text:
+                        output.exclusion_found = True
+                        output.rejection_reasons.append(
+                            "EXCLUDED_CONDITION: {word}"
+                        )
 
-                    output.rejection_reasons.append(
-                        f"Excluded condition: "
-                        f"{exclusion}"
-                    )
-        
+                        break
+        # print("Done")
         checks.append(
             self.check_pass(
                 "Exclusion Check"
@@ -1163,6 +1309,7 @@ class CoverageAgent(BaseAgent):
                 "Submission Window Check"
             )
         )
+        
 
         passed = (
             len(
@@ -1345,11 +1492,23 @@ class FinancialAgent(BaseAgent):
             )
         )
 
+    def get_network_hospitals(self):
+        query = "SELECT hospital_name FROM HOSPITALS WHERE is_network_hospital = true;";
+        results = self.fetch_one(query,())
+        return results.get("hospital_name")
+    
+    def get_opd_category(self,policy_id):
+        query = "select opd_categories from policies where policy_id = %s";
+        results = self.fetch_one(query,(policy_id,))
+        return results.get("opd_categories")
+
     def validate(
         self,
         member: MemberData,
         policy: PolicyData,
-        documents: list[dict]
+        documents: list[dict],
+        document_data: DocumentValidationOutput,
+        claim_category: str
     ) -> tuple[
         StepResult,
         FinancialValidationOutput
@@ -1359,12 +1518,13 @@ class FinancialAgent(BaseAgent):
 
         output = FinancialValidationOutput()
 
+        # 1. Get claim Amount
         claimed_amount = (
             self._extract_claimed_amount(
                 documents
             )
         )
-
+        
         output.claimed_amount = (
             claimed_amount
         )
@@ -1388,9 +1548,147 @@ class FinancialAgent(BaseAgent):
                 "Claimed Amount Check"
             )
         )
-
         approved_amount = claimed_amount
+        
+        # Get Category Rules
+        category_rules = self.get_opd_category(policy.policy_id).get(claim_category.lower(),{})
+        
+        print("Category Rules:", category_rules)
+        
+        # Network Discount
+        
+        NETWORK_HOSPITALS = self.get_network_hospitals()
+        
+        if document_data.hospital_name in NETWORK_HOSPITALS:
 
+            discount = category_rules.get(
+                "network_discount_percent",
+                0
+            )
+
+            discount_amount = (
+                approved_amount *
+                discount / 100
+            )
+
+            approved_amount -= discount_amount
+
+            approved_amount -= (
+                approved_amount *
+                discount / 100
+            )
+            
+        # CO-PAY
+        copay = category_rules.get(
+            "copay_percent",
+            0
+        )
+
+        if copay > 0:
+            copay_amount = (
+                approved_amount *
+                copay / 100
+            )
+
+            approved_amount -= copay_amount
+
+            output.co_pay = copay_amount
+            
+        # Exclusion
+        # include_items = category_rules.get("covered_procedures",[])
+        exclude_items = category_rules.get("excluded_procedures",[])
+        # print("Excluded Items",exclude_items)
+        # approved_items = []
+        rejected_items = []
+
+        reduct_amount = 0
+
+        for doc in documents:
+
+            extracted = doc["document"]
+
+            line_items = extracted.get(
+                "line_items",
+                []
+            )
+
+            for item in line_items:
+
+                description = (
+                    (item.get("description") or "")
+                    .strip()
+                    .lower()
+                )
+
+                amount = float(
+                    item.get(
+                        "amount"
+                    ) or 0
+                )
+
+                excluded = any(
+                    procedure.lower() in description
+                    for procedure in exclude_items
+                )
+                
+                print("Excluded", excluded)
+
+                if excluded:
+
+                    rejected_items.append(
+                        {
+                            "description":
+                                item.get(
+                                    "description",""
+                                ),
+                            "amount":
+                                amount
+                        }
+                    )
+                    
+                    print("Item Reject",rejected_items)
+                    
+                    reduct_amount+=amount
+                    continue
+
+                # covered = any(
+                #     procedure.lower() in description
+                #     for procedure in include_items
+                # )
+
+                # if covered:
+
+                #     approved_items.append(
+                #         {
+                #             "description":
+                #                 item.get(
+                #                     "description"
+                #                 ),
+                #             "amount":
+                #                 amount
+                #         }
+                #     )
+
+                #     approved_amount += amount
+                
+        approved_amount -= reduct_amount
+        output.reduct_items = rejected_items
+               
+        # Sub-Limit
+        
+        sub_limit = category_rules.get(
+            "sub_limit"
+        )
+
+        if sub_limit:
+            if approved_amount > sub_limit:
+                output.sub_limit = approved_amount - sub_limit
+            approved_amount = min(
+                approved_amount,
+                sub_limit
+            )
+            
+        # Per - Claim Limits
         per_claim_limit = (
             policy.coverage.get(
                 "per_claim_limit",
@@ -1399,7 +1697,7 @@ class FinancialAgent(BaseAgent):
         )
 
         if approved_amount > per_claim_limit:
-
+            output.per_claim_limit = approved_amount - per_claim_limit
             approved_amount = (
                 per_claim_limit
             )
@@ -1413,6 +1711,8 @@ class FinancialAgent(BaseAgent):
                 "Per Claim Limit Check"
             )
         )
+        
+        # Annual Limit
 
         annual_limit = (
             policy.coverage.get(
@@ -1437,7 +1737,7 @@ class FinancialAgent(BaseAgent):
         )
 
         if approved_amount > annual_remaining:
-
+            output.annual_limit = approved_amount - annual_remaining
             approved_amount = (
                 annual_remaining
             )
@@ -1452,6 +1752,7 @@ class FinancialAgent(BaseAgent):
             )
         )
         
+        # Family Limit
         family_limit = (
             policy.coverage
             .get(
@@ -1480,7 +1781,7 @@ class FinancialAgent(BaseAgent):
         )
 
         if approved_amount > family_remaining:
-
+            output.family_limit = approved_amount - family_remaining
             approved_amount = (
                 family_remaining
             )
@@ -1985,6 +2286,9 @@ Coverage Validation Issues:
 Fraud Warnings:
 {fraud_output.warnings}
 
+Finance Values:
+{financial_output.model_dump(mode='json')}
+
 Rules:
 
 - Write for a customer.
@@ -2076,7 +2380,44 @@ Rules:
                 fraud_output,
                 coverage_output
             )
-        )
+        )  
+        reduce_items = []
+        if len(financial_output.reduct_items) >0:
+            for item in financial_output.reduct_items:
+                reduce_items.append({
+                "step": "Excluded Item\n"+item.get("description"),
+                "amount": item.get("amount")
+            })
+                
+        financial_breakdown = [
+  {
+    "step": "Network Hospital Discount",
+    "amount": financial_output.hospital_network
+  },
+  {
+    "step": "Copay Deduction",
+    "amount": financial_output.co_pay
+  },
+  {
+    "step": "Sub-limit Deduction",
+    "amount": financial_output.sub_limit
+  },
+  {
+    "step": "Per-Claim limit Deduction",
+    "amount": financial_output.per_claim_limit
+  },
+  {
+    "step": "Annual limit Deduction",
+    "amount": financial_output.annual_limit
+  },
+  {
+    "step": "Family limit Deduction",
+    "amount": financial_output.family_limit
+  },
+]       
+        financial_breakdown.extend(
+    reduce_items
+)
 
         output = DecisionOutput(
             decision=decision,
@@ -2088,7 +2429,8 @@ Rules:
                 fraud_output.fraud_score,
             needs_manual_review=
                 fraud_output.manual_review_required,
-            explanation=explanation
+            explanation=explanation,
+            financial_breakdown=financial_breakdown
         )
         
         checks.append(
@@ -2107,10 +2449,6 @@ Rules:
             ),
             output
         )
-
-import json
-import psycopg2
-from psycopg2.extras import Json
 
 class TraceRepository:
 
@@ -2269,6 +2607,12 @@ class ClaimProcessingPipeline:
             self._validate_member()
             self._validate_policy()
             self._load_documents()
+            self._validate_documents()
+            if not self.document_output.validation_passed:
+                raise ValueError(
+                    "; ".join(map(str, self.document_output.issues))
+                )
+                                
             repo = ClaimRepository()
             self.claim_id = repo.create_claim(
                 member=self.member,
@@ -2277,7 +2621,6 @@ class ClaimProcessingPipeline:
                 document_output=DocumentValidationOutput(),
                 financial_output=FinancialValidationOutput()
             )
-            self._validate_documents()
             self._save_step_trace(
                 self.document_result,
                 input_data={
@@ -2319,8 +2662,11 @@ class ClaimProcessingPipeline:
             )
             self._save_output()
         except Exception as e:
+            print("last",e)
             self.response["error"] = str(e)
             self._generate_message()
+            
+            
         return self.response
 
     # ---------------------------------------------------
@@ -2479,7 +2825,9 @@ class ClaimProcessingPipeline:
             agent.validate(
                 member=self.member,
                 policy=self.policy,
-                documents=self.documents
+                documents=self.documents,
+                document_data=self.document_output,
+                claim_category=self.claim_category
             )
         )
 
@@ -2606,7 +2954,7 @@ Claim Processing Error:
         response = self._llm.call_llm(
             messages)
         
-        print(response)
+        print(f"An Error Response:\n {response}")
         self.response["error_message"] = response
         return response
         

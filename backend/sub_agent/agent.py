@@ -8,7 +8,7 @@ class AgentOrchestrator:
         self.router_agent = routerAgent.RouterAgent()
         self.sql_agent = text_sqlAgent.PostgreSQLQueryAgent()
     
-    def run(self, query):
+    def run(self, query,member_id="",claim_category=""):
         if not query:
             raise ValueError("Query cannot be empty")
         
@@ -23,20 +23,19 @@ class AgentOrchestrator:
         if not guardrail_response.allowed:
             Response["Garudrail"] = guardrail_response.reply
             return Response
-        
-        
 
         router_response = self.router_agent.route(query)
         Response["Router"] = router_response.route
         
         if router_response.route == routerAgent.RouteType.CLAIM_PROCESSING:
-            claim_bot = policyAgent.ClaimProcessingPipeline(
-                member_id="EMP001",
-                claim_category="CONSULTATION",
-                output_dir="./output"
-            )
-            result = claim_bot.run()
-            Response["ClaimAgent"]  = result
+            if member_id and claim_category:
+                claim_bot = policyAgent.ClaimProcessingPipeline(
+                    member_id=member_id,
+                    claim_category=claim_category,
+                    output_dir="./output"
+                )
+                result = claim_bot.run()
+                Response["ClaimAgent"]  = result
         elif router_response.route == routerAgent.RouteType.QUESTION_ANSWERING:
             response = self.sql_agent.run(query)
             Response["Answer"] = response

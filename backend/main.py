@@ -61,7 +61,7 @@ def response_cleaner(response):
         return {
             "ui": {
                 "type": "answer",
-                "message": response.get("answer").get("data")
+                "message": response.get("Answer").get("data")
             }
         }
 
@@ -88,20 +88,17 @@ def upload():
         "documents",
         member_id
     )
-    
-    print(f"Upload folder {upload_folder}")
+
 
     os.makedirs(upload_folder, exist_ok=True)
     filepath = os.path.join(upload_folder, file.filename)
     file.save(filepath)
-    
-    print("File Uploaded")
+
 
     try:
         response = document_agents.process_document(
             filepath
         )
-        print("Process Document")
 
         json_path = os.path.join(
             upload_folder,
@@ -119,6 +116,7 @@ def upload():
             json.dump(response, f, indent=2, ensure_ascii=False)
             
     except Exception as e:
+        print(e)
         return {
             "filename": file.filename,
             "path": filepath,
@@ -130,7 +128,7 @@ def upload():
         "path": filepath,
         "markdown_path": md_path,
         "message": "File uploaded successfully"
-    }
+    },200
         
 @app.route("/chat",methods=["GET"])
 def chat():
@@ -146,15 +144,19 @@ def chat():
             }, 400
             
         # Orchestrate the agents
-        response = orchestrator.run(query)
+        response = orchestrator.run(query,member_id,claim_category)
+        
+        # print("Get response",response)
         
         clean_res = response_cleaner(response)
+        # print("CLeaned Response", clean_res)
         clean_res["data"] = response
         res = {
             "status": 200,
             "data": clean_res
         }
-        print(res)
+        
+        # print(res)
         return res
     except Exception as e:
         return {
@@ -172,7 +174,10 @@ def health():
 
 @app.route("/addPolicy",methods=["GET","POST"])
 def addPolicy():
-    PATH="C:/Users/hs250/vscode/BTP/Plum Assignment - 12-04-2026/policy_terms.json"
+    PATH = os.path.join(
+        os.path.dirname(__file__),
+        "policy_terms.json"
+    )
     res = data_loader.load_policy_file(PATH)
     if not res:
         res = {
@@ -212,7 +217,7 @@ def claimPolicy():
 
 if __name__ == "__main__":
     try:
-        # db.Database().initialize_schema()
+        db.Database().initialize_schema()
         app.run(debug=True, port=8000)
     except Exception as e:
         print(f"Error initializing database: {e}")
