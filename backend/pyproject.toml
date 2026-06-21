@@ -9,6 +9,6 @@ dependencies = [
     "flask-cors>=6.0.5",
     "langchain-docling>=2.0.0",
     "openai>=2.41.1",
-    "psycopg2>=2.9.12",
+    "psycopg2-binary>=2.9.12",
     "python-dotenv>=1.2.2",
 ]
