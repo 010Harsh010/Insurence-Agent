@@ -16,11 +16,115 @@ class PolicyLoader:
             password=os.getenv("DB_PASSWORD")
         )
 
-    def load_policy_file(self, file_path: str) -> bool:
-        with open(file_path, "r", encoding="utf-8") as f:
-            policy = json.load(f)
-
+    def load_policy_file(self, policy) -> bool:
         return self.ingest_data(policy)
+    
+    def updatePolicyClaim(self, claim_id, claim_status, approve_amount):
+        conn = None
+        print("start")
+
+        try:
+            conn = self.__db_connect()
+            cursor = conn.cursor()
+            query = None
+            if claim_status in ["APPROVED", "PARTIALLY_APPROVED"]:
+                query = """
+UPDATE claim_decisions
+SET
+    approved_amount = %s,
+    decision = CASE
+        WHEN %s < (
+            SELECT claimed_amount
+            FROM claims
+            WHERE claim_id = %s
+        )
+        THEN 'PARTIALLY_APPROVED'
+        ELSE 'APPROVED'
+    END
+WHERE claim_id = %s
+RETURNING decision
+                """
+                cursor.execute(
+                    query,
+                    (
+                        approve_amount,
+                        approve_amount,
+                        claim_id,
+                        claim_id
+                    )
+                )
+
+                decision = cursor.fetchone()[0]
+                
+                query = """
+                UPDATE claims
+                SET claim_status = %s
+                WHERE claim_id = %s
+                """
+
+                cursor.execute(
+                    query,
+                    (
+                        decision,
+                        claim_id
+                    )
+                )
+                
+            else:
+                query = """
+UPDATE claim_decisions
+SET decision = 'REJECTED'
+WHERE claim_id = %s
+                """
+                cursor.execute(
+                    query,
+                    (
+                        claim_id,
+                    )
+                )
+                
+                query = """
+                UPDATE claims
+                SET claim_status = 'REJECTED'
+                WHERE claim_id = %s
+                """
+
+                cursor.execute(
+                    query,
+                    (
+                        claim_id,
+                    )
+                )
+                
+            conn.commit()
+            
+            print("Claim made")
+            
+            if cursor.rowcount == 0:
+                return {
+                    "success": False,
+                    "status": "NOT_FOUND",
+                    "message": f"Claim {claim_id} not found"
+                }
+
+            return {
+                "success": True,
+                "status": "UPDATED",
+                "message": f"Claim {claim_id} updated to {claim_status}"
+            }
+
+        except Exception as e:
+            if conn:
+                conn.rollback()
+
+            return {
+                "status": "ERROR",
+                "message": str(e)
+            }
+
+        finally:
+            if conn:
+                conn.close()
 
     def ingest_data(self, data: dict) -> bool:
 

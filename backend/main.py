@@ -5,6 +5,7 @@ from sub_agent.decision_maker import adjudicate_claim
 import db.db as db
 import services.data_ingestion
 from document_agent.document_identifier import DocumentAgent
+from middleware.auth import admin_auth
 import sub_agent.policyAgent
 from flask import Flask, request
 import os
@@ -16,7 +17,6 @@ flask_cors.CORS(app)
 
 data_loader = services.data_ingestion.PolicyLoader()
 document_agents = DocumentAgent()
-
 
 def response_cleaner(response):
 
@@ -71,7 +71,6 @@ def response_cleaner(response):
             "message": "Unable to process response"
         }
     }
-    
     
 @app.route("/upload", methods=["POST"])
 def upload():
@@ -174,11 +173,9 @@ def health():
 
 @app.route("/addPolicy",methods=["GET","POST"])
 def addPolicy():
-    PATH = os.path.join(
-        os.path.dirname(__file__),
-        "policy_terms.json"
-    )
-    res = data_loader.load_policy_file(PATH)
+    data  = flask.request.get_json()
+    policy = data.get("policy")
+    res = data_loader.load_policy_file(policy)
     if not res:
         res = {
             "status": 404,
@@ -214,6 +211,27 @@ def claimPolicy():
             "status":404,
             "message": e
         }
+        
+from flask import request, jsonify
+
+@app.route("/updateClaim", methods=["POST"])
+@admin_auth
+def update_claim():
+    data = request.get_json() or {}
+
+    claim_status = data.get("claim_status")
+    claim_id = data.get("claim_id")
+    approve_amount = data.get("approve_amount") or 0
+    print("Update Status", claim_status, "\n claim id", claim_id)
+    if not (claim_status and claim_id):
+        return jsonify({
+        "success": False,
+        "message": "Missing Details",
+    }), 404
+    response = data_loader.updatePolicyClaim(claim_id=claim_id,claim_status=claim_status,approve_amount= approve_amount)
+    print("Response",response)
+    status_code = 200 if response["status"] == "UPDATED" else 400
+    return jsonify(response), status_code
 
 if __name__ == "__main__":
     try:
