@@ -16,6 +16,8 @@ import {
   Sparkles,
   FilePlus2,
   XCircle,
+  Lock,
+  RefreshCw,
 } from "lucide-react";
 
 const BASE_URL = ""; // Vite proxy forwards /chat and /upload to Flask:8000
@@ -244,6 +246,77 @@ const FileBadge = ({ file, onRemove, status }) => {
   );
 };
 
+// ─── Update Result Card ────────────────────────────────────────────────────
+// updateResult shape:
+//   success: bool
+//   claimId: string
+//   claimStatus?: string   (on success)
+//   approveAmt?: number    (on success, optional)
+//   message?: string       (backend message)
+//   errorMsg?: string      (on failure)
+const UpdateResultCard = ({ result }) => {
+  if (!result) return null;
+  const { success, claimId, claimStatus, approveAmt, message, errorMsg, authFailed } = result;
+
+  const fmt = (n) =>
+    `₹${Number(n).toLocaleString("en-IN", { minimumFractionDigits: 0 })}`;
+
+  if (success) {
+    return (
+      <div className="ur-card ur-card--success">
+        <div className="ur-card__header">
+          <div className="ur-card__icon ur-card__icon--success">
+            <CheckCircle size={15} />
+          </div>
+          <span className="ur-card__title">Claim Updated</span>
+          <span className="ur-badge ur-badge--success">SUCCESS</span>
+        </div>
+
+        <div className="ur-rows">
+          <div className="ur-row">
+            <span className="ur-row__label">Claim ID</span>
+            <span className="ur-row__value ur-row__value--mono">{claimId}</span>
+          </div>
+          <div className="ur-row">
+            <span className="ur-row__label">New Status</span>
+            <span className={`ur-status ur-status--${claimStatus?.toLowerCase().replace(/_/g, "-")}`}>
+              {claimStatus?.replace(/_/g, " ")}
+            </span>
+          </div>
+          {approveAmt > 0 && (
+            <div className="ur-row">
+              <span className="ur-row__label">Approved Amount</span>
+              <span className="ur-row__value ur-row__value--amount">{fmt(approveAmt)}</span>
+            </div>
+          )}
+        </div>
+
+        {message && (
+          <div className="ur-footnote">{message}</div>
+        )}
+      </div>
+    );
+  }
+
+  // Failure variants
+  const variant = authFailed ? "auth" : "error";
+  const icon    = authFailed ? <Lock size={15} /> : <AlertCircle size={15} />;
+  const title   = authFailed ? "Authentication Failed" : "Update Failed";
+
+  return (
+    <div className={`ur-card ur-card--${variant}`}>
+      <div className="ur-card__header">
+        <div className={`ur-card__icon ur-card__icon--${variant}`}>{icon}</div>
+        <span className="ur-card__title">{title}</span>
+        <span className={`ur-badge ur-badge--${variant}`}>
+          {authFailed ? "UNAUTHORIZED" : "FAILED"}
+        </span>
+      </div>
+      <p className="ur-error-msg">{errorMsg}</p>
+    </div>
+  );
+};
+
 // ─── Message Bubble ──────────────────────────────────────────────────────────
 const MessageBubble = ({ msg }) => {
   const isUser = msg.role === "user";
@@ -276,6 +349,9 @@ const MessageBubble = ({ msg }) => {
             {msg.tableData && <AnswerTable data={msg.tableData} />}
           </>
         )}
+
+        {/* Update Result Card */}
+        {msg.updateResult && <UpdateResultCard result={msg.updateResult} />}
 
         {/* Claim Decision Card */}
         {msg.claim && (
@@ -310,94 +386,215 @@ const MessageBubble = ({ msg }) => {
   );
 };
 
+// ─── Admin Auth Panel (Update Claim) ────────────────────────────────────────
+const AdminAuthPanel = ({ onSubmit, onCancel, isSubmitting }) => {
+  const [claimId, setClaimId]         = useState("");
+  const [claimStatus, setClaimStatus] = useState("APPROVED");
+  const [approveAmt, setApproveAmt]   = useState("");
+  const [password, setPassword]       = useState("");
+
+  const canSubmit = claimId.trim() && claimStatus && password.trim() && !isSubmitting;
+
+  return (
+    <div className="admin-auth-panel">
+      {/* Header */}
+      <div className="admin-auth-panel__header">
+        <div className="admin-auth-panel__icon">
+          <Lock size={15} />
+        </div>
+        <div>
+          <p className="admin-auth-panel__title">Update Claim</p>
+          <p className="admin-auth-panel__sub">Admin authentication required</p>
+        </div>
+        <button className="admin-auth-panel__close" onClick={onCancel} title="Cancel">
+          <X size={14} />
+        </button>
+      </div>
+
+      {/* Fields */}
+      <div className="admin-auth-panel__body">
+        <label className="admin-field-label">Claim ID</label>
+        <input
+          className="admin-field-input"
+          placeholder="e.g. CLM-00123"
+          value={claimId}
+          onChange={(e) => setClaimId(e.target.value)}
+          spellCheck={false}
+        />
+
+        <label className="admin-field-label">New Status</label>
+        <select
+          className="admin-field-input admin-field-select"
+          value={claimStatus}
+          onChange={(e) => setClaimStatus(e.target.value)}
+        >
+          <option value="APPROVED">APPROVED</option>
+          <option value="REJECTED">REJECTED</option>
+          <option value="PARTIALLY_APPROVED">PARTIALLY APPROVED</option>
+          <option value="MANUAL_REVIEW">MANUAL REVIEW</option>
+          <option value="PENDING">PENDING</option>
+        </select>
+
+        <label className="admin-field-label">Approved Amount <span className="admin-field-optional">(optional)</span></label>
+        <input
+          className="admin-field-input"
+          type="number"
+          placeholder="₹ 0"
+          value={approveAmt}
+          onChange={(e) => setApproveAmt(e.target.value)}
+        />
+
+        <label className="admin-field-label">Admin Password</label>
+        <input
+          className="admin-field-input admin-field-password"
+          type="password"
+          placeholder="Enter admin password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && canSubmit)
+              onSubmit({ claimId, claimStatus, approveAmt, password });
+          }}
+        />
+      </div>
+
+      {/* Actions */}
+      <div className="admin-auth-panel__footer">
+        <button
+          className="admin-btn admin-btn--cancel"
+          onClick={onCancel}
+          disabled={isSubmitting}
+        >
+          Cancel
+        </button>
+        <button
+          className={`admin-btn admin-btn--submit${canSubmit ? " admin-btn--active" : ""}`}
+          onClick={() => canSubmit && onSubmit({ claimId, claimStatus, approveAmt, password })}
+          disabled={!canSubmit}
+        >
+          {isSubmitting ? (
+            <><RefreshCw size={13} className="admin-btn__spinner" /> Processing…</>
+          ) : (
+            <><Lock size={13} /> Authenticate & Update</>
+          )}
+        </button>
+      </div>
+    </div>
+  );
+};
+
 // ─── Right Panel ─────────────────────────────────────────────────────────────
-const ClaimPanel = ({ lastClaim, uploadedCount, isUploading, memberId, claimCategory, onMemberIdChange, onClaimCategoryChange }) => (
+const ClaimPanel = ({
+  lastClaim, uploadedCount, isUploading, memberId, claimCategory,
+  onMemberIdChange, onClaimCategoryChange,
+  showAdminAuth, onAdminSubmit, onAdminCancel, isAdminSubmitting,
+}) => (
   <aside className="right-panel">
-    {/* Member ID – editable */}
-    <div className="panel-section">
-      <p className="panel-label">Member ID</p>
-      <input
-        id="member-id-input"
-        className="panel-editable-input emp-input"
-        value={memberId}
-        onChange={(e) => onMemberIdChange(e.target.value)}
-        placeholder="e.g. EMP001"
-        spellCheck={false}
+    {/* ── Admin Auth Overlay ── */}
+    {showAdminAuth ? (
+      <AdminAuthPanel
+        onSubmit={onAdminSubmit}
+        onCancel={onAdminCancel}
+        isSubmitting={isAdminSubmitting}
       />
-    </div>
-
-    <div className="divider" />
-
-    {/* Claim Category – editable */}
-    <div className="panel-section">
-      <p className="panel-label">Claim Category</p>
-      <input
-        id="claim-category-input"
-        className="panel-editable-input category-input"
-        value={claimCategory}
-        onChange={(e) => onClaimCategoryChange(e.target.value.toUpperCase())}
-        placeholder="e.g. PHARMACY"
-        spellCheck={false}
-      />
-    </div>
-
-    <div className="divider" />
-
-    {/* Upload status */}
-    <div className="panel-section">
-      <div className="panel-section__header">
-        <FilePlus2 size={16} className="text-blue-400" />
-        <span className="panel-section__title">Documents</span>
-      </div>
-      {isUploading ? (
-        <div className="status-row status-row--uploading">
-          <Loader2 size={14} className="animate-spin" />
-          <span>Uploading…</span>
+    ) : (
+      <>
+        {/* Member ID – editable */}
+        <div className="panel-section">
+          <p className="panel-label">Member ID</p>
+          <input
+            id="member-id-input"
+            className="panel-editable-input emp-input"
+            value={memberId}
+            onChange={(e) => onMemberIdChange(e.target.value)}
+            placeholder="e.g. EMP001"
+            spellCheck={false}
+          />
         </div>
-      ) : uploadedCount > 0 ? (
-        <div className="status-row status-row--done">
-          <CheckCircle size={14} />
-          <span>{uploadedCount} document{uploadedCount > 1 ? "s" : ""} processed</span>
+
+        <div className="divider" />
+
+        {/* Claim Category – editable */}
+        <div className="panel-section">
+          <p className="panel-label">Claim Category</p>
+          <input
+            id="claim-category-input"
+            className="panel-editable-input category-input"
+            value={claimCategory}
+            onChange={(e) => onClaimCategoryChange(e.target.value.toUpperCase())}
+            placeholder="e.g. PHARMACY"
+            spellCheck={false}
+          />
         </div>
-      ) : (
-        <p className="panel-hint">No documents uploaded yet.</p>
-      )}
-    </div>
 
-    <div className="divider" />
+        <div className="divider" />
 
-    {/* Claim Decision */}
-    <div className="panel-section">
-      <div className="panel-section__header">
-        <ShieldCheck size={16} className="text-green-400" />
-        <span className="panel-section__title">Latest Decision</span>
-      </div>
-
-      {lastClaim ? (
-        <div className="decision-card">
-          <div
-            className={`decision-badge decision-badge--${getDecisionVariant(lastClaim.decision)}`}
-          >
-            {formatDecisionLabel(lastClaim.decision)}
+        {/* Upload status */}
+        <div className="panel-section">
+          <div className="panel-section__header">
+            <FilePlus2 size={16} className="text-blue-400" />
+            <span className="panel-section__title">Documents</span>
           </div>
-
-          <FinancialBreakdown claim={lastClaim} compact />
-
-          {lastClaim.reasoning && (
-            <div className="decision-reasoning">
-              <p className="decision-label">Reasoning</p>
-              <p className="decision-reasoning__text">{lastClaim.reasoning}</p>
+          {isUploading ? (
+            <div className="status-row status-row--uploading">
+              <Loader2 size={14} className="animate-spin" />
+              <span>Uploading…</span>
             </div>
+          ) : uploadedCount > 0 ? (
+            <div className="status-row status-row--done">
+              <CheckCircle size={14} />
+              <span>{uploadedCount} document{uploadedCount > 1 ? "s" : ""} processed</span>
+            </div>
+          ) : (
+            <p className="panel-hint">No documents uploaded yet.</p>
           )}
         </div>
-      ) : (
-        <p className="panel-hint">
-          Send a message to start a claim analysis.
-        </p>
-      )}
-    </div>
+
+        <div className="divider" />
+
+        {/* Claim Decision */}
+        <div className="panel-section">
+          <div className="panel-section__header">
+            <ShieldCheck size={16} className="text-green-400" />
+            <span className="panel-section__title">Latest Decision</span>
+          </div>
+
+          {lastClaim ? (
+            <div className="decision-card">
+              <div
+                className={`decision-badge decision-badge--${getDecisionVariant(lastClaim.decision)}`}
+              >
+                {formatDecisionLabel(lastClaim.decision)}
+              </div>
+
+              <FinancialBreakdown claim={lastClaim} compact />
+
+              {lastClaim.reasoning && (
+                <div className="decision-reasoning">
+                  <p className="decision-label">Reasoning</p>
+                  <p className="decision-reasoning__text">{lastClaim.reasoning}</p>
+                </div>
+              )}
+            </div>
+          ) : (
+            <p className="panel-hint">
+              Send a message to start a claim analysis.
+            </p>
+          )}
+        </div>
+      </>
+    )}
   </aside>
 );
+
+// ─── Detect Update-Claim intent ──────────────────────────────────────────────
+const isUpdateClaimQuery = (text) => {
+  const lower = text.toLowerCase();
+  return (
+    (lower.includes("update") || lower.includes("change") || lower.includes("modify") || lower.includes("edit")) &&
+    (lower.includes("claim"))
+  );
+};
 
 // ─── Main App ────────────────────────────────────────────────────────────────
 const App = () => {
@@ -417,6 +614,12 @@ const App = () => {
   const [dragOver, setDragOver] = useState(false);
   const [memberId, setMemberId] = useState("EMP001");
   const [claimCategory, setClaimCategory] = useState("PHARMACY");
+
+  // ── Update-Claim admin auth state ─────────────────────────────────────────
+  const [showAdminAuth, setShowAdminAuth]       = useState(false);
+  const [isAdminSubmitting, setIsAdminSubmitting] = useState(false);
+  // Pending AI typing-indicator message index (so we can resolve it after auth)
+  const pendingAdminMsgIdxRef = useRef(null);
 
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
@@ -483,6 +686,80 @@ const App = () => {
     return results;
   };
 
+  // ── Admin submit: call /updateClaim ──────────────────────────────────────
+  const handleAdminSubmit = async ({ claimId, claimStatus, approveAmt, password }) => {
+    setIsAdminSubmitting(true);
+
+    // Capture the pending message ID NOW (outside any state updater)
+    const pendingId = pendingAdminMsgIdxRef.current;
+    pendingAdminMsgIdxRef.current = null;
+
+    const resolveMsg = (updateResult) => {
+      if (pendingId !== null) {
+        setMessages((prev) =>
+          prev.map((m) =>
+            m.adminMsgId === pendingId
+              ? { ...m, text: "", updateResult, loading: false, time: now() }
+              : m
+          )
+        );
+      } else {
+        addMessage({ role: "assistant", text: "", updateResult, loading: false, time: now() });
+      }
+    };
+
+    try {
+      const res = await fetch(`${BASE_URL}/updateClaim`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Admin-Password": password,
+        },
+        body: JSON.stringify({
+          claim_id: claimId,
+          claim_status: claimStatus,
+          approve_amount: approveAmt ? Number(approveAmt) : 0,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok && data.success !== false) {
+        resolveMsg({
+          success: true,
+          claimId,
+          claimStatus,
+          approveAmt: approveAmt ? Number(approveAmt) : 0,
+          message: data.message || "",
+        });
+      } else if (res.status === 401) {
+        resolveMsg({ success: false, authFailed: true, errorMsg: "Incorrect admin password. Access denied." });
+      } else if (res.status === 400) {
+        resolveMsg({ success: false, errorMsg: data.message || "Missing required claim details." });
+      } else {
+        resolveMsg({ success: false, errorMsg: data.message || "Unknown error occurred." });
+      }
+    } catch (err) {
+      resolveMsg({ success: false, errorMsg: `Could not reach backend: ${err.message}` });
+    } finally {
+      setIsAdminSubmitting(false);
+      setShowAdminAuth(false);
+      setIsLoading(false);
+    }
+  };
+
+  const handleAdminCancel = () => {
+    setShowAdminAuth(false);
+    // Capture and clear the pending ID outside any state updater
+    const pendingId = pendingAdminMsgIdxRef.current;
+    pendingAdminMsgIdxRef.current = null;
+    if (pendingId !== null) {
+      // Remove the loading bubble by its unique ID
+      setMessages((prev) => prev.filter((m) => m.adminMsgId !== pendingId));
+    }
+    setIsLoading(false);
+  };
+
   // ── Send message & handle full flow ──────────────────────────────────────
   const handleSend = async () => {
     const text = inputText.trim();
@@ -501,6 +778,23 @@ const App = () => {
       fileStatuses: stagedFiles.map(() => "uploading"),
       time: now(),
     });
+
+    // ── Intercept update-claim queries ─────────────────────────────────────
+    if (text && isUpdateClaimQuery(text)) {
+      // Stamp a unique ID on the loading bubble so we can find it by ID later
+      const adminMsgId = Date.now();
+      pendingAdminMsgIdxRef.current = adminMsgId;   // store ID, NOT index
+      addMessage({
+        adminMsgId,
+        role: "assistant",
+        text: "",
+        loading: true,
+        time: now(),
+      });
+      setIsLoading(true);
+      setShowAdminAuth(true);
+      return; // wait for admin auth panel submission
+    }
 
     // Show AI "typing"
     const thinkingId = Date.now();
@@ -787,6 +1081,10 @@ const App = () => {
           claimCategory={claimCategory}
           onMemberIdChange={setMemberId}
           onClaimCategoryChange={setClaimCategory}
+          showAdminAuth={showAdminAuth}
+          onAdminSubmit={handleAdminSubmit}
+          onAdminCancel={handleAdminCancel}
+          isAdminSubmitting={isAdminSubmitting}
         />
       </div>
     </div>

@@ -23,6 +23,10 @@ export default defineConfig({
         target: backendTarget,
         changeOrigin: true,
       },
+      '/updateClaim': {
+        target: backendTarget,
+        changeOrigin: true,
+      },
     },
   },
 })

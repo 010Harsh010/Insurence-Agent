@@ -1603,12 +1603,6 @@ wheels = [
 name = "plum-assignment-12-04-2026"
 version = "0.1.0"
 source = { virtual = "." }
-dependencies = [
-    { name = "psycopg2-binary" },
-]
-
-[package.metadata]
-requires-dist = [{ name = "psycopg2-binary", specifier = ">=2.9.12" }]
 
 [[package]]
 name = "polyfactory"
