@@ -11,22 +11,13 @@ export default defineConfig({
     host: '0.0.0.0',
     port: 5173,
     proxy: {
-      '/chat': {
-        target: backendTarget,
-        changeOrigin: true,
-      },
-      '/upload': {
-        target: backendTarget,
-        changeOrigin: true,
-      },
-      '/health': {
-        target: backendTarget,
-        changeOrigin: true,
-      },
-      '/updateClaim': {
-        target: backendTarget,
-        changeOrigin: true,
-      },
+      '/chat':        { target: backendTarget, changeOrigin: true },
+      '/upload':      { target: backendTarget, changeOrigin: true },
+      '/health':      { target: backendTarget, changeOrigin: true },
+      '/updateClaim': { target: backendTarget, changeOrigin: true },
+      '/resetDB':     { target: backendTarget, changeOrigin: true },
+      '/addPolicy':   { target: backendTarget, changeOrigin: true },
+      '/member':      { target: backendTarget, changeOrigin: true },
     },
   },
 })

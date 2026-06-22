@@ -18,6 +18,9 @@ import {
   XCircle,
   Lock,
   RefreshCw,
+  Trash2,
+  DatabaseZap,
+  FileUp,
 } from "lucide-react";
 
 const BASE_URL = ""; // Vite proxy forwards /chat and /upload to Flask:8000
@@ -483,11 +486,237 @@ const AdminAuthPanel = ({ onSubmit, onCancel, isSubmitting }) => {
   );
 };
 
+// ─── Panel Action Bar ─────────────────────────────────────────────────────────
+// 3 admin utility buttons pinned to the bottom of the right panel.
+const PanelActionBar = ({ memberId, onDeleteDb, onDeleteDocs, onAddPolicy }) => {
+  const [active, setActive]     = useState(null); // "resetdb" | "deletedocs" | "addpolicy"
+  const [password, setPassword] = useState("");
+  const [policyFile, setPolicyFile] = useState(null);
+  const [busy, setBusy]         = useState(false);
+  const [result, setResult]     = useState(null); // { ok, msg }
+  const policyFileRef           = useRef(null);
+
+  const close = () => {
+    setActive(null);
+    setPassword("");
+    setPolicyFile(null);
+    setResult(null);
+    setBusy(false);
+  };
+
+  const showResult = (ok, msg) => {
+    setResult({ ok, msg });
+    setBusy(false);
+    setTimeout(close, 2800);
+  };
+
+  const handleResetDb = async () => {
+    if (!password.trim()) return;
+    setBusy(true);
+    try {
+      const res = await fetch(`${BASE_URL}/resetDB`, {
+        method: "POST",
+        headers: { "X-Admin-Password": password },
+      });
+      const data = await res.json();
+      showResult(res.ok && data.success !== false, data.message || (res.ok ? "Database reset." : "Reset failed."));
+      if (res.ok) onDeleteDb?.();
+    } catch (e) { showResult(false, e.message); }
+  };
+
+  const handleDeleteDocs = async () => {
+    if (!memberId) return;
+    setBusy(true);
+    try {
+      const res = await fetch(`${BASE_URL}/member/${encodeURIComponent(memberId)}/documents`, {
+        method: "DELETE",
+      });
+      const data = await res.json();
+      showResult(res.ok && data.success !== false, data.message || (res.ok ? "Documents deleted." : "Delete failed."));
+      if (res.ok) onDeleteDocs?.();
+    } catch (e) { showResult(false, e.message); }
+  };
+
+  const handleAddPolicy = async () => {
+    if (!policyFile || !password.trim()) return;
+    setBusy(true);
+    try {
+      const formData = new FormData();
+      formData.append("policy", policyFile);
+      const res = await fetch(`${BASE_URL}/addPolicy`, {
+        method: "POST",
+        headers: { "X-Admin-Password": password },
+        body: formData,
+      });
+      const data = await res.json();
+      showResult(res.ok && data.success !== false, data.message || (res.ok ? "Policy added." : "Upload failed."));
+      if (res.ok) onAddPolicy?.();
+    } catch (e) { showResult(false, e.message); }
+  };
+
+  return (
+    <div className="pab-wrap">
+      <div className="divider" style={{ marginBottom: "14px" }} />
+
+      {/* ── Collapsed: 3 icon buttons ── */}
+      {!active && (
+        <div className="pab-buttons">
+          <button
+            className="pab-btn pab-btn--danger"
+            onClick={() => setActive("resetdb")}
+            title="Reset Database"
+          >
+            <DatabaseZap size={14} />
+            <span>Reset DB</span>
+          </button>
+          <button
+            className="pab-btn pab-btn--warn"
+            onClick={() => setActive("deletedocs")}
+            title="Delete Member Documents"
+          >
+            <Trash2 size={14} />
+            <span>Del Docs</span>
+          </button>
+          <button
+            className="pab-btn pab-btn--accent"
+            onClick={() => setActive("addpolicy")}
+            title="Add Policy"
+          >
+            <FileUp size={14} />
+            <span>Add Policy</span>
+          </button>
+        </div>
+      )}
+
+      {/* ── Expanded: Reset DB ── */}
+      {active === "resetdb" && (
+        <div className="pab-modal pab-modal--danger">
+          <div className="pab-modal__header">
+            <DatabaseZap size={13} />
+            <span>Reset Database</span>
+            <button className="pab-modal__close" onClick={close}><X size={12} /></button>
+          </div>
+          {result ? (
+            <div className={`pab-result ${result.ok ? "pab-result--ok" : "pab-result--err"}`}>
+              {result.ok ? <CheckCircle size={13} /> : <AlertCircle size={13} />}
+              <span>{result.msg}</span>
+            </div>
+          ) : (
+            <>
+              <p className="pab-modal__warn">⚠️ This will erase ALL data. Enter admin password to confirm.</p>
+              <input
+                className="pab-field"
+                type="password"
+                placeholder="Admin password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleResetDb()}
+              />
+              <div className="pab-modal__actions">
+                <button className="pab-action pab-action--cancel" onClick={close} disabled={busy}>Cancel</button>
+                <button
+                  className={`pab-action pab-action--danger${password.trim() && !busy ? " pab-action--active" : ""}`}
+                  onClick={handleResetDb}
+                  disabled={!password.trim() || busy}
+                >
+                  {busy ? <><RefreshCw size={11} className="admin-btn__spinner" /> Resetting…</> : <><DatabaseZap size={11} /> Reset Now</>}
+                </button>
+              </div>
+            </>
+          )}
+        </div>
+      )}
+
+      {/* ── Expanded: Delete Docs ── */}
+      {active === "deletedocs" && (
+        <div className="pab-modal pab-modal--warn">
+          <div className="pab-modal__header">
+            <Trash2 size={13} />
+            <span>Delete Documents</span>
+            <button className="pab-modal__close" onClick={close}><X size={12} /></button>
+          </div>
+          {result ? (
+            <div className={`pab-result ${result.ok ? "pab-result--ok" : "pab-result--err"}`}>
+              {result.ok ? <CheckCircle size={13} /> : <AlertCircle size={13} />}
+              <span>{result.msg}</span>
+            </div>
+          ) : (
+            <>
+              <p className="pab-modal__warn">
+                Delete all documents for <strong style={{ color: "#a5b4fc" }}>{memberId || "—"}</strong>?
+                This cannot be undone.
+              </p>
+              <div className="pab-modal__actions">
+                <button className="pab-action pab-action--cancel" onClick={close} disabled={busy}>Cancel</button>
+                <button
+                  className={`pab-action pab-action--warn${memberId && !busy ? " pab-action--active" : ""}`}
+                  onClick={handleDeleteDocs}
+                  disabled={!memberId || busy}
+                >
+                  {busy ? <><RefreshCw size={11} className="admin-btn__spinner" /> Deleting…</> : <><Trash2 size={11} /> Delete</>}
+                </button>
+              </div>
+            </>
+          )}
+        </div>
+      )}
+
+      {/* ── Expanded: Add Policy ── */}
+      {active === "addpolicy" && (
+        <div className="pab-modal pab-modal--accent">
+          <div className="pab-modal__header">
+            <FileUp size={13} />
+            <span>Add Policy</span>
+            <button className="pab-modal__close" onClick={close}><X size={12} /></button>
+          </div>
+          {result ? (
+            <div className={`pab-result ${result.ok ? "pab-result--ok" : "pab-result--err"}`}>
+              {result.ok ? <CheckCircle size={13} /> : <AlertCircle size={13} />}
+              <span>{result.msg}</span>
+            </div>
+          ) : (
+            <>
+              <input ref={policyFileRef} type="file" accept=".json" className="hidden"
+                onChange={(e) => setPolicyFile(e.target.files[0] || null)} />
+              <button
+                className={`pab-file-pick${policyFile ? " pab-file-pick--selected" : ""}`}
+                onClick={() => policyFileRef.current?.click()}
+              >
+                <FileText size={13} />
+                <span>{policyFile ? policyFile.name : "Choose .json policy file"}</span>
+              </button>
+              <input
+                className="pab-field"
+                type="password"
+                placeholder="Admin password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleAddPolicy()}
+              />
+              <div className="pab-modal__actions">
+                <button className="pab-action pab-action--cancel" onClick={close} disabled={busy}>Cancel</button>
+                <button
+                  className={`pab-action pab-action--accent${policyFile && password.trim() && !busy ? " pab-action--active" : ""}`}
+                  onClick={handleAddPolicy}
+                  disabled={!policyFile || !password.trim() || busy}
+                >
+                  {busy ? <><RefreshCw size={11} className="admin-btn__spinner" /> Uploading…</> : <><FileUp size={11} /> Upload Policy</>}
+                </button>
+              </div>
+            </>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
+
 // ─── Right Panel ─────────────────────────────────────────────────────────────
 const ClaimPanel = ({
   lastClaim, uploadedCount, isUploading, memberId, claimCategory,
   onMemberIdChange, onClaimCategoryChange,
   showAdminAuth, onAdminSubmit, onAdminCancel, isAdminSubmitting,
+  onDeleteDb, onDeleteDocs, onAddPolicy,
 }) => (
   <aside className="right-panel">
     {/* ── Admin Auth Overlay ── */}
@@ -583,6 +812,16 @@ const ClaimPanel = ({
           )}
         </div>
       </>
+    )}
+
+    {/* ── Admin Action Bar ── */}
+    {!showAdminAuth && (
+      <PanelActionBar
+        memberId={memberId}
+        onDeleteDb={onDeleteDb}
+        onDeleteDocs={onDeleteDocs}
+        onAddPolicy={onAddPolicy}
+      />
     )}
   </aside>
 );
@@ -1085,6 +1324,9 @@ const App = () => {
           onAdminSubmit={handleAdminSubmit}
           onAdminCancel={handleAdminCancel}
           isAdminSubmitting={isAdminSubmitting}
+          onDeleteDb={() => { setLastClaim(null); }}
+          onDeleteDocs={() => { setUploadedCount(0); }}
+          onAddPolicy={() => {}}
         />
       </div>
     </div>

@@ -85,5 +85,19 @@ class Database:
             metadata_file="db/metadata.json"
         )
 
+    def reset_all_tables(self):
+        try:
+            cursor  = self.conn.cursor()
+            cursor.execute("""
+                DROP SCHEMA public CASCADE;
+                CREATE SCHEMA public;
+            """)
+            self.initialize_schema()
+            
+            self.conn.commit()
+        except Exception as e :
+            self.conn.rollback()
+            raise Exception(str(e))
+            
     def close(self):
         self.conn.close()

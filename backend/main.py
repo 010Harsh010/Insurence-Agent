@@ -1,22 +1,20 @@
 import flask
 import flask_cors
-from sub_agent.agent import orchestrator
-from sub_agent.decision_maker import adjudicate_claim
 import db.db as db
-import services.data_ingestion
-from document_agent.document_identifier import DocumentAgent
 from middleware.auth import admin_auth
 import sub_agent.policyAgent
-from flask import Flask, request
+from flask import Flask, request, jsonify
 import os
 import json
+import shutil
 
 app = flask.Flask(__name__)
 
 flask_cors.CORS(app)
 
-data_loader = services.data_ingestion.PolicyLoader()
-document_agents = DocumentAgent()
+data_loader = None
+document_agents = None
+orchestrator = None
 
 def response_cleaner(response):
 
@@ -71,7 +69,7 @@ def response_cleaner(response):
             "message": "Unable to process response"
         }
     }
-    
+
 @app.route("/upload", methods=["POST"])
 def upload():
     file = request.files.get("document")
@@ -83,21 +81,14 @@ def upload():
     if not file or file.filename == "":
         return {"error": "No file selected"}, 400
 
-    upload_folder = os.path.join(
-        "documents",
-        member_id
-    )
-
+    upload_folder = os.path.join("documents", member_id)
 
     os.makedirs(upload_folder, exist_ok=True)
     filepath = os.path.join(upload_folder, file.filename)
     file.save(filepath)
 
-
     try:
-        response = document_agents.process_document(
-            filepath
-        )
+        response = document_agents.process_document(filepath)
 
         json_path = os.path.join(
             upload_folder,
@@ -107,13 +98,13 @@ def upload():
             upload_folder,
             f"{os.path.splitext(file.filename)[0]}.md"
         )
-                
+
         with open(md_path, "w", encoding="utf-8") as f:
             f.write(response["markdown"])
 
         with open(json_path, "w", encoding="utf-8") as f:
             json.dump(response, f, indent=2, ensure_ascii=False)
-            
+
     except Exception as e:
         print(e)
         return {
@@ -127,35 +118,30 @@ def upload():
         "path": filepath,
         "markdown_path": md_path,
         "message": "File uploaded successfully"
-    },200
-        
-@app.route("/chat",methods=["GET"])
+    }, 200
+
+@app.route("/chat", methods=["GET"])
 def chat():
     try:
-        query = flask.request.args.get("query",type=str)
-        member_id = flask.request.args.get("member_id",type=str)
-        claim_category = flask.request.args.get("claim_category",type=str)
+        query = flask.request.args.get("query", type=str)
+        member_id = flask.request.args.get("member_id", type=str)
+        claim_category = flask.request.args.get("claim_category", type=str)
 
         if not query:
             return {
                 "status": 400,
                 "message": "Query is required"
             }, 400
-            
-        # Orchestrate the agents
-        response = orchestrator.run(query,member_id,claim_category)
-        
-        # print("Get response",response)
-        
+
+        response = orchestrator.run(query, member_id, claim_category)
+
         clean_res = response_cleaner(response)
-        # print("CLeaned Response", clean_res)
         clean_res["data"] = response
         res = {
             "status": 200,
             "data": clean_res
         }
-        
-        # print(res)
+
         return res
     except Exception as e:
         return {
@@ -165,40 +151,42 @@ def chat():
 
 @app.route("/health")
 def health():
-    res = {
-        "status": 200,
-        "message": "Backend is healthy"
-    }
-    return res 
+    return {"status": 200, "message": "Backend is healthy"}
 
-@app.route("/addPolicy",methods=["GET","POST"])
+# ── Add Policy ────────────────────────────────────────────────────────────────
+@app.route("/addPolicy", methods=["GET", "POST"])
+@admin_auth
 def addPolicy():
-    data  = flask.request.get_json()
-    policy = data.get("policy")
+    # Accept either a JSON file upload (multipart) or raw JSON body
+    if request.files.get("policy"):
+        f = request.files["policy"]
+        try:
+            policy = json.load(f)
+        except Exception as e:
+            return jsonify({"success": False, "message": f"Invalid JSON file: {e}"}), 400
+    else:
+        data = flask.request.get_json() or {}
+        policy = data.get("policy")
+
+    if not policy:
+        return jsonify({"success": False, "message": "Policy data is required"}), 400
+
     res = data_loader.load_policy_file(policy)
     if not res:
-        res = {
-            "status": 404,
-            "message": "Policy not Insert"
-        }
-        return res
-    
-    res = {
-        "status": 200,
-        "message": "Policy added successfully"
-    }
-    return res 
-    
-@app.route("/claimPolicy",methods=["GET","POST"])
+        return jsonify({"success": False, "message": "Policy could not be inserted"}), 404
+
+    return jsonify({"success": True, "message": "Policy added successfully"}), 200
+
+@app.route("/claimPolicy", methods=["GET", "POST"])
 def claimPolicy():
     try:
         agent = sub_agent.policyAgent.PolicyClaim()
-        emp = flask.request.args.get("employeeID",type=str)
-        category = flask.request.args.get("category",type=str)
+        emp = flask.request.args.get("employeeID", type=str)
+        category = flask.request.args.get("category", type=str)
         if not emp:
             return {
                 "status": 400,
-                    "message": "Emp ID is required"
+                "message": "Emp ID is required"
             }, 400
         output = agent.run(member=emp)
         return {
@@ -208,12 +196,11 @@ def claimPolicy():
     except Exception as e:
         print(e)
         return {
-            "status":404,
+            "status": 404,
             "message": e
         }
-        
-from flask import request, jsonify
 
+# ── Update Claim ──────────────────────────────────────────────────────────────
 @app.route("/updateClaim", methods=["POST"])
 @admin_auth
 def update_claim():
@@ -225,17 +212,71 @@ def update_claim():
     print("Update Status", claim_status, "\n claim id", claim_id)
     if not (claim_status and claim_id):
         return jsonify({
-        "success": False,
-        "message": "Missing Details",
-    }), 404
-    response = data_loader.updatePolicyClaim(claim_id=claim_id,claim_status=claim_status,approve_amount= approve_amount)
-    print("Response",response)
+            "success": False,
+            "message": "Missing Details",
+        }), 404
+    response = data_loader.updatePolicyClaim(
+        claim_id=claim_id,
+        claim_status=claim_status,
+        approve_amount=approve_amount
+    )
+    print("Response", response)
     status_code = 200 if response["status"] == "UPDATED" else 400
     return jsonify(response), status_code
 
+# ── Reset Database ────────────────────────────────────────────────────────────
+@app.route("/resetDB", methods=["POST"])
+@admin_auth
+def reset_db():
+    try:
+        database = db.Database()
+        message = database.reset_all_tables()
+        return jsonify({"success": True, "message": "Database reset successfully"}), 200
+    except Exception as e:
+        print(f"Reset DB error: {e}")
+        return jsonify({"success": False, "message": str(e)}), 500
+
+# ── Delete Member Documents ───────────────────────────────────────────────────
+@app.route("/member/<member_id>/documents", methods=["DELETE"])
+def delete_member_documents(member_id):
+    if not member_id:
+        return jsonify({"success": False, "message": "member_id is required"}), 400
+
+    member_folder = os.path.join("documents", member_id)
+
+    if not os.path.exists(member_folder):
+        return jsonify({
+            "success": False,
+            "message": f"No documents found for member {member_id}"
+        }), 404
+
+    try:
+        shutil.rmtree(member_folder)
+        return jsonify({
+            "success": True,
+            "message": f"All documents for member {member_id} deleted successfully"
+        }), 200
+    except Exception as e:
+        print(f"Delete documents error: {e}")
+        return jsonify({"success": False, "message": str(e)}), 500
+
 if __name__ == "__main__":
     try:
+        
+        # Step 1
         db.Database().initialize_schema()
+        
+        # Step 2
+        from document_agent.document_identifier import DocumentAgent
+        import services.data_ingestion
+        data_loader = services.data_ingestion.PolicyLoader()
+        document_agents = DocumentAgent()
+        
+        # Step 3
+        from sub_agent.agent import AgentOrchestrator
+        orchestrator = AgentOrchestrator()
+        
+        # Step 3
         app.run(debug=True, port=8000)
     except Exception as e:
         print(f"Error initializing database: {e}")

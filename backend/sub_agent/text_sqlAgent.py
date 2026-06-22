@@ -97,126 +97,129 @@ class PostgreSQLQueryAgent:
     # ============================================================
 
     def _load_db_schema(self):
+        try: 
+            conn = self._connect_db()
+            cursor = conn.cursor()
 
-        conn = self._connect_db()
-        cursor = conn.cursor()
-
-        self.schema_metadata = (
-            self._load_schema_metadata(cursor)
-        )
-
-        cursor.execute("""
-            SELECT table_name
-            FROM information_schema.tables
-            WHERE table_schema = 'public'
-            AND table_type = 'BASE TABLE'
-        """)
-
-        tables = [
-            row[0]
-            for row in cursor.fetchall()
-        ]
-
-        schema = {}
-
-        for table in tables:
-
-            if table == "schema_metadata":
-                continue
-
-            schema[table] = {
-                "columns": []
-            }
-
-            # ------------------------------------------------
-            # Columns
-            # ------------------------------------------------
+            self.schema_metadata = (
+                self._load_schema_metadata(cursor)
+            )
 
             cursor.execute("""
-                SELECT
-                    column_name,
-                    data_type
-                FROM information_schema.columns
-                WHERE table_name = %s
-                ORDER BY ordinal_position
-            """, (table,))
+                SELECT table_name
+                FROM information_schema.tables
+                WHERE table_schema = 'public'
+                AND table_type = 'BASE TABLE'
+            """)
 
-            columns = cursor.fetchall()
-
-            # ------------------------------------------------
-            # Primary Keys
-            # ------------------------------------------------
-
-            cursor.execute("""
-                SELECT
-                    kcu.column_name
-                FROM information_schema.table_constraints tc
-                JOIN information_schema.key_column_usage kcu
-                    ON tc.constraint_name = kcu.constraint_name
-                WHERE tc.table_name = %s
-                AND tc.constraint_type = 'PRIMARY KEY'
-            """, (table,))
-
-            primary_keys = {
+            tables = [
                 row[0]
                 for row in cursor.fetchall()
-            }
+            ]
 
-            # ------------------------------------------------
-            # Foreign Keys
-            # ------------------------------------------------
+            schema = {}
 
-            cursor.execute("""
-                SELECT
-                    kcu.column_name,
-                    ccu.table_name,
-                    ccu.column_name
-                FROM information_schema.table_constraints tc
-                JOIN information_schema.key_column_usage kcu
-                    ON tc.constraint_name = kcu.constraint_name
-                JOIN information_schema.constraint_column_usage ccu
-                    ON ccu.constraint_name = tc.constraint_name
-                WHERE tc.constraint_type='FOREIGN KEY'
-                AND tc.table_name = %s
-            """, (table,))
+            for table in tables:
 
-            foreign_keys = {
-                row[0]: {
-                    "table": row[1],
-                    "column": row[2]
-                }
-                for row in cursor.fetchall()
-            }
+                if table == "schema_metadata":
+                    continue
 
-            # ------------------------------------------------
-            # Build Schema
-            # ------------------------------------------------
-
-            for column_name, column_type in columns:
-
-                col = {
-                    "name": column_name,
-                    "type": column_type
+                schema[table] = {
+                    "columns": []
                 }
 
-                if column_name in primary_keys:
-                    col["key"] = "PRIMARY"
+                # ------------------------------------------------
+                # Columns
+                # ------------------------------------------------
 
-                if column_name in foreign_keys:
+                cursor.execute("""
+                    SELECT
+                        column_name,
+                        data_type
+                    FROM information_schema.columns
+                    WHERE table_name = %s
+                    ORDER BY ordinal_position
+                """, (table,))
 
-                    col["key"] = "FOREIGN"
+                columns = cursor.fetchall()
 
-                    col["references"] = (
-                        foreign_keys[column_name]
+                # ------------------------------------------------
+                # Primary Keys
+                # ------------------------------------------------
+
+                cursor.execute("""
+                    SELECT
+                        kcu.column_name
+                    FROM information_schema.table_constraints tc
+                    JOIN information_schema.key_column_usage kcu
+                        ON tc.constraint_name = kcu.constraint_name
+                    WHERE tc.table_name = %s
+                    AND tc.constraint_type = 'PRIMARY KEY'
+                """, (table,))
+
+                primary_keys = {
+                    row[0]
+                    for row in cursor.fetchall()
+                }
+
+                # ------------------------------------------------
+                # Foreign Keys
+                # ------------------------------------------------
+
+                cursor.execute("""
+                    SELECT
+                        kcu.column_name,
+                        ccu.table_name,
+                        ccu.column_name
+                    FROM information_schema.table_constraints tc
+                    JOIN information_schema.key_column_usage kcu
+                        ON tc.constraint_name = kcu.constraint_name
+                    JOIN information_schema.constraint_column_usage ccu
+                        ON ccu.constraint_name = tc.constraint_name
+                    WHERE tc.constraint_type='FOREIGN KEY'
+                    AND tc.table_name = %s
+                """, (table,))
+
+                foreign_keys = {
+                    row[0]: {
+                        "table": row[1],
+                        "column": row[2]
+                    }
+                    for row in cursor.fetchall()
+                }
+
+                # ------------------------------------------------
+                # Build Schema
+                # ------------------------------------------------
+
+                for column_name, column_type in columns:
+
+                    col = {
+                        "name": column_name,
+                        "type": column_type
+                    }
+
+                    if column_name in primary_keys:
+                        col["key"] = "PRIMARY"
+
+                    if column_name in foreign_keys:
+
+                        col["key"] = "FOREIGN"
+
+                        col["references"] = (
+                            foreign_keys[column_name]
+                        )
+
+                    schema[table]["columns"].append(
+                        col
                     )
 
-                schema[table]["columns"].append(
-                    col
-                )
+            conn.close()
 
-        conn.close()
-
-        self.schema_json = schema
+            self.schema_json = schema
+        except Exception as e:
+            self.conn.rollback()
+            raise
 
     # ============================================================
     # SCHEMA DESIGN FOR LLM

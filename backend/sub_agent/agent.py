@@ -2,9 +2,10 @@ import sub_agent.llm as llm
 from sub_agent import greetingAgent, gaurdrailAgent, routerAgent, policyAgent,text_sqlAgent
 
 class AgentOrchestrator:
-    def __init__(self,client: llm.LLMClient):
-        self.greeting_agent = greetingAgent.GreetingAgent(client)
-        self.guardrail_agent = gaurdrailAgent.GuardrailAgent(client)
+    def __init__(self):
+        self.client = llm.LLMClient()
+        self.greeting_agent = greetingAgent.GreetingAgent(self.client)
+        self.guardrail_agent = gaurdrailAgent.GuardrailAgent(self.client)
         self.router_agent = routerAgent.RouterAgent()
         self.sql_agent = text_sqlAgent.PostgreSQLQueryAgent()
     
@@ -43,7 +44,3 @@ class AgentOrchestrator:
             raise ValueError(f"Unknown route: {router_response.route}")
         
         return Response
-    
-    
-llm_client = llm.LLMClient()
-orchestrator = AgentOrchestrator(llm_client)
