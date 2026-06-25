@@ -1,0 +1,25 @@
+{
+    "classification": {
+        "document_type": "PRESCRIPTION",
+        "confidence": 0.99,
+        "reasoning": "The document contains a patient's name, diagnosis, medication list (Rx), and doctor's signature, which are typical components of a prescription."
+    },
+    "document": {
+        "document_type": "PRESCRIPTION",
+        "patient_name": "Deepak Shah",
+        "doctor_name": "Dr. S. Iyer",
+        "doctor_registration": "TN/56789/2013",
+        "diagnosis": "Acute Bronchitis",
+        "hospital_name": "APOLLO HOSPITALS",
+        "date": "2026-06-20",
+        "total_amount": null,
+        "medicines": [
+            "Amoxicillin 500mg",
+            "Salbutamol Inhaler"
+        ],
+        "line_items": [],
+        "tests_ordered": [],
+        "confidence": 0.98
+    },
+    "markdown": "## APOLLO HOSPITALS\n\nDr. S. Iyer, MBBS, MD (Pulmonology) Registration No: TN/56789/2013\n\n## PRESCRIPTION\n\nPatient Name:\n\nDeepak Shah\n\nDate:\n\n20-06-2026\n\nAge/Gender:\n\n44 / Male\n\n## Diagnosis:\n\nAcute Bronchitis\n\n## Rx\n\n1. Amoxicillin 500mg - 1 capsule three times daily for 5 days\n2. Salbutamol Inhaler - 2 puffs as needed for wheezing\n\n## Advice:\n\n- Drink plenty of fluids\n- Avoid smoking and dust exposure\n- Follow up after 5 days if symptoms persist\n\nSignature\n\nDr. S. Iyer TN/56789/2013"
+}

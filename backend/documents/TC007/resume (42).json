@@ -1,0 +1,24 @@
+{
+    "classification": {
+        "document_type": "LAB_REPORT",
+        "confidence": 0.99,
+        "reasoning": "The document contains a clear heading 'LAB REPORT', includes a report ID, patient details, test name (MRI Lumbar Spine), findings, and impression typical of a laboratory diagnostic report. No prescription, billing, discharge summary, or dental information is present."
+    },
+    "document": {
+        "document_type": "LAB_REPORT",
+        "patient_name": "Suresh Patil",
+        "doctor_name": "Dr. Venkat Rao",
+        "doctor_registration": null,
+        "diagnosis": null,
+        "hospital_name": "Precision Diagnostics",
+        "date": "2026-06-20",
+        "total_amount": null,
+        "medicines": [],
+        "line_items": [],
+        "tests_ordered": [
+            "MRI Lumbar Spine"
+        ],
+        "confidence": 0.98
+    },
+    "markdown": "## LAB REPORT\n\nMRI Lumbar Spine Investigation\n\n## PRECISION DIAGNOSTICS\n\nNABL Accredited Diagnostic Laboratory Hyderabad\n\n| Report ID        | MRI-2026-10218   |\n|------------------|------------------|\n| Patient Name     | Suresh Patil     |\n| Referring Doctor | Dr. Venkat Rao   |\n| Test Date        | 20-Jun-2026      |\n| Test Name        | MRI Lumbar Spine |\n\n## Findings\n\n- Mild posterior disc bulge at L4-L5 level.\n- No evidence of fracture.\n- Mild nerve root compression noted.\n\n## Impression\n\nLumbar Disc Herniation (L4-L5)\n\n## Document Type: LAB REPORT"
+}

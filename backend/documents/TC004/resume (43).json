@@ -1,0 +1,28 @@
+{
+    "classification": {
+        "document_type": "PRESCRIPTION",
+        "confidence": 0.99,
+        "reasoning": "The document contains a doctor's header, patient details, diagnosis, and a list of prescribed medications with dosage instructions, which are characteristic elements of a prescription. No billing, lab results, or discharge information are present."
+    },
+    "document": {
+        "document_type": "PRESCRIPTION",
+        "patient_name": "Rajesh Kumar",
+        "doctor_name": "Arun Sharma",
+        "doctor_registration": "KA/45678/2015",
+        "diagnosis": "Viral Fever",
+        "hospital_name": "City Medical Centre, Bengaluru",
+        "date": "2026-06-20",
+        "total_amount": null,
+        "medicines": [
+            "Paracetamol 650mg - 1 tablet three times daily for 5 days",
+            "Vitamin C 500mg - Once daily for 7 days"
+        ],
+        "line_items": [],
+        "tests_ordered": [
+            "CBC Test",
+            "Dengue NS1 Test"
+        ],
+        "confidence": 0.98
+    },
+    "markdown": "## Dr. Arun Sharma\n\nMBBS, MD (Internal Medicine) Reg. No: KA/45678/2015 City Medical Centre, Bengaluru\n\n| Patient Name   | Rajesh Kumar   |\n|----------------|----------------|\n| Age            | 41 Years       |\n| Gender         | Male           |\n| Date           | 20-Jun-2026    |\n\n## Chief Complaint\n\nFever since 3 days, body ache.\n\n## Diagnosis\n\nViral Fever\n\n## Prescription\n\n1. Paracetamol 650mg - 1 tablet three times daily for 5 days\n2. Vitamin C 500mg - Once daily for 7 days\n\n## Investigations Ordered\n\n- CBC Test\n- Dengue NS1 Test"
+}

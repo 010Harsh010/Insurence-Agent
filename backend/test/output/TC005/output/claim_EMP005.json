@@ -1,0 +1,577 @@
+{
+    "member": {
+        "member_id": "EMP005",
+        "name": "Vikram Joshi",
+        "policy_id": "PLUM_GHI_2024",
+        "relationship": "SELF",
+        "join_date": "2024-09-01",
+        "primary_member_id": null
+    },
+    "member_result": {
+        "step_name": "Member Validation",
+        "status": "PASSED",
+        "passed": true,
+        "confidence": 1.0,
+        "reason": "Member validation passed.",
+        "details": {
+            "member_id": "EMP005",
+            "name": "Vikram Joshi",
+            "policy_id": "PLUM_GHI_2024",
+            "relationship": "SELF",
+            "join_date": "2024-09-01"
+        },
+        "fatal": false,
+        "checks": [
+            {
+                "check_name": "Member Input Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "Member DB Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "Member Policy Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "Member Name Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            }
+        ]
+    },
+    "policy": {
+        "policy_id": "PLUM_GHI_2024",
+        "policy_name": "Group Health Insurance \u2014 Standard Plan",
+        "insurer_name": "ICICI Lombard General Insurance",
+        "policy_start_date": "2024-04-01",
+        "policy_end_date": "2027-03-31",
+        "coverage": {
+            "family_floater": {
+                "enabled": true,
+                "combined_limit": 150000,
+                "covered_relationships": [
+                    "SELF",
+                    "SPOUSE",
+                    "CHILDREN",
+                    "PARENTS"
+                ]
+            },
+            "per_claim_limit": 5000,
+            "annual_opd_limit": 50000,
+            "sum_insured_per_employee": 500000
+        },
+        "waiting_periods": {
+            "specific_conditions": {
+                "hernia": 365,
+                "cataract": 365,
+                "diabetes": 90,
+                "maternity": 270,
+                "hypertension": 90,
+                "mental_health": 180,
+                "joint_replacement": 730,
+                "obesity_treatment": 365,
+                "thyroid_disorders": 90
+            },
+            "initial_waiting_period_days": 30,
+            "pre_existing_conditions_days": 365
+        },
+        "exclusions": {
+            "conditions": [
+                "Self-inflicted injuries",
+                "War or nuclear hazard",
+                "Substance abuse treatment",
+                "Experimental treatments",
+                "Infertility and assisted reproduction",
+                "Obesity and weight loss programs",
+                "Bariatric surgery",
+                "Cosmetic or aesthetic procedures",
+                "Vaccination (non-medically necessary)",
+                "Health supplements and tonics"
+            ],
+            "dental_exclusions": [
+                "Teeth whitening",
+                "Orthodontic treatment",
+                "Cosmetic dental procedures"
+            ],
+            "vision_exclusions": [
+                "LASIK",
+                "Refractive surgery"
+            ]
+        },
+        "pre_authorization": {
+            "required_for": [
+                "MRI scan (amount > \u20b910,000)",
+                "CT scan (amount > \u20b910,000)",
+                "PET scan",
+                "Major surgical procedures",
+                "Planned hospitalization"
+            ],
+            "validity_days": 30
+        },
+        "submission_rules": {
+            "currency": "INR",
+            "minimum_claim_amount": 500,
+            "deadline_days_from_treatment": 30
+        },
+        "document_requirements": {
+            "DENTAL": {
+                "optional": [
+                    "PRESCRIPTION",
+                    "DENTAL_REPORT"
+                ],
+                "required": [
+                    "HOSPITAL_BILL"
+                ]
+            },
+            "VISION": {
+                "optional": [],
+                "required": [
+                    "PRESCRIPTION",
+                    "HOSPITAL_BILL"
+                ]
+            },
+            "PHARMACY": {
+                "optional": [],
+                "required": [
+                    "PRESCRIPTION",
+                    "PHARMACY_BILL"
+                ]
+            },
+            "DIAGNOSTIC": {
+                "optional": [
+                    "DISCHARGE_SUMMARY"
+                ],
+                "required": [
+                    "PRESCRIPTION",
+                    "LAB_REPORT",
+                    "HOSPITAL_BILL"
+                ]
+            },
+            "CONSULTATION": {
+                "optional": [
+                    "LAB_REPORT",
+                    "DIAGNOSTIC_REPORT"
+                ],
+                "required": [
+                    "PRESCRIPTION",
+                    "HOSPITAL_BILL"
+                ]
+            },
+            "ALTERNATIVE_MEDICINE": {
+                "optional": [],
+                "required": [
+                    "PRESCRIPTION",
+                    "HOSPITAL_BILL"
+                ]
+            }
+        },
+        "fraud_thresholds": {
+            "monthly_claims_limit": 6,
+            "same_day_claims_limit": 2,
+            "auto_manual_review_above": 25000,
+            "high_value_claim_threshold": 25000,
+            "fraud_score_manual_review_threshold": 0.8
+        }
+    },
+    "policy_result": {
+        "step_name": "Policy Validation",
+        "status": "PASSED",
+        "passed": true,
+        "confidence": 1.0,
+        "reason": "Policy validated successfully.",
+        "details": {
+            "policy_id": "PLUM_GHI_2024",
+            "policy_name": "Group Health Insurance \u2014 Standard Plan",
+            "insurer_name": "ICICI Lombard General Insurance"
+        },
+        "fatal": false,
+        "checks": [
+            {
+                "check_name": "Policy DB Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "Policy Start Date Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "Policy End Date Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "Policy Renewal Status Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "Policy Data Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            }
+        ]
+    },
+    "document": {
+        "uploaded_document_types": [
+            "HOSPITAL_BILL",
+            "PRESCRIPTION"
+        ],
+        "inferred_claim_category": "CONSULTATION",
+        "patient_name": "Vikram Joshi",
+        "hospital_name": "Diabetes Care Centre, Ahmedabad",
+        "missing_document_types": [],
+        "issues": [],
+        "warnings": [],
+        "validation_passed": true
+    },
+    "document_result": {
+        "step_name": "Document Validation",
+        "status": "PASSED",
+        "passed": true,
+        "confidence": 1.0,
+        "reason": "All documents validated successfully.",
+        "details": {
+            "claim_category": "CONSULTATION",
+            "document_count": 2,
+            "uploaded_document_types": [
+                "HOSPITAL_BILL",
+                "PRESCRIPTION"
+            ],
+            "patient_name": "Vikram Joshi",
+            "hospital_name": "Diabetes Care Centre, Ahmedabad",
+            "warnings": []
+        },
+        "fatal": false,
+        "checks": [
+            {
+                "check_name": "Document Uploads Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "Claim Category Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "HOSPITAL_BILL Document Confidence Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "PRESCRIPTION Document Confidence Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "Patient Name Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "Hospital Name Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "Duplicate Document Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "Missing Documents Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            }
+        ]
+    },
+    "coverage": {
+        "relationship_covered": true,
+        "waiting_period_passed": true,
+        "specific_waiting_period_passed": false,
+        "submission_window_passed": false,
+        "minimum_amount_passed": true,
+        "exclusion_found": false,
+        "rejection_reasons": [
+            "Condition 'diabetes' requires 90 days waiting period.",
+            "Claim submitted after allowed 30 day limit."
+        ]
+    },
+    "coverage_result": {
+        "step_name": "Coverage Validation",
+        "status": "FAILED",
+        "passed": false,
+        "confidence": 0.0,
+        "reason": "Condition 'diabetes' requires 90 days waiting period.; Claim submitted after allowed 30 day limit.",
+        "details": {
+            "claim_category": "CONSULTATION",
+            "rejection_reasons": [
+                "Condition 'diabetes' requires 90 days waiting period.",
+                "Claim submitted after allowed 30 day limit."
+            ]
+        },
+        "fatal": true,
+        "checks": []
+    },
+    "finance": {
+        "claimed_amount": 3000.0,
+        "eligible_amount": 3000.0,
+        "approved_amount": 2000.0,
+        "annual_limit_remaining": 40000.0,
+        "family_limit_remaining": 140000.0,
+        "per_claim_limit_applied": false,
+        "annual_limit_applied": false,
+        "co_pay": 300.0,
+        "hospital_network": 0.0,
+        "family_floater_limit_applied": false,
+        "rejection_reasons": [],
+        "family_limit": 0.0,
+        "annual_limit": 0.0,
+        "per_claim_limit": 0.0,
+        "reduct_items": [],
+        "sub_limit": 700.0
+    },
+    "finance_result": {
+        "step_name": "Financial Validation",
+        "status": "PASSED",
+        "passed": true,
+        "confidence": 1.0,
+        "reason": "Financial validation passed.",
+        "details": {
+            "claimed_amount": 3000.0,
+            "approved_amount": 2000,
+            "annual_remaining": 40000.0,
+            "family_remaining": 140000.0,
+            "per_claim_limit": 5000
+        },
+        "fatal": false,
+        "checks": [
+            {
+                "check_name": "Claimed Amount Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "Per Claim Limit Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "Annual Limit Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "Family Floater Limit Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            }
+        ]
+    },
+    "fraud": {
+        "fraud_score": 0.55,
+        "monthly_claims_count": 6,
+        "same_day_claims_count": 6,
+        "manual_review_required": true,
+        "warnings": [
+            "Monthly claim count (6) exceeds limit (6).",
+            "Same-day claim count (6) exceeds limit (2)."
+        ]
+    },
+    "fraud_result": {
+        "step_name": "Fraud Validation",
+        "status": "PASSED",
+        "passed": true,
+        "confidence": 1.0,
+        "reason": "Fraud validation completed.",
+        "details": {
+            "fraud_score": 0.55,
+            "monthly_claims": 6,
+            "same_day_claims": 6,
+            "manual_review": true,
+            "warnings": [
+                "Monthly claim count (6) exceeds limit (6).",
+                "Same-day claim count (6) exceeds limit (2)."
+            ]
+        },
+        "fatal": false,
+        "checks": [
+            {
+                "check_name": "Monthly Claim Count Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "Same-day Claim Count Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "High-value Claim Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "Manual Review Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "Fraud Score Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            }
+        ]
+    },
+    "decision": {
+        "decision": "REJECTED",
+        "claimed_amount": 3000.0,
+        "approved_amount": 2000.0,
+        "fraud_score": 0.55,
+        "needs_manual_review": true,
+        "explanation": "Your claim was rejected because the condition 'diabetes' has a 90\u2011day waiting period and the claim was submitted more than 30 days after service. Additionally, the number of claims this month and on the same day exceed allowed limits.",
+        "financial_breakdown": [
+            {
+                "step": "Network Hospital Discount",
+                "amount": 0.0
+            },
+            {
+                "step": "Copay Deduction",
+                "amount": 300.0
+            },
+            {
+                "step": "Sub-limit Deduction",
+                "amount": 700.0
+            },
+            {
+                "step": "Per-Claim limit Deduction",
+                "amount": 0.0
+            },
+            {
+                "step": "Annual limit Deduction",
+                "amount": 0.0
+            },
+            {
+                "step": "Family limit Deduction",
+                "amount": 0.0
+            }
+        ]
+    },
+    "decision_result": {
+        "step_name": "Decision",
+        "status": "PASSED",
+        "passed": true,
+        "confidence": 1.0,
+        "reason": "Final decision: REJECTED",
+        "details": {
+            "decision": "REJECTED",
+            "claimed_amount": 3000.0,
+            "approved_amount": 2000.0,
+            "fraud_score": 0.55,
+            "needs_manual_review": true,
+            "explanation": "Your claim was rejected because the condition 'diabetes' has a 90\u2011day waiting period and the claim was submitted more than 30 days after service. Additionally, the number of claims this month and on the same day exceed allowed limits.",
+            "financial_breakdown": [
+                {
+                    "step": "Network Hospital Discount",
+                    "amount": 0.0
+                },
+                {
+                    "step": "Copay Deduction",
+                    "amount": 300.0
+                },
+                {
+                    "step": "Sub-limit Deduction",
+                    "amount": 700.0
+                },
+                {
+                    "step": "Per-Claim limit Deduction",
+                    "amount": 0.0
+                },
+                {
+                    "step": "Annual limit Deduction",
+                    "amount": 0.0
+                },
+                {
+                    "step": "Family limit Deduction",
+                    "amount": 0.0
+                }
+            ]
+        },
+        "fatal": false,
+        "checks": [
+            {
+                "check_name": "Decision Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "Explanation Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            }
+        ]
+    }
+}

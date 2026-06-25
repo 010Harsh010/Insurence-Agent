@@ -1,0 +1,39 @@
+{
+    "classification": {
+        "document_type": "DENTAL_REPORT",
+        "confidence": 0.92,
+        "reasoning": "The document is a dental treatment bill from a dental clinic, containing patient details, procedures performed, and payment information. While it is a billing document, the closest matching category among the provided options is DENTAL_REPORT, as it pertains specifically to dental services."
+    },
+    "document": {
+        "document_type": "DENTAL_REPORT",
+        "patient_name": "Priya Singh",
+        "doctor_name": null,
+        "doctor_registration": null,
+        "diagnosis": null,
+        "hospital_name": "Smile Dental Clinic",
+        "date": "2024-10-15",
+        "total_amount": 12000.0,
+        "medicines": [],
+        "line_items": [
+            {
+                "quantity": null,
+                "description": "Root Canal Treatment",
+                "maker": null,
+                "batch_number": null,
+                "expiry_date": null,
+                "amount": 8000.0
+            },
+            {
+                "quantity": null,
+                "description": "Teeth Whitening",
+                "maker": null,
+                "batch_number": null,
+                "expiry_date": null,
+                "amount": 4000.0
+            }
+        ],
+        "tests_ordered": [],
+        "confidence": 0.98
+    },
+    "markdown": "## Smile Dental Clinic\n\n45 Residency Road, Bengaluru - 560025 Ph: +91-80-45678901\n\n## DENTAL TREATMENT BILL\n\nBill No: SDC/2024/1015 Date: 15-Oct-2024 Patient Name: Priya Singh\n\nAge/Gender:\n\n34 / Female\n\n| Description          |   Amount () |\n|----------------------|-------------|\n| Root Canal Treatment |    8,000.00 |\n| Teeth Whitening      |    4,000.00 |\n| Total Amount         |   12,000.00 |\n\nPayment Mode: UPI\n\n## Authorized Signatory\n\n## Smile Dental Clinic"
+}

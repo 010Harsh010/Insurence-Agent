@@ -7,6 +7,8 @@ from flask import Flask, request, jsonify
 import os
 import json
 import shutil
+from test.test import process
+import uuid
 
 app = flask.Flask(__name__)
 
@@ -259,6 +261,29 @@ def delete_member_documents(member_id):
     except Exception as e:
         print(f"Delete documents error: {e}")
         return jsonify({"success": False, "message": str(e)}), 500
+
+# ── Run Tests ─────────────────────────────────────────────────────────────────
+@app.route("/test", methods=["POST"])
+def run_tests():
+    try:
+        results = process()
+        return jsonify({
+            "success": True,
+            "results": results,
+        }), 200
+
+    except Exception as e:
+        return jsonify({"success": False, "message": f"Failed to run tests: {str(e)}"}), 500
+
+# ── Fetch existing test results (no re-run) ────────────────────────────────────
+@app.route("/test", methods=["GET"])
+def get_test_results():
+    result_file = os.path.join(os.path.dirname(__file__), "test", "result.json")
+    if not os.path.exists(result_file):
+        return jsonify({"success": False, "message": "No test results found. Run tests first."}), 404
+    with open(result_file, "r", encoding="utf-8") as f:
+        results = json.load(f)
+    return jsonify({"success": True, "results": results}), 200
 
 if __name__ == "__main__":
     try:

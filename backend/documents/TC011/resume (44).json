@@ -1,0 +1,25 @@
+{
+    "classification": {
+        "document_type": "PRESCRIPTION",
+        "confidence": 0.95,
+        "reasoning": "The document contains a patient's name, age, gender, chief complaint, diagnosis, treatment system, prescription, and advice, which are typical components of a prescription document."
+    },
+    "document": {
+        "document_type": "PRESCRIPTION",
+        "patient_name": "Kavita Nair",
+        "doctor_name": "Vaidya T. Krishnan",
+        "doctor_registration": "AYU/KA/22145",
+        "diagnosis": "Chronic Joint Pain",
+        "hospital_name": "Ayur Wellness Centre, Bengaluru",
+        "date": "2026-06-20",
+        "total_amount": null,
+        "medicines": [
+            "Ayurvedic Joint Relief Tablets",
+            "Dashmool Kwath"
+        ],
+        "line_items": [],
+        "tests_ordered": [],
+        "confidence": 0.95
+    },
+    "markdown": "## Vaidya T. Krishnan\n\nBAMS\n\nRegistration No: AYU/KA/22145\n\nAyur Wellness Centre, Bengaluru\n\n| Patient Name   | Kavita Nair   |\n|----------------|---------------|\n| Age            | 32 Years      |\n| Gender         | Female        |\n| Date           | 20-Jun-2026   |\n\n## Chief Complaint\n\nChronic knee pain and morning stiffness.\n\n## Diagnosis\n\nChronic Joint Pain\n\n## Treatment System\n\nAyurveda\n\n## Prescription\n\n1. Ayurvedic Joint Relief Tablets\n2. Dashmool Kwath\n3. Abhyanga Therapy Sessions\n\n## Advice\n\n- Regular stretching exercises\n- Warm oil massage\n- Follow-up after 2 weeks\n\nDocument Type: PRESCRIPTION"
+}

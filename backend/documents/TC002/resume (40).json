@@ -1,0 +1,60 @@
+{
+    "classification": {
+        "document_type": "PHARMACY_BILL",
+        "confidence": 0.99,
+        "reasoning": "The document includes a pharmacy header, bill number, date, patient name, a list of medicines with quantities, rates, and total amounts, as well as a subtotal, discount, grand total, and pharmacist signature. These characteristics match a typical pharmacy bill rather than other medical document types."
+    },
+    "document": {
+        "document_type": "PHARMACY_BILL",
+        "patient_name": "Sneha Reddy",
+        "doctor_name": "Dr. Ravi Kumar",
+        "doctor_registration": null,
+        "diagnosis": null,
+        "hospital_name": null,
+        "date": "2026-06-20",
+        "total_amount": 800.0,
+        "medicines": [
+            "Azithromycin 500mg",
+            "Paracetamol 650mg",
+            "Vitamin C 500mg",
+            "ORS Sachet"
+        ],
+        "line_items": [
+            {
+                "quantity": 3,
+                "description": null,
+                "maker": null,
+                "batch_number": null,
+                "expiry_date": null,
+                "amount": 360.0
+            },
+            {
+                "quantity": 10,
+                "description": null,
+                "maker": null,
+                "batch_number": null,
+                "expiry_date": null,
+                "amount": 120.0
+            },
+            {
+                "quantity": 10,
+                "description": null,
+                "maker": null,
+                "batch_number": null,
+                "expiry_date": null,
+                "amount": 180.0
+            },
+            {
+                "quantity": 4,
+                "description": null,
+                "maker": null,
+                "batch_number": null,
+                "expiry_date": null,
+                "amount": 140.0
+            }
+        ],
+        "tests_ordered": [],
+        "confidence": 0.98
+    },
+    "markdown": "| HEALTH FIRST PHARMACY         |\n|-------------------------------|\n| Drug License No: KA-BLR-45211 |\n| Brigade Road, Bengaluru       |\n| Phone: +91-80-41234567        |\n\n| Bill Number   | HFP-2026-10872   |\n|---------------|------------------|\n| Date          | 20-Jun-2026      |\n| Patient Name  | Sneha Reddy      |\n| Doctor        | Dr. Ravi Kumar   |\n\n| Medicine           |   Qty |   Rate |   Amount |\n|--------------------|-------|--------|----------|\n| Azithromycin 500mg |     3 |    120 |      360 |\n| Paracetamol 650mg  |    10 |     12 |      120 |\n| Vitamin C 500mg    |    10 |     18 |      180 |\n| ORS Sachet         |     4 |     35 |      140 |\n\n| Subtotal    |   800 |\n|-------------|-------|\n| Discount    |     0 |\n| Grand Total |   800 |\n\n## Pharmacist\n\n- R. Sharma"
+}

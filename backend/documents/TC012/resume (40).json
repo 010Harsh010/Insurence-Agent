@@ -1,0 +1,27 @@
+{
+    "classification": {
+        "document_type": "PRESCRIPTION",
+        "confidence": 0.99,
+        "reasoning": "The document contains a clear 'PRESCRIPTION' heading, patient information, diagnosis, treatment plan, and doctor's signature, which are typical characteristics of a prescription document."
+    },
+    "document": {
+        "document_type": "PRESCRIPTION",
+        "patient_name": "Anita Desai",
+        "doctor_name": "Dr. P. Banerjee",
+        "doctor_registration": "WB/34567/2015",
+        "diagnosis": "Morbid Obesity (BMI 37)",
+        "hospital_name": "METRO HEALTH CLINIC",
+        "date": "2026-06-20",
+        "total_amount": null,
+        "medicines": [],
+        "line_items": [],
+        "tests_ordered": [
+            "Bariatric Consultation",
+            "Customised Diet Plan",
+            "Weight Management Program",
+            "Monthly Nutrition Monitoring"
+        ],
+        "confidence": 0.95
+    },
+    "markdown": "## METRO HEALTH CLINIC\n\nDr. P. Banerjee, MD (Internal Medicine) Registration No: WB/34567/2015\n\nKolkata, West Bengal\n\n## PRESCRIPTION\n\nPatient Name:\n\nAnita Desai\n\nDate:\n\n20-06-2026\n\nAge/Gender:\n\n31 / Female\n\n## Diagnosis\n\nMorbid Obesity (BMI 37)\n\n## Treatment Plan\n\n- Bariatric Consultation\n- Customised Diet Plan\n- Weight Management Program\n- Monthly Nutrition Monitoring\n\n## Advice\n\n- Follow calorie restricted diet\n- Weekly weight monitoring\n- Follow-up after 30 days\n\nSignature\n\nDr. P. Banerjee WB/34567/2015"
+}

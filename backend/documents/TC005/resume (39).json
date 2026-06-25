@@ -1,0 +1,25 @@
+{
+    "classification": {
+        "document_type": "PRESCRIPTION",
+        "confidence": 0.99,
+        "reasoning": "The document includes a doctor's header, patient details, a diagnosis, and a list of medications with dosage instructions, which are characteristic elements of a medical prescription."
+    },
+    "document": {
+        "document_type": "PRESCRIPTION",
+        "patient_name": "Vikram Joshi",
+        "doctor_name": "Sunil Mehta",
+        "doctor_registration": "GJ/56789/2014",
+        "diagnosis": "Type 2 Diabetes Mellitus",
+        "hospital_name": "Diabetes Care Centre, Ahmedabad",
+        "date": "2024-10-15",
+        "total_amount": null,
+        "medicines": [
+            "Metformin 500mg",
+            "Glimepiride 1mg"
+        ],
+        "line_items": [],
+        "tests_ordered": [],
+        "confidence": 0.96
+    },
+    "markdown": "## Dr. Sunil Mehta\n\nMBBS, MD (Endocrinology) Registration No: GJ/56789/2014\n\nDiabetes Care Centre, Ahmedabad\n\nPhone: +91-79-44556677\n\n| Patient Name   | Vikram Joshi   |\n|----------------|----------------|\n| Age            | 46 Years       |\n| Gender         | Male           |\n| Date           | 15-Oct-2024    |\n\n## Chief Complaint\n\nFrequent urination, increased thirst, fatigue and weight loss.\n\n## Diagnosis\n\nType 2 Diabetes Mellitus\n\n## Prescription\n\n1. Metformin 500mg\n\n1 Tablet Twice Daily After Meals\n\n2. Glimepiride 1mg\n\n1 Tablet Once Daily Before Breakfast\n\n## Advice\n\n- Follow diabetic diet.\n- Avoid sugary foods and beverages.\n- Daily walking for at least 30 minutes.\n- Follow-up after 4 weeks."
+}

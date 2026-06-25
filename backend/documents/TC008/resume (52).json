@@ -1,0 +1,39 @@
+{
+    "classification": {
+        "document_type": "HOSPITAL_BILL",
+        "confidence": 0.97,
+        "reasoning": "The document is a tax invoice from a medical centre that lists patient details, a consulting doctor's name, a consultation fee, and medication charges. This combination of clinical services and medication costs is characteristic of a hospital billing statement rather than a prescription, lab report, or other document types."
+    },
+    "document": {
+        "document_type": "HOSPITAL_BILL",
+        "patient_name": "Amit Verma",
+        "doctor_name": "Dr. R. Gupta",
+        "doctor_registration": null,
+        "diagnosis": null,
+        "hospital_name": "CARE MEDICAL CENTRE",
+        "date": "2026-06-20",
+        "total_amount": 7500.0,
+        "medicines": [],
+        "line_items": [
+            {
+                "quantity": null,
+                "description": "Consultation Fee",
+                "maker": null,
+                "batch_number": null,
+                "expiry_date": null,
+                "amount": 2000.0
+            },
+            {
+                "quantity": null,
+                "description": "Medicines",
+                "maker": null,
+                "batch_number": null,
+                "expiry_date": null,
+                "amount": 5500.0
+            }
+        ],
+        "tests_ordered": [],
+        "confidence": 0.98
+    },
+    "markdown": "## CARE MEDICAL CENTRE\n\nConnaught Place, New Delhi GSTIN: 07ABCDE1234F1Z9 Phone: +91-11-44556677\n\n## TAX INVOICE\n\n| Invoice Number   | CMC-2026-88152   |\n|------------------|------------------|\n| Invoice Date     | 20-Jun-2026      |\n| Patient Name     | Amit Verma       |\n| Referring Doctor | Dr. R. Gupta     |\n\n|   S.No | Description      |   Amount |\n|--------|------------------|----------|\n|      1 | Consultation Fee |     2000 |\n|      2 | Medicines        |     5500 |\n\n| Subtotal    |   7500 |\n|-------------|--------|\n| GST         |      0 |\n| Grand Total |   7500 |"
+}

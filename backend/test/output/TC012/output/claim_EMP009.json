@@ -1,0 +1,575 @@
+{
+    "member": {
+        "member_id": "EMP009",
+        "name": "Anita Desai",
+        "policy_id": "PLUM_GHI_2024",
+        "relationship": "SELF",
+        "join_date": "2024-04-01",
+        "primary_member_id": null
+    },
+    "member_result": {
+        "step_name": "Member Validation",
+        "status": "PASSED",
+        "passed": true,
+        "confidence": 1.0,
+        "reason": "Member validation passed.",
+        "details": {
+            "member_id": "EMP009",
+            "name": "Anita Desai",
+            "policy_id": "PLUM_GHI_2024",
+            "relationship": "SELF",
+            "join_date": "2024-04-01"
+        },
+        "fatal": false,
+        "checks": [
+            {
+                "check_name": "Member Input Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "Member DB Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "Member Policy Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "Member Name Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            }
+        ]
+    },
+    "policy": {
+        "policy_id": "PLUM_GHI_2024",
+        "policy_name": "Group Health Insurance \u2014 Standard Plan",
+        "insurer_name": "ICICI Lombard General Insurance",
+        "policy_start_date": "2024-04-01",
+        "policy_end_date": "2027-03-31",
+        "coverage": {
+            "family_floater": {
+                "enabled": true,
+                "combined_limit": 150000,
+                "covered_relationships": [
+                    "SELF",
+                    "SPOUSE",
+                    "CHILDREN",
+                    "PARENTS"
+                ]
+            },
+            "per_claim_limit": 5000,
+            "annual_opd_limit": 50000,
+            "sum_insured_per_employee": 500000
+        },
+        "waiting_periods": {
+            "specific_conditions": {
+                "hernia": 365,
+                "cataract": 365,
+                "diabetes": 90,
+                "maternity": 270,
+                "hypertension": 90,
+                "mental_health": 180,
+                "joint_replacement": 730,
+                "obesity_treatment": 365,
+                "thyroid_disorders": 90
+            },
+            "initial_waiting_period_days": 30,
+            "pre_existing_conditions_days": 365
+        },
+        "exclusions": {
+            "conditions": [
+                "Self-inflicted injuries",
+                "War or nuclear hazard",
+                "Substance abuse treatment",
+                "Experimental treatments",
+                "Infertility and assisted reproduction",
+                "Obesity and weight loss programs",
+                "Bariatric surgery",
+                "Cosmetic or aesthetic procedures",
+                "Vaccination (non-medically necessary)",
+                "Health supplements and tonics"
+            ],
+            "dental_exclusions": [
+                "Teeth whitening",
+                "Orthodontic treatment",
+                "Cosmetic dental procedures"
+            ],
+            "vision_exclusions": [
+                "LASIK",
+                "Refractive surgery"
+            ]
+        },
+        "pre_authorization": {
+            "required_for": [
+                "MRI scan (amount > \u20b910,000)",
+                "CT scan (amount > \u20b910,000)",
+                "PET scan",
+                "Major surgical procedures",
+                "Planned hospitalization"
+            ],
+            "validity_days": 30
+        },
+        "submission_rules": {
+            "currency": "INR",
+            "minimum_claim_amount": 500,
+            "deadline_days_from_treatment": 30
+        },
+        "document_requirements": {
+            "DENTAL": {
+                "optional": [
+                    "PRESCRIPTION",
+                    "DENTAL_REPORT"
+                ],
+                "required": [
+                    "HOSPITAL_BILL"
+                ]
+            },
+            "VISION": {
+                "optional": [],
+                "required": [
+                    "PRESCRIPTION",
+                    "HOSPITAL_BILL"
+                ]
+            },
+            "PHARMACY": {
+                "optional": [],
+                "required": [
+                    "PRESCRIPTION",
+                    "PHARMACY_BILL"
+                ]
+            },
+            "DIAGNOSTIC": {
+                "optional": [
+                    "DISCHARGE_SUMMARY"
+                ],
+                "required": [
+                    "PRESCRIPTION",
+                    "LAB_REPORT",
+                    "HOSPITAL_BILL"
+                ]
+            },
+            "CONSULTATION": {
+                "optional": [
+                    "LAB_REPORT",
+                    "DIAGNOSTIC_REPORT"
+                ],
+                "required": [
+                    "PRESCRIPTION",
+                    "HOSPITAL_BILL"
+                ]
+            },
+            "ALTERNATIVE_MEDICINE": {
+                "optional": [],
+                "required": [
+                    "PRESCRIPTION",
+                    "HOSPITAL_BILL"
+                ]
+            }
+        },
+        "fraud_thresholds": {
+            "monthly_claims_limit": 6,
+            "same_day_claims_limit": 2,
+            "auto_manual_review_above": 25000,
+            "high_value_claim_threshold": 25000,
+            "fraud_score_manual_review_threshold": 0.8
+        }
+    },
+    "policy_result": {
+        "step_name": "Policy Validation",
+        "status": "PASSED",
+        "passed": true,
+        "confidence": 1.0,
+        "reason": "Policy validated successfully.",
+        "details": {
+            "policy_id": "PLUM_GHI_2024",
+            "policy_name": "Group Health Insurance \u2014 Standard Plan",
+            "insurer_name": "ICICI Lombard General Insurance"
+        },
+        "fatal": false,
+        "checks": [
+            {
+                "check_name": "Policy DB Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "Policy Start Date Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "Policy End Date Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "Policy Renewal Status Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "Policy Data Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            }
+        ]
+    },
+    "document": {
+        "uploaded_document_types": [
+            "HOSPITAL_BILL",
+            "PRESCRIPTION"
+        ],
+        "inferred_claim_category": "CONSULTATION",
+        "patient_name": "Anita Desai",
+        "hospital_name": "Metro Health Clinic",
+        "missing_document_types": [],
+        "issues": [],
+        "warnings": [],
+        "validation_passed": true
+    },
+    "document_result": {
+        "step_name": "Document Validation",
+        "status": "PASSED",
+        "passed": true,
+        "confidence": 1.0,
+        "reason": "All documents validated successfully.",
+        "details": {
+            "claim_category": "CONSULTATION",
+            "document_count": 2,
+            "uploaded_document_types": [
+                "HOSPITAL_BILL",
+                "PRESCRIPTION"
+            ],
+            "patient_name": "Anita Desai",
+            "hospital_name": "Metro Health Clinic",
+            "warnings": []
+        },
+        "fatal": false,
+        "checks": [
+            {
+                "check_name": "Document Uploads Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "Claim Category Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "HOSPITAL_BILL Document Confidence Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "PRESCRIPTION Document Confidence Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "Patient Name Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "Hospital Name Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "Duplicate Document Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "Missing Documents Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            }
+        ]
+    },
+    "coverage": {
+        "relationship_covered": true,
+        "waiting_period_passed": true,
+        "specific_waiting_period_passed": true,
+        "submission_window_passed": true,
+        "minimum_amount_passed": true,
+        "exclusion_found": true,
+        "rejection_reasons": [
+            "EXCLUDED_CONDITION: {word}",
+            "EXCLUDED_CONDITION: {word}"
+        ]
+    },
+    "coverage_result": {
+        "step_name": "Coverage Validation",
+        "status": "FAILED",
+        "passed": false,
+        "confidence": 0.0,
+        "reason": "EXCLUDED_CONDITION: {word}; EXCLUDED_CONDITION: {word}",
+        "details": {
+            "claim_category": "CONSULTATION",
+            "rejection_reasons": [
+                "EXCLUDED_CONDITION: {word}",
+                "EXCLUDED_CONDITION: {word}"
+            ]
+        },
+        "fatal": true,
+        "checks": []
+    },
+    "finance": {
+        "claimed_amount": 8000.0,
+        "eligible_amount": 8000.0,
+        "approved_amount": 2000.0,
+        "annual_limit_remaining": 44920.0,
+        "family_limit_remaining": 144920.0,
+        "per_claim_limit_applied": true,
+        "annual_limit_applied": false,
+        "co_pay": 800.0,
+        "hospital_network": 0.0,
+        "family_floater_limit_applied": false,
+        "rejection_reasons": [],
+        "family_limit": 0.0,
+        "annual_limit": 0.0,
+        "per_claim_limit": 2200.0,
+        "reduct_items": [],
+        "sub_limit": 3000.0
+    },
+    "finance_result": {
+        "step_name": "Financial Validation",
+        "status": "PASSED",
+        "passed": true,
+        "confidence": 1.0,
+        "reason": "Financial validation passed.",
+        "details": {
+            "claimed_amount": 8000.0,
+            "approved_amount": 2000,
+            "annual_remaining": 44920.0,
+            "family_remaining": 144920.0,
+            "per_claim_limit": 5000
+        },
+        "fatal": false,
+        "checks": [
+            {
+                "check_name": "Claimed Amount Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "Per Claim Limit Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "Annual Limit Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "Family Floater Limit Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            }
+        ]
+    },
+    "fraud": {
+        "fraud_score": 0.25,
+        "monthly_claims_count": 4,
+        "same_day_claims_count": 4,
+        "manual_review_required": true,
+        "warnings": [
+            "Same-day claim count (4) exceeds limit (2)."
+        ]
+    },
+    "fraud_result": {
+        "step_name": "Fraud Validation",
+        "status": "PASSED",
+        "passed": true,
+        "confidence": 1.0,
+        "reason": "Fraud validation completed.",
+        "details": {
+            "fraud_score": 0.25,
+            "monthly_claims": 4,
+            "same_day_claims": 4,
+            "manual_review": true,
+            "warnings": [
+                "Same-day claim count (4) exceeds limit (2)."
+            ]
+        },
+        "fatal": false,
+        "checks": [
+            {
+                "check_name": "Monthly Claim Count Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "Same-day Claim Count Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "High-value Claim Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "Manual Review Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "Fraud Score Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            }
+        ]
+    },
+    "decision": {
+        "decision": "REJECTED",
+        "claimed_amount": 8000.0,
+        "approved_amount": 2000.0,
+        "fraud_score": 0.25,
+        "needs_manual_review": true,
+        "explanation": "Your claim was rejected because the services involve conditions that are excluded from your coverage and because you submitted multiple claims on the same day, exceeding the allowed claim limit.",
+        "financial_breakdown": [
+            {
+                "step": "Network Hospital Discount",
+                "amount": 0.0
+            },
+            {
+                "step": "Copay Deduction",
+                "amount": 800.0
+            },
+            {
+                "step": "Sub-limit Deduction",
+                "amount": 3000
+            },
+            {
+                "step": "Per-Claim limit Deduction",
+                "amount": 2200.0
+            },
+            {
+                "step": "Annual limit Deduction",
+                "amount": 0.0
+            },
+            {
+                "step": "Family limit Deduction",
+                "amount": 0.0
+            }
+        ]
+    },
+    "decision_result": {
+        "step_name": "Decision",
+        "status": "PASSED",
+        "passed": true,
+        "confidence": 1.0,
+        "reason": "Final decision: REJECTED",
+        "details": {
+            "decision": "REJECTED",
+            "claimed_amount": 8000.0,
+            "approved_amount": 2000.0,
+            "fraud_score": 0.25,
+            "needs_manual_review": true,
+            "explanation": "Your claim was rejected because the services involve conditions that are excluded from your coverage and because you submitted multiple claims on the same day, exceeding the allowed claim limit.",
+            "financial_breakdown": [
+                {
+                    "step": "Network Hospital Discount",
+                    "amount": 0.0
+                },
+                {
+                    "step": "Copay Deduction",
+                    "amount": 800.0
+                },
+                {
+                    "step": "Sub-limit Deduction",
+                    "amount": 3000
+                },
+                {
+                    "step": "Per-Claim limit Deduction",
+                    "amount": 2200.0
+                },
+                {
+                    "step": "Annual limit Deduction",
+                    "amount": 0.0
+                },
+                {
+                    "step": "Family limit Deduction",
+                    "amount": 0.0
+                }
+            ]
+        },
+        "fatal": false,
+        "checks": [
+            {
+                "check_name": "Decision Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "Explanation Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            }
+        ]
+    }
+}

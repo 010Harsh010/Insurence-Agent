@@ -33,12 +33,14 @@ class AgentOrchestrator:
                 claim_bot = policyAgent.ClaimProcessingPipeline(
                     member_id=member_id,
                     claim_category=claim_category,
-                    output_dir="./output"
+                    output_dir="./output",
+                    testing_id=None
                 )
                 result = claim_bot.run()
                 Response["ClaimAgent"]  = result
         elif router_response.route == routerAgent.RouteType.QUESTION_ANSWERING:
             response = self.sql_agent.run(query)
+
             Response["Answer"] = response
         else:
             raise ValueError(f"Unknown route: {router_response.route}")

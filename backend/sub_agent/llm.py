@@ -8,7 +8,7 @@ class LLMClient:
     def __init__(self):   
         self.api_key = os.getenv("GROQ_API_KEY")
         self.base_url = "https://api.groq.com/openai/v1"
-        self.model = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
+        self.model = os.getenv("GROQ_MODEL", "openai/gpt-oss-120b")
         if self.api_key is None:
             raise ValueError("GROQ_API_KEY not found in environment variables")
         self.client  = openai.OpenAI(api_key=self.api_key, base_url=self.base_url)

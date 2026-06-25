@@ -1,0 +1,50 @@
+{
+    "classification": {
+        "document_type": "HOSPITAL_BILL",
+        "confidence": 0.97,
+        "reasoning": "The document is a tax invoice issued by a clinic, listing patient details, consulting fee, and laboratory test charges (CBC, Dengue NS1). This pattern matches a typical hospital billing statement rather than a prescription, pharmacy receipt, lab report, diagnostic report, discharge summary, or dental report."
+    },
+    "document": {
+        "document_type": "HOSPITAL_BILL",
+        "patient_name": "Rajesh Kumar",
+        "doctor_name": "Dr. Arun Sharma",
+        "doctor_registration": null,
+        "diagnosis": null,
+        "hospital_name": "CITY CLINIC",
+        "date": "2026-06-20",
+        "total_amount": 1500.0,
+        "medicines": [],
+        "line_items": [
+            {
+                "quantity": 1,
+                "description": "Consultation Fee",
+                "maker": null,
+                "batch_number": null,
+                "expiry_date": null,
+                "amount": 1000.0
+            },
+            {
+                "quantity": 1,
+                "description": "CBC Test",
+                "maker": null,
+                "batch_number": null,
+                "expiry_date": null,
+                "amount": 300.0
+            },
+            {
+                "quantity": 1,
+                "description": "Dengue NS1 Test",
+                "maker": null,
+                "batch_number": null,
+                "expiry_date": null,
+                "amount": 200.0
+            }
+        ],
+        "tests_ordered": [
+            "CBC Test",
+            "Dengue NS1 Test"
+        ],
+        "confidence": 0.98
+    },
+    "markdown": "## CITY CLINIC\n\n12 MG Road, Bengaluru - 560001\n\nGSTIN: 29ABCDE1234F1Z5\n\nPhone: +91-80-45678900\n\nPayment Mode: UPI\n\nTransaction ID: UPI2026062008321\n\n## TAX INVOICE\n\n| Invoice Number   | CMC-2026-08321   |\n|------------------|------------------|\n| Invoice Date     | 20-Jun-2026      |\n| Patient Name     | Rajesh Kumar     |\n| Patient ID       | PT-2026-1001     |\n| Referring Doctor | Dr. Arun Sharma  |\n\n## Itemized Charges\n\n|   S.No | Description      |   Qty |   Amount |\n|--------|------------------|-------|----------|\n|      1 | Consultation Fee |     1 |     1000 |\n|      2 | CBC Test         |     1 |      300 |\n|      3 | Dengue NS1 Test  |     1 |      200 |\n\n| Subtotal    |   1500 |\n|-------------|--------|\n| GST (0%)    |      0 |\n| Grand Total |   1500 |"
+}

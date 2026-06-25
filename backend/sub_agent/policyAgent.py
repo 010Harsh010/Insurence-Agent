@@ -777,8 +777,9 @@ class DocumentValidationAgent(BaseAgent):
                         f"Hospital mismatch detected: "
                         f"'{master_hospital}' vs '{hospital}'"
                     )
+                    
         if not hospital_name and claim_category != "PRESCRIPTION":
-            output.issues.append(
+            output.warnings.append(
                 f"Hospital Name not Found"
             )
             
@@ -1493,9 +1494,22 @@ class FinancialAgent(BaseAgent):
         )
 
     def get_network_hospitals(self):
-        query = "SELECT hospital_name FROM HOSPITALS WHERE is_network_hospital = true;";
-        results = self.fetch_one(query,())
-        return results.get("hospital_name")
+        query = """
+            SELECT hospital_name
+            FROM hospitals
+            WHERE is_network_hospital = true
+        """
+
+        db = self._db_connect()
+        cursor = db.cursor()
+
+        cursor.execute(query)
+
+        rows = cursor.fetchall()
+
+        db.close()
+
+        return [row[0] for row in rows]
     
     def get_opd_category(self,policy_id):
         query = "select opd_categories from policies where policy_id = %s";
@@ -1549,6 +1563,7 @@ class FinancialAgent(BaseAgent):
             )
         )
         approved_amount = claimed_amount
+        print("Approve amount", approved_amount)
         
         # Get Category Rules
         category_rules = self.get_opd_category(policy.policy_id).get(claim_category.lower(),{})
@@ -1559,13 +1574,18 @@ class FinancialAgent(BaseAgent):
         
         NETWORK_HOSPITALS = self.get_network_hospitals()
         
-        if document_data.hospital_name in NETWORK_HOSPITALS:
-
+        NETWORK_HOSPITALS = [hos.lower() for hos in NETWORK_HOSPITALS]
+        print("Network Hospital", NETWORK_HOSPITALS)
+        hospital_name = document_data.hospital_name.strip().lower()
+        print("HOSPITAL NAME", hospital_name)
+        
+        if hospital_name in NETWORK_HOSPITALS:
+            print("Find IT")
             discount = category_rules.get(
                 "network_discount_percent",
                 0
             )
-
+            
             discount_amount = (
                 approved_amount *
                 discount / 100
@@ -1577,6 +1597,10 @@ class FinancialAgent(BaseAgent):
                 approved_amount *
                 discount / 100
             )
+            
+            output.hospital_network = discount_amount
+           
+        print("Hospital", approved_amount) 
             
         # CO-PAY
         copay = category_rules.get(
@@ -1593,6 +1617,8 @@ class FinancialAgent(BaseAgent):
             approved_amount -= copay_amount
 
             output.co_pay = copay_amount
+            
+        print("Copay",approved_amount)
             
         # Exclusion
         # include_items = category_rules.get("covered_procedures",[])
@@ -1673,21 +1699,10 @@ class FinancialAgent(BaseAgent):
                 
         approved_amount -= reduct_amount
         output.reduct_items = rejected_items
-               
-        # Sub-Limit
         
-        sub_limit = category_rules.get(
-            "sub_limit"
-        )
-
-        if sub_limit:
-            if approved_amount > sub_limit:
-                output.sub_limit = approved_amount - sub_limit
-            approved_amount = min(
-                approved_amount,
-                sub_limit
-            )
-            
+        
+        print("Excluded Items ", approved_amount)
+        
         # Per - Claim Limits
         per_claim_limit = (
             policy.coverage.get(
@@ -1711,6 +1726,24 @@ class FinancialAgent(BaseAgent):
                 "Per Claim Limit Check"
             )
         )
+             
+             
+        print("Per claim limit", approved_amount)  
+        # Sub-Limit
+        
+        sub_limit = category_rules.get(
+            "sub_limit"
+        )
+
+        if sub_limit:
+            if approved_amount > sub_limit:
+                output.sub_limit = approved_amount - sub_limit
+            approved_amount = min(
+                approved_amount,
+                sub_limit
+            )
+            
+        print("Sub Limit", approved_amount)
         
         # Annual Limit
 
@@ -1745,6 +1778,8 @@ class FinancialAgent(BaseAgent):
             output.annual_limit_applied = (
                 True
             )
+            
+        print("Annual Limit", approved_amount)
 
         checks.append(
             self.check_pass(
@@ -1790,6 +1825,7 @@ class FinancialAgent(BaseAgent):
                 True
             )
             
+        print("Family Limimt", approved_amount)
         checks.append(
             self.check_pass(
                 "Family Floater Limit Check"
@@ -2246,7 +2282,38 @@ class ClaimRepository(BaseAgent):
                 claim_id,
             )
         )
-        
+       
+    def submit_document(self,claim_id, documents,member_id):
+
+        if not claim_id:
+            raise ValueError("Claim Id was not initialized")
+
+        query = """
+        INSERT INTO claim_documents (
+            claim_id,
+            document_type,
+            file_name,
+            extraction_status,
+            quality_score,
+            extracted_data
+        )
+        VALUES (%s, %s, %s, %s, %s, %s)
+        RETURNING document_id;
+        """
+        file_path = f"documents/{member_id}"
+
+        for doc in documents:
+            self.fetch_one(
+                query,(
+                    claim_id,
+                    doc["classification"]["document_type"],
+                    file_path,
+                    "SUCCESS",
+                    doc.get("Quality", {}).get("score"),
+                    json.dumps(doc["document"]),
+                )
+            )
+            
 class DecisionAgent(BaseAgent):
 
     def __init__(self):
@@ -2550,8 +2617,10 @@ class ClaimProcessingPipeline:
         self,
         member_id: str,
         claim_category: str,
-        output_dir: str
+        output_dir: str,
+        testing_id: str = None,
     ):
+        self.testing_id = testing_id
         self._llm = sub_agent.llm.LLMClient()
         self.member_id = member_id
         self.claim_category = claim_category
@@ -2602,16 +2671,58 @@ class ClaimProcessingPipeline:
             output_data=output_data
         )
 
+    def _fail_early(self, step_result, output_model=None) -> bool:
+        """
+        Check if a StepResult has failed.
+        If so, collect all error details from the result and output model,
+        store them in self.response["error"], call _generate_message(), and return True.
+        Returns False if the step passed (caller should continue).
+        """
+        if step_result and not step_result.passed:
+            # Gather all issues from the output model if available
+            issues = []
+
+            # Primary reason from the step result
+            if step_result.reason:
+                issues.append(step_result.reason)
+
+            # Additional issues from DocumentValidationOutput
+            if output_model is not None:
+                if hasattr(output_model, "issues") and output_model.issues:
+                    for issue in output_model.issues:
+                        if issue not in issues:
+                            issues.append(issue)
+                if hasattr(output_model, "missing_document_types") and output_model.missing_document_types:
+                    issues.append(
+                        "Missing required documents: "
+                        + ", ".join(output_model.missing_document_types)
+                    )
+                if hasattr(output_model, "rejection_reasons") and output_model.rejection_reasons:
+                    for reason in output_model.rejection_reasons:
+                        if reason not in issues:
+                            issues.append(reason)
+
+            self.response["error_step"] = step_result.step_name
+            self.response["error_issues"] = issues
+            self.response["error"] = "\n".join(issues) if issues else "Validation failed."
+            self._generate_message()
+            return True
+        return False
+
     def run(self):
         try:
             self._validate_member()
+            if self._fail_early(self.member_result):
+                return self.response
+
             self._validate_policy()
+            if self._fail_early(self.policy_result):
+                return self.response
+
             self._load_documents()
             self._validate_documents()
-            if not self.document_output.validation_passed:
-                raise ValueError(
-                    "; ".join(map(str, self.document_output.issues))
-                )
+            if self._fail_early(self.document_result, self.document_output):
+                return self.response
                                 
             repo = ClaimRepository()
             self.claim_id = repo.create_claim(
@@ -2627,6 +2738,12 @@ class ClaimProcessingPipeline:
                     "claim_category": self.claim_category
                 },
                 output_data=self.response["document"]
+            )
+            
+            repo.submit_document(
+                claim_id=self.claim_id,
+                documents=self.documents,
+                member_id=self.member_id
             )
             
             self._validate_coverage()
@@ -2662,10 +2779,10 @@ class ClaimProcessingPipeline:
             )
             self._save_output()
         except Exception as e:
-            print("last",e)
+            print("Unexpected pipeline error:", e)
             self.response["error"] = str(e)
+            self.response["error_issues"] = [str(e)]
             self._generate_message()
-            
             
         return self.response
 
@@ -2722,6 +2839,10 @@ class ClaimProcessingPipeline:
         document_dir = Path(
             f"./documents/{self.member_id}"
         )
+        if self.testing_id:
+            document_dir = Path(
+                f"./documents/{self.testing_id}"
+            )
 
         if not document_dir.exists():
             document_requirements = (
@@ -2921,39 +3042,44 @@ class ClaimProcessingPipeline:
         print(f"Output saved to {output_file}")
     
     def _generate_message(self):
+        # Collect all issues — prefer the full list, fallback to single error string
+        issues: list[str] = self.response.get("error_issues") or [self.response.get("error", "")]
+        issues_text = "\n".join(f"- {i}" for i in issues if i)
+        step_name = self.response.get("error_step", "Unknown Step")
+
         messages = [
-    {
-        "role": "system",
-        "content": """
+            {
+                "role": "system",
+                "content": """
 You are a Health Insurance Claim Assistant.
 
-Your job is to explain claim processing errors in simple language.
+Your job is to explain claim processing errors in simple, customer-friendly language.
 
 Rules:
-
-- Explain the actual error.
+- Explain ALL the issues listed — do not skip any.
 - Do not give generic IT troubleshooting steps.
-- Do not mention system configuration.
-- Do not mention administrators.
+- Do not mention system configuration or administrators.
 - Do not invent causes.
 - Use only the information provided.
-- Keep the response under 50 words.
+- Keep the response under 80 words.
 - If the error is caused by missing or invalid claim data, explain exactly which data is missing or invalid.
+- If multiple issues exist, list them briefly.
 - If the error is unclear, state that the claim could not be processed and mention the reported error.
 """
-    },
-    {
-        "role": "user",
-        "content": f"""
-Claim Processing Error:
+            },
+            {
+                "role": "user",
+                "content": f"""The claim failed at step: {step_name}
 
-{self.response["error"]}
-"""
-    }
-]
-        response = self._llm.call_llm(
-            messages)
-        
+The following issues were found:
+
+{issues_text}
+
+Please explain this to the customer in simple language."""
+            }
+        ]
+
+        response = self._llm.call_llm(messages)
         print(f"An Error Response:\n {response}")
         self.response["error_message"] = response
         return response

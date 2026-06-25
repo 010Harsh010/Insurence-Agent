@@ -1,0 +1,39 @@
+{
+    "classification": {
+        "document_type": "HOSPITAL_BILL",
+        "confidence": 0.99,
+        "reasoning": "The document contains a bill number, date, patient name, and a breakdown of charges with amounts, which are typical characteristics of a hospital bill."
+    },
+    "document": {
+        "document_type": "HOSPITAL_BILL",
+        "patient_name": "Anita Desai",
+        "doctor_name": null,
+        "doctor_registration": null,
+        "diagnosis": null,
+        "hospital_name": "Metro Health Clinic",
+        "date": "2026-06-20",
+        "total_amount": 8000.0,
+        "medicines": [],
+        "line_items": [
+            {
+                "quantity": null,
+                "description": "Bariatric Consultation",
+                "maker": null,
+                "batch_number": null,
+                "expiry_date": null,
+                "amount": 3000.0
+            },
+            {
+                "quantity": null,
+                "description": "Personalised Diet and Nutrition Program",
+                "maker": null,
+                "batch_number": null,
+                "expiry_date": null,
+                "amount": 5000.0
+            }
+        ],
+        "tests_ordered": [],
+        "confidence": 0.9
+    },
+    "markdown": "## METRO HEALTH CLINIC\n\nKolkata, West Bengal\n\nPh: +91-33-45678900\n\n## HOSPITAL BILL\n\nBill No:\n\nMHC/2024/1018\n\nDate:\n\n20-06-2026\n\nPatient Name:\n\nAnita Desai\n\n| Description                             |   Amount () |\n|-----------------------------------------|-------------|\n| Bariatric Consultation                  |    3,000.00 |\n| Personalised Diet and Nutrition Program |    5,000.00 |\n| Total Amount                            |    8,000.00 |\n\nPayment Mode: UPI\n\nAuthorized Signatory\n\nMetro Health Clinic"
+}

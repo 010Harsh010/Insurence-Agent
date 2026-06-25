@@ -1,0 +1,31 @@
+{
+    "classification": {
+        "document_type": "HOSPITAL_BILL",
+        "confidence": 0.99,
+        "reasoning": "The document title and multiple sections explicitly state 'HOSPITAL BILL', includes billing details such as bill number, date, patient information, service description, quantities, and amounts, which are characteristic of a hospital billing document."
+    },
+    "document": {
+        "document_type": "HOSPITAL_BILL",
+        "patient_name": "Suresh Patil",
+        "doctor_name": "Dr. Venkat Rao",
+        "doctor_registration": null,
+        "diagnosis": "suspected lumbar disc herniation",
+        "hospital_name": "PRECISION HOSPITAL",
+        "date": "2026-06-20",
+        "total_amount": 15000.0,
+        "medicines": [],
+        "line_items": [
+            {
+                "quantity": 1,
+                "description": "MRI Lumbar Spine",
+                "maker": null,
+                "batch_number": null,
+                "expiry_date": null,
+                "amount": 15000.0
+            }
+        ],
+        "tests_ordered": [],
+        "confidence": 0.98
+    },
+    "markdown": "## HOSPITAL BILL\n\nDiagnostic Service Charges\n\n## PRECISION HOSPITAL\n\nNABL Accredited Diagnostic Centre Hyderabad, Telangana\n\nGSTIN: 36ABCDE1234F1Z7\n\nPhone: +91-40-44556677\n\n| Bill Number      | MRI-INV-2026-218   |\n|------------------|--------------------|\n| Bill Date        | 20-Jun-2026        |\n| Patient Name     | Suresh Patil       |\n| Patient ID       | MRI-10218          |\n| Referring Doctor | Dr. Venkat Rao     |\n\n## Diagnostic Services\n\n|   S.No | Service Description   | Qty         |   Amount () |\n|--------|-----------------------|-------------|-------------|\n|      1 | MRI Lumbar Spine      | 1           |       15000 |\n|        |                       | Grand Total |       15000 |\n\n## Clinical Reference\n\nMRI Lumbar Spine performed as advised by treating orthopedic specialist for evaluation of suspected lumbar disc herniation.\n\n## Document Type: HOSPITAL BILL"
+}

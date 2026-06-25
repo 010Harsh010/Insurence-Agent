@@ -1,0 +1,39 @@
+{
+    "classification": {
+        "document_type": "HOSPITAL_BILL",
+        "confidence": 0.99,
+        "reasoning": "The document is titled 'HOSPITAL BILL' and contains billing details such as Bill No, Bill Date, patient information, itemized charges, total amount, payment status, and an authorized signatory, which are characteristic elements of a hospital (or clinic) bill."
+    },
+    "document": {
+        "document_type": "HOSPITAL_BILL",
+        "patient_name": "Priya Singh",
+        "doctor_name": "Dr. Rohan Mehta",
+        "doctor_registration": null,
+        "diagnosis": null,
+        "hospital_name": "Smile Clinic",
+        "date": "2026-06-20",
+        "total_amount": 12000.0,
+        "medicines": [],
+        "line_items": [
+            {
+                "quantity": null,
+                "description": "Root Canal Treatment",
+                "maker": null,
+                "batch_number": null,
+                "expiry_date": null,
+                "amount": 8000.0
+            },
+            {
+                "quantity": null,
+                "description": "Teeth Whitening",
+                "maker": null,
+                "batch_number": null,
+                "expiry_date": null,
+                "amount": 4000.0
+            }
+        ],
+        "tests_ordered": [],
+        "confidence": 0.97
+    },
+    "markdown": "## SMILE CLINIC\n\nBengaluru, Karnataka\n\n## HOSPITAL BILL\n\nBill No: SDC/2024/1015 Bill Date: 20-06-2026 Patient Name: Priya Singh Patient ID: EMP002 Treating Dentist: Dr. Rohan Mehta Department: Dental Care\n\n| Description          |   Amount () |\n|----------------------|-------------|\n| Root Canal Treatment |       8,000 |\n| Teeth Whitening      |       4,000 |\n| Total Amount         |      12,000 |\n\n## Amount Paid: 12,000 Payment Mode: UPI Payment Status: PAID\n\n## Authorized Signatory\n\n## Smile Clinic"
+}

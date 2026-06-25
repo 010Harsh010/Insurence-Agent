@@ -21,6 +21,10 @@ import {
   Trash2,
   DatabaseZap,
   FileUp,
+  FlaskConical,
+  Play,
+  ChevronRight,
+  ArrowLeft,
 } from "lucide-react";
 
 const BASE_URL = ""; // Vite proxy forwards /chat and /upload to Flask:8000
@@ -835,6 +839,598 @@ const isUpdateClaimQuery = (text) => {
   );
 };
 
+// ─── Test Page ───────────────────────────────────────────────────────────────
+
+// ── Sub-components for the rich test card ──────────────────────────────────
+
+const StatusPill = ({ passed, label }) => (
+  <span className={`tc-status-pill tc-status-pill--${passed ? "pass" : "fail"}`}>
+    {passed ? <CheckCircle size={11} /> : <XCircle size={11} />}
+    {label || (passed ? "PASSED" : "FAILED")}
+  </span>
+);
+
+const ConfidenceBar = ({ value }) => {
+  const pct = Math.round((value ?? 0) * 100);
+  return (
+    <div className="tc-conf-wrap">
+      <div className="tc-conf-bar">
+        <div className="tc-conf-fill" style={{ width: `${pct}%`, background: pct === 100 ? "#22c55e" : pct >= 60 ? "#f59e0b" : "#ef4444" }} />
+      </div>
+      <span className="tc-conf-label">{pct}%</span>
+    </div>
+  );
+};
+
+/** Member info table */
+const MemberTable = ({ member }) => {
+  if (!member) return null;
+  const rows = [
+    ["Member ID", member.member_id],
+    ["Name", member.name],
+    ["Policy ID", member.policy_id],
+    ["Relationship", member.relationship],
+    ["Join Date", member.join_date],
+    ["Primary Member", member.primary_member_id ?? "—"],
+  ];
+  return (
+    <table className="tc-table">
+      <tbody>
+        {rows.map(([k, v]) => (
+          <tr key={k} className="tc-table__row">
+            <td className="tc-table__key">{k}</td>
+            <td className="tc-table__val">{String(v)}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+};
+
+/** Validation step table — shows ALL *_result keys dynamically */
+const ValidationStepsTable = ({ actual }) => {
+  // Pick every key that ends with "_result" and has step_name/status/passed
+  const steps = Object.entries(actual)
+    .filter(([k, v]) => k.endsWith("_result") && v && typeof v === "object" && "step_name" in v)
+    .map(([, v]) => v);
+  if (steps.length === 0) return <p className="tc-empty">No validation step data.</p>;
+
+  return (
+    <div className="tc-steps-grid">
+      {steps.map((step, i) => (
+        <div key={i} className={`tc-step-card tc-step-card--${step.passed ? "pass" : "fail"}`}>
+          <div className="tc-step-card__header">
+            <span className="tc-step-card__name">{step.step_name}</span>
+            <StatusPill passed={step.passed} />
+          </div>
+          <ConfidenceBar value={step.confidence} />
+          {step.reason && <p className="tc-step-card__reason">{step.reason}</p>}
+          {/* Sub-checks table */}
+          {step.checks && step.checks.length > 0 && (
+            <div className="tc-table-wrap">
+              <table className="tc-table tc-table--sm">
+                <thead>
+                  <tr>
+                    <th className="tc-table__th">Check</th>
+                    <th className="tc-table__th">Status</th>
+                    <th className="tc-table__th">Confidence</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {step.checks.map((ch, ci) => (
+                    <tr key={ci} className="tc-table__row">
+                      <td className="tc-table__key">{ch.check_name}</td>
+                      <td className="tc-table__val"><StatusPill passed={ch.passed} label={ch.status} /></td>
+                      <td className="tc-table__val"><ConfidenceBar value={ch.confidence} /></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+};
+
+/** Document info table */
+const DocumentTable = ({ docData }) => {
+  if (!docData) return null;
+  return (
+    <div className="tc-doc-grid">
+      <table className="tc-table">
+        <tbody>
+          <tr className="tc-table__row">
+            <td className="tc-table__key">Patient</td>
+            <td className="tc-table__val">{docData.patient_name ?? "—"}</td>
+          </tr>
+          <tr className="tc-table__row">
+            <td className="tc-table__key">Hospital</td>
+            <td className="tc-table__val">{docData.hospital_name ?? "—"}</td>
+          </tr>
+          <tr className="tc-table__row">
+            <td className="tc-table__key">Claim Category</td>
+            <td className="tc-table__val">{docData.inferred_claim_category ?? "—"}</td>
+          </tr>
+          <tr className="tc-table__row">
+            <td className="tc-table__key">Validation</td>
+            <td className="tc-table__val"><StatusPill passed={docData.validation_passed} /></td>
+          </tr>
+        </tbody>
+      </table>
+
+      {/* Uploaded docs */}
+      {docData.uploaded_document_types?.length > 0 && (
+        <div className="tc-doc-tags">
+          <span className="tc-doc-tags__label">Uploaded Docs</span>
+          <div className="tc-tag-row">
+            {docData.uploaded_document_types.map((d, i) => (
+              <span key={i} className="tc-tag tc-tag--blue">{d}</span>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Missing docs */}
+      {docData.missing_document_types?.length > 0 && (
+        <div className="tc-doc-tags">
+          <span className="tc-doc-tags__label tc-doc-tags__label--warn">Missing Docs</span>
+          <div className="tc-tag-row">
+            {docData.missing_document_types.map((d, i) => (
+              <span key={i} className="tc-tag tc-tag--red">{d}</span>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Warnings */}
+      {docData.warnings?.length > 0 && (
+        <div className="tc-warn-list">
+          {docData.warnings.map((w, i) => (
+            <div key={i} className="tc-warn-item">
+              <AlertCircle size={12} className="tc-warn-icon" />
+              <span>{w}</span>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Issues */}
+      {docData.issues?.length > 0 && (
+        <div className="tc-issue-list">
+          {docData.issues.map((w, i) => (
+            <div key={i} className="tc-issue-item">
+              <XCircle size={12} className="tc-issue-icon" />
+              <span>{w}</span>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+// ─── Error Boundary (prevents one bad card blanking the whole page) ────────
+class CardErrorBoundary extends React.Component {
+  constructor(props) { super(props); this.state = { hasError: false, msg: "" }; }
+  static getDerivedStateFromError(err) { return { hasError: true, msg: err?.message || "Render error" }; }
+  componentDidCatch() {}
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="tc-error-box" style={{ margin: "10px 0" }}>
+          <AlertCircle size={14} />
+          <span>Card render failed: {this.state.msg}</span>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
+/** Normalize decision: actual.decision can be a plain string OR a {decision:"APPROVED",...} object */
+const normalizeDecision = (raw) => {
+  if (!raw) return { str: null, obj: null };
+  if (typeof raw === "string") return { str: raw, obj: null };
+  if (typeof raw === "object" && raw !== null) {
+    return { str: raw.decision || null, obj: raw };
+  }
+  return { str: String(raw), obj: null };
+};
+
+/** Expected vs Actual comparison table — handles decision as string or object */
+const OutcomeComparisonTable = ({ expected, actual }) => {
+  const expDecision = expected.decision;    // always null or string in the JSON
+  const { str: actStr, obj: actObj } = normalizeDecision(actual.decision);
+
+  // Match logic: expected null means "no decision expected", match if actual also has none
+  const decisionMatch =
+    (expDecision == null && !actStr) ||
+    (typeof expDecision === "string" && expDecision === actStr);
+
+  const fmt = (n) =>
+    n != null ? `₹${Number(n).toLocaleString("en-IN", { minimumFractionDigits: 0 })}` : "—";
+
+  return (
+    <div className="tc-outcome-grid">
+      {/* Expected column */}
+      <div className="tc-outcome-col tc-outcome-col--exp">
+        <div className="tc-outcome-col__header">
+          <span className="tc-outcome-col__label">🎯 Expected</span>
+        </div>
+        <table className="tc-table">
+          <tbody>
+            <tr className="tc-table__row">
+              <td className="tc-table__key">Decision</td>
+              <td className="tc-table__val">
+                {expDecision == null
+                  ? <span className="tc-null-pill">No decision expected</span>
+                  : <span className="tc-decision-pill">{expDecision}</span>}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        {expected.system_must?.length > 0 && (
+          <>
+            <div className="tc-outcome-subsection">System Must</div>
+            <ul className="tc-must-list">
+              {expected.system_must.map((m, i) => (
+                <li key={i} className="tc-must-item">
+                  <ChevronRight size={11} className="tc-must-arrow" />
+                  {m}
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
+      </div>
+
+      {/* Actual column */}
+      <div className={`tc-outcome-col tc-outcome-col--act${decisionMatch ? " tc-outcome-col--match" : " tc-outcome-col--mismatch"}`}>
+        <div className="tc-outcome-col__header">
+          <span className="tc-outcome-col__label">⚡ Actual</span>
+          {decisionMatch
+            ? <span className="tc-match-badge tc-match-badge--ok">✓ Match</span>
+            : <span className="tc-match-badge tc-match-badge--fail">✗ Mismatch</span>}
+        </div>
+        <table className="tc-table">
+          <tbody>
+            <tr className="tc-table__row">
+              <td className="tc-table__key">Decision</td>
+              <td className="tc-table__val">
+                {actStr
+                  ? <span className={`tc-decision-pill tc-decision-pill--${actStr.toLowerCase().replace(/_/g, "-")}`}>{actStr}</span>
+                  : <span className="tc-null-pill">No decision returned</span>}
+              </td>
+            </tr>
+            {/* For object decisions: show financials */}
+            {actObj?.approved_amount != null && (
+              <tr className="tc-table__row">
+                <td className="tc-table__key">Approved</td>
+                <td className="tc-table__val" style={{ color: "var(--green)", fontWeight: 600 }}>
+                  {fmt(actObj.approved_amount)}
+                </td>
+              </tr>
+            )}
+            {actObj?.claimed_amount != null && (
+              <tr className="tc-table__row">
+                <td className="tc-table__key">Claimed</td>
+                <td className="tc-table__val">{fmt(actObj.claimed_amount)}</td>
+              </tr>
+            )}
+            {actObj?.fraud_score != null && (
+              <tr className="tc-table__row">
+                <td className="tc-table__key">Fraud Score</td>
+                <td className="tc-table__val">{(actObj.fraud_score * 100).toFixed(0)}%</td>
+              </tr>
+            )}
+            {/* Error step/message for failed pipelines */}
+            {actual.error_step && (
+              <tr className="tc-table__row">
+                <td className="tc-table__key">Failed Step</td>
+                <td className="tc-table__val tc-table__val--warn">{actual.error_step}</td>
+              </tr>
+            )}
+            {actual.error_message && (
+              <tr className="tc-table__row">
+                <td className="tc-table__key">Error Message</td>
+                <td className="tc-table__val tc-table__val--error">{actual.error_message}</td>
+              </tr>
+            )}
+            {/* Explanation from decision object */}
+            {actObj?.explanation && (
+              <tr className="tc-table__row">
+                <td className="tc-table__key">Explanation</td>
+                <td className="tc-table__val" style={{ fontSize: "11px", lineHeight: 1.5 }}>{actObj.explanation}</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+        {actual.error_issues?.length > 0 && (
+          <div className="tc-issue-list">
+            {actual.error_issues.map((e, i) => (
+              <div key={i} className="tc-issue-item">
+                <XCircle size={11} className="tc-issue-icon" />
+                <span>{e}</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+const TestCaseCard = ({ result, index }) => {
+  const [expanded, setExpanded] = useState(false);
+  const hasError = Boolean(result.error);
+  const expected = result.expected || {};
+  const actual = result.actual || {};
+
+  return (
+    <div className="tc-card">
+      {/* Header — no pass/fail badge, just case ID */}
+      <button className="tc-header" onClick={() => setExpanded(v => !v)}>
+        <div className="tc-badge tc-badge--neutral">
+          <FileText size={14} />
+          <span>{result.case_id}</span>
+        </div>
+        {hasError && (
+          <span className="tc-err-pill">Pipeline Error</span>
+        )}
+        <ChevronRight
+          size={16}
+          className={`tc-chevron${expanded ? " tc-chevron--open" : ""}`}
+        />
+      </button>
+
+      {/* Expanded body */}
+      {expanded && (
+        <div className="tc-body">
+          {/* Pipeline error banner */}
+          {hasError && (
+            <div className="tc-error-box">
+              <AlertCircle size={14} />
+              <span>{result.error}</span>
+            </div>
+          )}
+
+          {/* ── Section 1: Outcome Comparison ── */}
+          <div className="tc-section">
+            <div className="tc-section__title">
+              <ShieldCheck size={14} className="tc-section__icon" />
+              Outcome Comparison
+            </div>
+            <OutcomeComparisonTable expected={expected} actual={actual} />
+          </div>
+
+          {/* ── Section 2: Member Information ── */}
+          {actual.member && (
+            <div className="tc-section">
+              <div className="tc-section__title">
+                <User size={14} className="tc-section__icon" />
+                Member Information
+              </div>
+              <MemberTable member={actual.member} />
+            </div>
+          )}
+
+          {/* ── Section 3: Validation Pipeline ── */}
+          <div className="tc-section">
+            <div className="tc-section__title">
+              <CheckCircle size={14} className="tc-section__icon" />
+              Validation Pipeline
+            </div>
+            <ValidationStepsTable actual={actual} />
+          </div>
+
+          {/* ── Section 4: Document Info ── */}
+          {actual.document && (
+            <div className="tc-section">
+              <div className="tc-section__title">
+                <FileText size={14} className="tc-section__icon" />
+                Document Details
+              </div>
+              <DocumentTable docData={actual.document} />
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
+
+const TestPage = ({ onBack }) => {
+  const [status, setStatus]   = useState("idle"); // idle | loading | running | done | error
+  const [results, setResults] = useState(null);
+  const [errMsg, setErrMsg]   = useState("");
+  const [stdout, setStdout]   = useState("");
+  const [stderr, setStderr]   = useState("");
+  const [showLogs, setShowLogs] = useState(false);
+
+  // Load existing results on mount
+  useEffect(() => {
+    setStatus("loading");
+    fetch("/test")
+      .then(r => r.json())
+      .then(d => {
+        if (d.success) { setResults(d.results); setStatus("done"); }
+        else { setStatus("idle"); }
+      })
+      .catch(() => setStatus("idle"));
+  }, []);
+
+  const runTests = async () => {
+    setStatus("running");
+    setErrMsg("");
+    setStdout("");
+    setStderr("");
+    try {
+      const res = await fetch("/test", { method: "POST" });
+      const data = await res.json();
+      if (data.success) {
+        setResults(data.results);
+        setStdout(data.stdout || "");
+        setStderr(data.stderr || "");
+        setStatus("done");
+      } else {
+        setErrMsg(data.message || "Test run failed");
+        setStdout(data.stdout || "");
+        setStderr(data.stderr || "");
+        setStatus("error");
+      }
+    } catch (e) {
+      setErrMsg(`Could not reach backend: ${e.message}`);
+      setStatus("error");
+    }
+  };
+
+  const passed  = results ? results.filter(r => {
+    if (r.error) return false;
+    const exp = r.expected?.decision;
+    const act = r.actual?.decision;
+    if (exp === null || exp === undefined) return !act;
+    return exp === act;
+  }).length : 0;
+  const total   = results?.length || 0;
+  const failed  = total - passed;
+
+  return (
+    <div className="tp-shell">
+      {/* Header */}
+      <header className="app-header">
+        <div className="app-header__brand">
+          <button className="tp-back-btn" onClick={onBack} title="Back to chat">
+            <ArrowLeft size={16} />
+          </button>
+          <div className="brand-icon">
+            <FlaskConical size={18} />
+          </div>
+          <div>
+            <h1 className="brand-title">Test Suite Runner</h1>
+            <p className="brand-sub">Backend pipeline integration tests</p>
+          </div>
+        </div>
+        <div className="app-header__status">
+          {status === "done" && results && (
+            <>
+              <span className="tp-stat tp-stat--pass">{passed} passed</span>
+              {failed > 0 && <span className="tp-stat tp-stat--fail">{failed} failed</span>}
+            </>
+          )}
+          <button
+            className={`tp-run-btn${status === "running" ? " tp-run-btn--busy" : ""}`}
+            onClick={runTests}
+            disabled={status === "running" || status === "loading"}
+          >
+            {status === "running" ? (
+              <><Loader2 size={14} className="animate-spin" /> Running…</>
+            ) : (
+              <><Play size={14} /> Run Tests</>
+            )}
+          </button>
+        </div>
+      </header>
+
+      {/* Body */}
+      <div className="tp-body">
+        {/* Loading skeleton */}
+        {(status === "loading" || status === "running") && (
+          <div className="tp-center">
+            <Loader2 size={36} className="animate-spin tp-spinner" />
+            <p className="tp-loading-text">
+              {status === "loading" ? "Loading existing results…" : "Running test suite, please wait…"}
+            </p>
+          </div>
+        )}
+
+        {/* Error */}
+        {status === "error" && (
+          <div className="tp-error-banner">
+            <AlertCircle size={18} />
+            <div>
+              <p className="tp-error-banner__title">Test Run Failed</p>
+              <p className="tp-error-banner__msg">{errMsg}</p>
+            </div>
+          </div>
+        )}
+
+        {/* Results */}
+        {(status === "done" || (status === "error" && results)) && results && (
+          <>
+            {/* Summary bar */}
+            <div className="tp-summary">
+              <div className="tp-summary__item">
+                <span className="tp-summary__num">{total}</span>
+                <span className="tp-summary__label">Total</span>
+              </div>
+              <div className="tp-summary__item tp-summary__item--pass">
+                <span className="tp-summary__num">{passed}</span>
+                <span className="tp-summary__label">Passed</span>
+              </div>
+              <div className="tp-summary__item tp-summary__item--fail">
+                <span className="tp-summary__num">{failed}</span>
+                <span className="tp-summary__label">Failed</span>
+              </div>
+              <div className="tp-summary__progress">
+                <div
+                  className="tp-summary__bar"
+                  style={{ width: total ? `${(passed / total) * 100}%` : "0%" }}
+                />
+              </div>
+            </div>
+
+            {/* Cards */}
+            <div className="tp-cards">
+              {results.map((r, i) => (
+                <CardErrorBoundary key={r.case_id || i}>
+                  <TestCaseCard result={r} index={i} />
+                </CardErrorBoundary>
+              ))}
+            </div>
+
+            {/* Logs toggle */}
+            {(stdout || stderr) && (
+              <div className="tp-logs-wrap">
+                <button className="tp-logs-toggle" onClick={() => setShowLogs(v => !v)}>
+                  <ChevronRight size={14} className={showLogs ? "tc-chevron--open" : ""} />
+                  {showLogs ? "Hide" : "Show"} stdout / stderr
+                </button>
+                {showLogs && (
+                  <div className="tp-logs">
+                    {stdout && (
+                      <>
+                        <div className="tp-logs__label">stdout</div>
+                        <pre className="tp-logs__pre">{stdout}</pre>
+                      </>
+                    )}
+                    {stderr && (
+                      <>
+                        <div className="tp-logs__label tp-logs__label--err">stderr</div>
+                        <pre className="tp-logs__pre tp-logs__pre--err">{stderr}</pre>
+                      </>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+          </>
+        )}
+
+        {/* Idle state */}
+        {status === "idle" && (
+          <div className="tp-center">
+            <div className="tp-idle-icon"><FlaskConical size={40} /></div>
+            <p className="tp-idle-title">No results yet</p>
+            <p className="tp-idle-sub">Click <strong>Run Tests</strong> to execute the test suite.</p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
 // ─── Main App ────────────────────────────────────────────────────────────────
 const App = () => {
   const [messages, setMessages] = useState([
@@ -1189,6 +1785,12 @@ const App = () => {
     if (dropped.length) handleFileSelect(dropped);
   };
 
+  const [page, setPage] = useState("chat"); // "chat" | "test"
+
+  if (page === "test") {
+    return <TestPage onBack={() => setPage("chat")} />;
+  }
+
   return (
     <div className="app-shell">
       {/* ── Header ── */}
@@ -1207,6 +1809,14 @@ const App = () => {
           <div className="status-dot" />
           <span>Online</span>
           <div className="member-pill">{memberId || "—"}</div>
+          <button
+            className="tp-nav-btn"
+            onClick={() => setPage("test")}
+            title="Test Suite"
+          >
+            <FlaskConical size={14} />
+            <span>Tests</span>
+          </button>
         </div>
       </header>
 

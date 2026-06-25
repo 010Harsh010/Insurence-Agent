@@ -1,0 +1,41 @@
+{
+    "classification": {
+        "document_type": "HOSPITAL_BILL",
+        "confidence": 0.99,
+        "reasoning": "The document contains a tax invoice number, patient name, patient ID, and itemized charges, which are typical components of a hospital bill."
+    },
+    "document": {
+        "document_type": "HOSPITAL_BILL",
+        "patient_name": "Deepak Shah",
+        "doctor_name": "Dr. S. Iyer",
+        "doctor_registration": null,
+        "diagnosis": null,
+        "hospital_name": "APOLLO HOSPITALS",
+        "date": "2026-06-20",
+        "total_amount": 4500.0,
+        "medicines": [
+            "Medicines"
+        ],
+        "line_items": [
+            {
+                "quantity": null,
+                "description": "Consultation Fee",
+                "maker": null,
+                "batch_number": null,
+                "expiry_date": null,
+                "amount": 1500.0
+            },
+            {
+                "quantity": null,
+                "description": "Medicines",
+                "maker": null,
+                "batch_number": null,
+                "expiry_date": null,
+                "amount": 3000.0
+            }
+        ],
+        "tests_ordered": [],
+        "confidence": 0.95
+    },
+    "markdown": "| APOLLO HOSPITALS             |\n|------------------------------|\n| Bannerghatta Road, Bengaluru |\n| GSTIN: 29APOLLO1234F1Z5      |\n| Phone: +91-80-71791000       |\n\n## TAX INVOICE\n\n| Invoice Number   | APH-2026-10245   |\n|------------------|------------------|\n| Invoice Date     | 20-Jun-2026      |\n| Patient Name     | Deepak Shah      |\n| Patient ID       | AP-2026-45812    |\n| Referring Doctor | Dr. S. Iyer      |\n\n## Itemized Charges\n\n|   S.No | Description      |   Amount |\n|--------|------------------|----------|\n|      1 | Consultation Fee |     1500 |\n|      2 | Medicines        |     3000 |\n\n| Subtotal    |   4500 |\n|-------------|--------|\n| GST         |      0 |\n| Grand Total |   4500 |"
+}

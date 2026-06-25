@@ -1,0 +1,39 @@
+{
+    "classification": {
+        "document_type": "HOSPITAL_BILL",
+        "confidence": 0.92,
+        "reasoning": "The document is a tax invoice from a medical clinic listing a consultation service and medicines, which aligns with a hospital billing statement rather than a prescription or lab report."
+    },
+    "document": {
+        "document_type": "HOSPITAL_BILL",
+        "patient_name": "Ravi Menon",
+        "doctor_name": "Dr. S. Khan",
+        "doctor_registration": null,
+        "diagnosis": null,
+        "hospital_name": "NEUROCARE CLINIC",
+        "date": "2026-06-20",
+        "total_amount": 4800.0,
+        "medicines": [],
+        "line_items": [
+            {
+                "quantity": null,
+                "description": "Neurology Consultation",
+                "maker": null,
+                "batch_number": null,
+                "expiry_date": null,
+                "amount": 1800.0
+            },
+            {
+                "quantity": null,
+                "description": "Medicines",
+                "maker": null,
+                "batch_number": null,
+                "expiry_date": null,
+                "amount": 3000.0
+            }
+        ],
+        "tests_ordered": [],
+        "confidence": 0.97
+    },
+    "markdown": "| NEUROCARE CLINIC       |\n|------------------------|\n| Bengaluru              |\n| GSTIN: 29ABCDE5678F1Z2 |\n\n## TAX INVOICE\n\n| Invoice Number   | NC-2026-09121   |\n|------------------|-----------------|\n| Invoice Date     | 20-Jun-2026     |\n| Patient Name     | Ravi Menon      |\n| Referring Doctor | Dr. S. Khan     |\n\n|   S.No | Description            |   Amount |\n|--------|------------------------|----------|\n|      1 | Neurology Consultation |     1800 |\n|      2 | Medicines              |     3000 |\n\n| Subtotal    |   4800 |\n|-------------|--------|\n| GST         |      0 |\n| Grand Total |   4800 |"
+}

@@ -29,7 +29,6 @@ REQUIRED_FIELDS = {
 
     DocumentType.PRESCRIPTION: [
         "patient_name",
-        "doctor_name",
         "diagnosis",
     ],
 
@@ -497,7 +496,7 @@ DOCUMENT CONTENT:
         path: str
     ):
             suffix = Path(path).suffix.lower()
-
+            quality_result = None
             if suffix != ".pdf":
                 print("Start Quality")
                 agent = QualityAgent()
@@ -533,10 +532,13 @@ DOCUMENT CONTENT:
             if not result.is_valid:
                 raise ValueError(f"Required Fields Missing: {result.missing_fields}")
             
-            return {
-                    "Quality": quality_result.model_dump(mode="json"),
+            res =  {
                     "classification": classification.model_dump(mode="json"),
                     "document": extracted.model_dump(mode="json"),                    
                     "markdown": markdown
             }
         
+            if quality_result:
+                res["Quality"] = quality_result.model_dump(mode="json")
+                
+            return res

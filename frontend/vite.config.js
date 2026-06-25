@@ -18,6 +18,7 @@ export default defineConfig({
       '/resetDB':     { target: backendTarget, changeOrigin: true },
       '/addPolicy':   { target: backendTarget, changeOrigin: true },
       '/member':      { target: backendTarget, changeOrigin: true },
+      '/test':        { target: backendTarget, changeOrigin: true },
     },
   },
 })
