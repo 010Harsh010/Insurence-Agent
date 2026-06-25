@@ -1,17 +1,17 @@
 {
     "classification": {
         "document_type": "DENTAL_REPORT",
-        "confidence": 0.92,
-        "reasoning": "The document is a dental treatment bill from a dental clinic, containing patient details, procedures performed, and payment information. While it is a billing document, the closest matching category among the provided options is DENTAL_REPORT, as it pertains specifically to dental services."
+        "confidence": 0.99,
+        "reasoning": "The document contains keywords like 'Dental Care & Oral Health Centre', 'DENTAL TREATMENT BILL', 'Treating Dentist', 'Department: Dental Care', and 'Case Type: Endodontic Treatment', which are specific to dental care and treatment, indicating that it is a dental report."
     },
     "document": {
         "document_type": "DENTAL_REPORT",
         "patient_name": "Priya Singh",
-        "doctor_name": null,
+        "doctor_name": "Dr. Rohan Mehta",
         "doctor_registration": null,
         "diagnosis": null,
         "hospital_name": "Smile Dental Clinic",
-        "date": "2024-10-15",
+        "date": "2026-06-20",
         "total_amount": 12000.0,
         "medicines": [],
         "line_items": [
@@ -35,5 +35,5 @@
         "tests_ordered": [],
         "confidence": 0.98
     },
-    "markdown": "## Smile Dental Clinic\n\n45 Residency Road, Bengaluru - 560025 Ph: +91-80-45678901\n\n## DENTAL TREATMENT BILL\n\nBill No: SDC/2024/1015 Date: 15-Oct-2024 Patient Name: Priya Singh\n\nAge/Gender:\n\n34 / Female\n\n| Description          |   Amount () |\n|----------------------|-------------|\n| Root Canal Treatment |    8,000.00 |\n| Teeth Whitening      |    4,000.00 |\n| Total Amount         |   12,000.00 |\n\nPayment Mode: UPI\n\n## Authorized Signatory\n\n## Smile Dental Clinic"
+    "markdown": "## SMILE DENTAL CLINIC\n\nDental Care &amp; Oral Health Centre Bengaluru, Karnataka Phone: +91-80-XXXX XXXX\n\n## DENTAL TREATMENT BILL\n\nBill No:\n\nSDC/2024/1015\n\nBill Date:\n\n20-06-2026\n\nPatient Name:\n\nPriya Singh\n\nPatient ID:\n\nEMP002\n\nTreating Dentist:\n\nDr. Rohan Mehta\n\nDepartment:\n\nDental Care\n\nCase Type:\n\nEndodontic Treatment\n\nPayment Status:\n\nPAID\n\n| Description          |   Amount () |\n|----------------------|-------------|\n| Root Canal Treatment |       8,000 |\n| Teeth Whitening      |       4,000 |\n| Total Amount         |      12,000 |\n\nAmount Paid:\n\n12,000\n\nPayment Mode:\n\nUPI\n\nTransaction ID:\n\nTXN78451236\n\nReceipt Status:\n\nSUCCESSFUL\n\n## Treatment Notes\n\n- Root Canal Treatment completed on affected molar tooth.\n- Cosmetic Teeth Whitening performed as requested by patient.\n- Follow-up review advised after 7 days.\n\nAuthorized Signatory\n\nSmile Dental Clinic"
 }

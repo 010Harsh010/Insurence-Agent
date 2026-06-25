@@ -1,27 +1,27 @@
 {
     "classification": {
         "document_type": "PRESCRIPTION",
-        "confidence": 0.98,
-        "reasoning": "The document contains a structured prescription section with medication names, dosages, and administration instructions, along with patient details, chief complaint, and diagnosis. This format aligns with a typical medical prescription rather than billing, lab, or discharge summaries."
+        "confidence": 0.95,
+        "reasoning": "The document contains a prescription with medication and dosage instructions, indicating it is a prescription document."
     },
     "document": {
         "document_type": "PRESCRIPTION",
         "patient_name": "Rajesh Kumar",
-        "doctor_name": "Dr. Arun Sharma",
+        "doctor_name": "Arun Sharma",
         "doctor_registration": "KA/45678/2015",
         "diagnosis": "Viral Fever",
         "hospital_name": "City Medical Centre, Bengaluru",
         "date": "2026-06-20",
         "total_amount": null,
         "medicines": [
-            "Paracetamol 650mg - 1 tablet three times daily for 5 days",
-            "Vitamin C 500mg - once daily for 7 days"
+            "Paracetamol 650mg",
+            "Vitamin C 500mg"
         ],
         "line_items": [],
         "tests_ordered": [
             "CBC Test"
         ],
-        "confidence": 0.96
+        "confidence": 0.95
     },
     "markdown": "## Dr. Arun Sharma\n\nMBBS, MD (Internal Medicine) Reg. No: KA/45678/2015 City Medical Centre, Bengaluru\n\n| Patient Name   | Rajesh Kumar   |\n|----------------|----------------|\n| Age            | 39 Years       |\n| Gender         | Male           |\n| Date           | 20-06-2026     |\n\n## Chief Complaint\n\nFever since 3 days, body ache.\n\n## Diagnosis\n\nViral Fever\n\n## Prescription\n\n1. Paracetamol 650mg - 1 tablet three times daily for 5 days\n2. Vitamin C 500mg - once daily for 7 days\n\n## Investigations\n\nCBC Test"
 }

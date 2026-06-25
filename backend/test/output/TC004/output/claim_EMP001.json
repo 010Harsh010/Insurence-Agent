@@ -408,8 +408,8 @@
         "claimed_amount": 1500.0,
         "eligible_amount": 1500.0,
         "approved_amount": 1350.0,
-        "annual_limit_remaining": 45000.0,
-        "family_limit_remaining": 145000.0,
+        "annual_limit_remaining": 50000.0,
+        "family_limit_remaining": 150000.0,
         "per_claim_limit_applied": false,
         "annual_limit_applied": false,
         "co_pay": 150.0,
@@ -431,8 +431,8 @@
         "details": {
             "claimed_amount": 1500.0,
             "approved_amount": 1350.0,
-            "annual_remaining": 45000.0,
-            "family_remaining": 145000.0,
+            "annual_remaining": 50000.0,
+            "family_remaining": 150000.0,
             "per_claim_limit": 5000
         },
         "fatal": false,
@@ -469,7 +469,7 @@
     },
     "fraud": {
         "fraud_score": 0.0,
-        "monthly_claims_count": 2,
+        "monthly_claims_count": 1,
         "same_day_claims_count": 1,
         "manual_review_required": false,
         "warnings": []
@@ -482,7 +482,7 @@
         "reason": "Fraud validation completed.",
         "details": {
             "fraud_score": 0.0,
-            "monthly_claims": 2,
+            "monthly_claims": 1,
             "same_day_claims": 1,
             "manual_review": false,
             "warnings": []
@@ -532,7 +532,7 @@
         "approved_amount": 1350.0,
         "fraud_score": 0.0,
         "needs_manual_review": false,
-        "explanation": "Your claim was partially approved. After applying the $150 co\u2011pay, the approved amount is $1,350, reduced from the $1,500 you claimed.",
+        "explanation": "Your claim is partially approved for $1350. The amount was reduced by $150.",
         "financial_breakdown": [
             {
                 "step": "Network Hospital Discount",
@@ -572,7 +572,7 @@
             "approved_amount": 1350.0,
             "fraud_score": 0.0,
             "needs_manual_review": false,
-            "explanation": "Your claim was partially approved. After applying the $150 co\u2011pay, the approved amount is $1,350, reduced from the $1,500 you claimed.",
+            "explanation": "Your claim is partially approved for $1350. The amount was reduced by $150.",
             "financial_breakdown": [
                 {
                     "step": "Network Hospital Discount",

@@ -238,12 +238,12 @@
     },
     "document": {
         "uploaded_document_types": [
-            "PRESCRIPTION",
-            "HOSPITAL_BILL"
+            "HOSPITAL_BILL",
+            "PRESCRIPTION"
         ],
         "inferred_claim_category": "ALTERNATIVE_MEDICINE",
         "patient_name": "Kavita Nair",
-        "hospital_name": "Ayur Wellness Centre, Bengaluru",
+        "hospital_name": "AYUR WELLNESS CENTRE",
         "missing_document_types": [],
         "issues": [],
         "warnings": [],
@@ -259,11 +259,11 @@
             "claim_category": "ALTERNATIVE_MEDICINE",
             "document_count": 2,
             "uploaded_document_types": [
-                "PRESCRIPTION",
-                "HOSPITAL_BILL"
+                "HOSPITAL_BILL",
+                "PRESCRIPTION"
             ],
             "patient_name": "Kavita Nair",
-            "hospital_name": "Ayur Wellness Centre, Bengaluru",
+            "hospital_name": "AYUR WELLNESS CENTRE",
             "warnings": []
         },
         "fatal": false,
@@ -283,14 +283,14 @@
                 "details": {}
             },
             {
-                "check_name": "PRESCRIPTION Document Confidence Check",
+                "check_name": "HOSPITAL_BILL Document Confidence Check",
                 "status": "PASSED",
                 "passed": true,
                 "confidence": 1.0,
                 "details": {}
             },
             {
-                "check_name": "HOSPITAL_BILL Document Confidence Check",
+                "check_name": "PRESCRIPTION Document Confidence Check",
                 "status": "PASSED",
                 "passed": true,
                 "confidence": 1.0,
@@ -528,7 +528,7 @@
         "approved_amount": 4000.0,
         "fraud_score": 0.0,
         "needs_manual_review": false,
-        "explanation": "Your claim is approved for $4000.00.",
+        "explanation": "Your claim is approved for $4000.0.",
         "financial_breakdown": [
             {
                 "step": "Network Hospital Discount",
@@ -568,7 +568,7 @@
             "approved_amount": 4000.0,
             "fraud_score": 0.0,
             "needs_manual_review": false,
-            "explanation": "Your claim is approved for $4000.00.",
+            "explanation": "Your claim is approved for $4000.0.",
             "financial_breakdown": [
                 {
                     "step": "Network Hospital Discount",

@@ -334,8 +334,8 @@
         "minimum_amount_passed": true,
         "exclusion_found": true,
         "rejection_reasons": [
-            "EXCLUDED_CONDITION: {word}",
-            "EXCLUDED_CONDITION: {word}"
+            "EXCLUDED_CONDITION: obesity",
+            "EXCLUDED_CONDITION: bariatric"
         ]
     },
     "coverage_result": {
@@ -343,12 +343,12 @@
         "status": "FAILED",
         "passed": false,
         "confidence": 0.0,
-        "reason": "EXCLUDED_CONDITION: {word}; EXCLUDED_CONDITION: {word}",
+        "reason": "EXCLUDED_CONDITION: obesity; EXCLUDED_CONDITION: bariatric",
         "details": {
             "claim_category": "CONSULTATION",
             "rejection_reasons": [
-                "EXCLUDED_CONDITION: {word}",
-                "EXCLUDED_CONDITION: {word}"
+                "EXCLUDED_CONDITION: obesity",
+                "EXCLUDED_CONDITION: bariatric"
             ]
         },
         "fatal": true,
@@ -358,8 +358,8 @@
         "claimed_amount": 8000.0,
         "eligible_amount": 8000.0,
         "approved_amount": 2000.0,
-        "annual_limit_remaining": 44920.0,
-        "family_limit_remaining": 144920.0,
+        "annual_limit_remaining": 50000.0,
+        "family_limit_remaining": 150000.0,
         "per_claim_limit_applied": true,
         "annual_limit_applied": false,
         "co_pay": 800.0,
@@ -381,8 +381,8 @@
         "details": {
             "claimed_amount": 8000.0,
             "approved_amount": 2000,
-            "annual_remaining": 44920.0,
-            "family_remaining": 144920.0,
+            "annual_remaining": 50000.0,
+            "family_remaining": 150000.0,
             "per_claim_limit": 5000
         },
         "fatal": false,
@@ -418,13 +418,11 @@
         ]
     },
     "fraud": {
-        "fraud_score": 0.25,
-        "monthly_claims_count": 4,
-        "same_day_claims_count": 4,
-        "manual_review_required": true,
-        "warnings": [
-            "Same-day claim count (4) exceeds limit (2)."
-        ]
+        "fraud_score": 0.0,
+        "monthly_claims_count": 1,
+        "same_day_claims_count": 1,
+        "manual_review_required": false,
+        "warnings": []
     },
     "fraud_result": {
         "step_name": "Fraud Validation",
@@ -433,13 +431,11 @@
         "confidence": 1.0,
         "reason": "Fraud validation completed.",
         "details": {
-            "fraud_score": 0.25,
-            "monthly_claims": 4,
-            "same_day_claims": 4,
-            "manual_review": true,
-            "warnings": [
-                "Same-day claim count (4) exceeds limit (2)."
-            ]
+            "fraud_score": 0.0,
+            "monthly_claims": 1,
+            "same_day_claims": 1,
+            "manual_review": false,
+            "warnings": []
         },
         "fatal": false,
         "checks": [
@@ -484,9 +480,9 @@
         "decision": "REJECTED",
         "claimed_amount": 8000.0,
         "approved_amount": 2000.0,
-        "fraud_score": 0.25,
-        "needs_manual_review": true,
-        "explanation": "Your claim was rejected because the services involve conditions that are excluded from your coverage and because you submitted multiple claims on the same day, exceeding the allowed claim limit.",
+        "fraud_score": 0.0,
+        "needs_manual_review": false,
+        "explanation": "Claim rejected due to excluded conditions: obesity and bariatric.",
         "financial_breakdown": [
             {
                 "step": "Network Hospital Discount",
@@ -524,9 +520,9 @@
             "decision": "REJECTED",
             "claimed_amount": 8000.0,
             "approved_amount": 2000.0,
-            "fraud_score": 0.25,
-            "needs_manual_review": true,
-            "explanation": "Your claim was rejected because the services involve conditions that are excluded from your coverage and because you submitted multiple claims on the same day, exceeding the allowed claim limit.",
+            "fraud_score": 0.0,
+            "needs_manual_review": false,
+            "explanation": "Claim rejected due to excluded conditions: obesity and bariatric.",
             "financial_breakdown": [
                 {
                     "step": "Network Hospital Discount",

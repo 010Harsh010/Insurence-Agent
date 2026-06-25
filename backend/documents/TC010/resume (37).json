@@ -2,7 +2,7 @@
     "classification": {
         "document_type": "PRESCRIPTION",
         "confidence": 0.99,
-        "reasoning": "The document contains a doctor's header, patient details, diagnosis, a list of prescribed medications (Rx), dosage instructions, and advice\u2014all characteristic elements of a medical prescription. No billing, lab results, or discharge information is present."
+        "reasoning": "The document contains a patient's name, diagnosis, medication list (Rx), and doctor's signature, which are typical components of a prescription."
     },
     "document": {
         "document_type": "PRESCRIPTION",
@@ -14,8 +14,8 @@
         "date": "2026-06-20",
         "total_amount": null,
         "medicines": [
-            "Amoxicillin 500mg - 1 capsule three times daily for 5 days",
-            "Salbutamol Inhaler - 2 puffs as needed for wheezing"
+            "Amoxicillin 500mg",
+            "Salbutamol Inhaler"
         ],
         "line_items": [],
         "tests_ordered": [],

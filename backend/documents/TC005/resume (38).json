@@ -2,12 +2,12 @@
     "classification": {
         "document_type": "HOSPITAL_BILL",
         "confidence": 0.99,
-        "reasoning": "The document contains a header titled 'HOSPITAL BILL', includes bill number, date, patient name, consulting doctor, and an itemized list of charges with a total amount, which are typical elements of a hospital invoice."
+        "reasoning": "The document contains a hospital name, bill number, bill date, patient name, consulting doctor, and itemized charges, which are typical components of a hospital bill."
     },
     "document": {
         "document_type": "HOSPITAL_BILL",
         "patient_name": "Vikram Joshi",
-        "doctor_name": "Sunil Mehta",
+        "doctor_name": "Dr. Sunil Mehta",
         "doctor_registration": "GJ/56789/2014",
         "diagnosis": null,
         "hospital_name": "Diabetes Care Centre, Ahmedabad",
@@ -40,8 +40,10 @@
                 "amount": 1200.0
             }
         ],
-        "tests_ordered": [],
-        "confidence": 0.98
+        "tests_ordered": [
+            "Blood Sugar Evaluation"
+        ],
+        "confidence": 0.95
     },
     "markdown": "## DIABETES CARE CENTRE\n\nAhmedabad, Gujarat GSTIN: 24ABCDE1234F1Z5\n\nPhone: +91-79-44556677\n\n## HOSPITAL BILL\n\n| Bill Number             | DCC-2024-1015   |\n|-------------------------|-----------------|\n| Bill Date               | 15-Oct-2024     |\n| Patient Name            | Vikram Joshi    |\n| Consulting Doctor       | Dr. Sunil Mehta |\n| Doctor Registration No. | GJ/56789/2014   |\n\n## Itemized Charges\n\n| S.No   | Description            |   Amount () |\n|--------|------------------------|-------------|\n| 1      | Diabetes Consultation  |        1200 |\n| 2      | Blood Sugar Evaluation |         600 |\n| 3      | Follow-up Assessment   |        1200 |\n| Total  | Total                  |        3000 |\n\nHospital Name:\n\nDiabetes Care Centre, Ahmedabad"
 }

@@ -243,7 +243,7 @@
         ],
         "inferred_claim_category": "CONSULTATION",
         "patient_name": "Ravi Menon",
-        "hospital_name": "NEUROCARE CLINIC",
+        "hospital_name": "NeuroCare Clinic, Bengaluru",
         "missing_document_types": [],
         "issues": [],
         "warnings": [],
@@ -263,7 +263,7 @@
                 "HOSPITAL_BILL"
             ],
             "patient_name": "Ravi Menon",
-            "hospital_name": "NEUROCARE CLINIC",
+            "hospital_name": "NeuroCare Clinic, Bengaluru",
             "warnings": []
         },
         "fatal": false,
@@ -404,8 +404,8 @@
         "claimed_amount": 4800.0,
         "eligible_amount": 4800.0,
         "approved_amount": 2000.0,
-        "annual_limit_remaining": 36000.0,
-        "family_limit_remaining": 136000.0,
+        "annual_limit_remaining": 50000.0,
+        "family_limit_remaining": 150000.0,
         "per_claim_limit_applied": false,
         "annual_limit_applied": false,
         "co_pay": 480.0,
@@ -427,8 +427,8 @@
         "details": {
             "claimed_amount": 4800.0,
             "approved_amount": 2000,
-            "annual_remaining": 36000.0,
-            "family_remaining": 136000.0,
+            "annual_remaining": 50000.0,
+            "family_remaining": 150000.0,
             "per_claim_limit": 5000
         },
         "fatal": false,
@@ -464,14 +464,11 @@
         ]
     },
     "fraud": {
-        "fraud_score": 0.55,
-        "monthly_claims_count": 8,
-        "same_day_claims_count": 8,
-        "manual_review_required": true,
-        "warnings": [
-            "Monthly claim count (8) exceeds limit (6).",
-            "Same-day claim count (8) exceeds limit (2)."
-        ]
+        "fraud_score": 0.0,
+        "monthly_claims_count": 1,
+        "same_day_claims_count": 1,
+        "manual_review_required": false,
+        "warnings": []
     },
     "fraud_result": {
         "step_name": "Fraud Validation",
@@ -480,14 +477,11 @@
         "confidence": 1.0,
         "reason": "Fraud validation completed.",
         "details": {
-            "fraud_score": 0.55,
-            "monthly_claims": 8,
-            "same_day_claims": 8,
-            "manual_review": true,
-            "warnings": [
-                "Monthly claim count (8) exceeds limit (6).",
-                "Same-day claim count (8) exceeds limit (2)."
-            ]
+            "fraud_score": 0.0,
+            "monthly_claims": 1,
+            "same_day_claims": 1,
+            "manual_review": false,
+            "warnings": []
         },
         "fatal": false,
         "checks": [
@@ -529,12 +523,12 @@
         ]
     },
     "decision": {
-        "decision": "MANUAL_REVIEW",
+        "decision": "PARTIALLY_APPROVED",
         "claimed_amount": 4800.0,
         "approved_amount": 2000.0,
-        "fraud_score": 0.55,
-        "needs_manual_review": true,
-        "explanation": "Your claim is under manual review. Because the number of claims this month and on the same day exceed our usual limits, we need to verify the details before finalizing. We will contact you if we need more information. Thank you for your patience.",
+        "fraud_score": 0.0,
+        "needs_manual_review": false,
+        "explanation": "Your claim is partially approved for $2000, reduced from $4800 due to coverage limits.",
         "financial_breakdown": [
             {
                 "step": "Network Hospital Discount",
@@ -567,14 +561,14 @@
         "status": "PASSED",
         "passed": true,
         "confidence": 1.0,
-        "reason": "Final decision: MANUAL_REVIEW",
+        "reason": "Final decision: PARTIALLY_APPROVED",
         "details": {
-            "decision": "MANUAL_REVIEW",
+            "decision": "PARTIALLY_APPROVED",
             "claimed_amount": 4800.0,
             "approved_amount": 2000.0,
-            "fraud_score": 0.55,
-            "needs_manual_review": true,
-            "explanation": "Your claim is under manual review. Because the number of claims this month and on the same day exceed our usual limits, we need to verify the details before finalizing. We will contact you if we need more information. Thank you for your patience.",
+            "fraud_score": 0.0,
+            "needs_manual_review": false,
+            "explanation": "Your claim is partially approved for $2000, reduced from $4800 due to coverage limits.",
             "financial_breakdown": [
                 {
                     "step": "Network Hospital Discount",

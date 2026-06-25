@@ -13,49 +13,49 @@ class ClaimTest:
         self.case_id = testcase["case_id"]
         self.testcase_dir = Path(testcase_dir)
 
-        upload_folder = os.path.join(
-            "documents",
-            testcase["case_id"]
-        )
+        # upload_folder = os.path.join(
+        #     "documents",
+        #     testcase["case_id"]
+        # )
 
-        for filename in os.listdir(upload_folder):
+        # for filename in os.listdir(upload_folder):
 
-            filepath = os.path.join(
-                upload_folder,
-                filename
-            )
+        #     filepath = os.path.join(
+        #         upload_folder,
+        #         filename
+        #     )
 
-            if not os.path.isfile(filepath):
-                continue
+        #     if not os.path.isfile(filepath):
+        #         continue
 
-            ext = os.path.splitext(filename)[1].lower()
+        #     ext = os.path.splitext(filename)[1].lower()
 
-            if ext not in [".pdf", ".jpg", ".jpeg", ".png"]:
-                continue
+        #     if ext not in [".pdf", ".jpg", ".jpeg", ".png"]:
+        #         continue
 
-            response = documentAgent.process_document(
-                filepath
-            )
+        #     response = documentAgent.process_document(
+        #         filepath
+        #     )
 
-            json_path = os.path.join(
-                upload_folder,
-                f"{os.path.splitext(filename)[0]}.json"
-            )
+        #     json_path = os.path.join(
+        #         upload_folder,
+        #         f"{os.path.splitext(filename)[0]}.json"
+        #     )
 
-            md_path = os.path.join(
-                upload_folder,
-                f"{os.path.splitext(filename)[0]}.md"
-            )
+        #     md_path = os.path.join(
+        #         upload_folder,
+        #         f"{os.path.splitext(filename)[0]}.md"
+        #     )
 
-            with open(json_path, "w") as f:
-                json.dump(
-                    response,
-                    f,
-                    indent=4
-                )
+        #     with open(json_path, "w") as f:
+        #         json.dump(
+        #             response,
+        #             f,
+        #             indent=4
+        #         )
 
-            with open(md_path, "w", encoding="utf-8") as f:
-                f.write(response["markdown"])
+        #     with open(md_path, "w", encoding="utf-8") as f:
+        #         f.write(response["markdown"])
 
         self.pipeline = ClaimProcessingPipeline(
             member_id=testcase["input"]["member_id"],

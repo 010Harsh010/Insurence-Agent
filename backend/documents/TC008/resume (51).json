@@ -1,8 +1,8 @@
 {
     "classification": {
         "document_type": "PRESCRIPTION",
-        "confidence": 0.98,
-        "reasoning": "The document contains a doctor's header, patient demographics, a diagnosis, a list of prescribed items (Antibiotics, Probiotics, ORS Solution), and advice for the patient. These elements are characteristic of a medical prescription rather than a bill, lab report, or discharge summary."
+        "confidence": 0.95,
+        "reasoning": "The document contains a patient's name, age, gender, date, chief complaint, diagnosis, prescription, and advice, which are typical components of a prescription document."
     },
     "document": {
         "document_type": "PRESCRIPTION",
@@ -20,7 +20,7 @@
         ],
         "line_items": [],
         "tests_ordered": [],
-        "confidence": 0.98
+        "confidence": 0.95
     },
     "markdown": "| Dr. R. Gupta   |\n|----------------|\n\n| Patient Name   | Amit Verma   |\n|----------------|--------------|\n| Age            | 37 Years     |\n| Gender         | Male         |\n| Date           | 20-Jun-2026  |\n\n## Chief Complaint\n\nLoose stools, abdominal cramps and dehydration.\n\n## Diagnosis\n\nAcute Gastroenteritis\n\n## Prescription\n\n1. Antibiotics\n2. Probiotics\n3. ORS Solution\n\n## Advice\n\nSoft diet and oral hydration."
 }

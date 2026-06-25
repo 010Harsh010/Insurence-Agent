@@ -1,0 +1,39 @@
+{
+    "classification": {
+        "document_type": "HOSPITAL_BILL",
+        "confidence": 0.99,
+        "reasoning": "The document contains a hospital bill number, medical invoice number, hospital bill date, patient name, and itemized hospital charges, which are all characteristic of a hospital bill. The presence of a payment summary and payment status also supports this classification."
+    },
+    "document": {
+        "document_type": "HOSPITAL_BILL",
+        "patient_name": "Kavita Nair",
+        "doctor_name": "Vaidya T. Krishnan",
+        "doctor_registration": null,
+        "diagnosis": null,
+        "hospital_name": "AYUR WELLNESS CENTRE",
+        "date": "2026-06-20",
+        "total_amount": 4000.0,
+        "medicines": [],
+        "line_items": [
+            {
+                "quantity": 5,
+                "description": "Panchakarma Therapy Session Package",
+                "maker": null,
+                "batch_number": null,
+                "expiry_date": null,
+                "amount": 3000.0
+            },
+            {
+                "quantity": 1,
+                "description": "Ayurvedic Consultation Charges",
+                "maker": null,
+                "batch_number": null,
+                "expiry_date": null,
+                "amount": 1000.0
+            }
+        ],
+        "tests_ordered": [],
+        "confidence": 0.95
+    },
+    "markdown": "## HOSPITAL BILL\n\n## MEDICAL BILL\n\nPATIENT BILLING STATEMENT\n\n## AYUR WELLNESS CENTRE\n\nAyurvedic Hospital and Panchakarma Centre\n\n| Hospital Bill Number    | AWC-HB-2026-001128   |\n|-------------------------|----------------------|\n| Medical Invoice Number  | INV-2026-001128      |\n| Hospital Bill Date      | 20-Jun-2026          |\n| Patient Name            | Kavita Nair          |\n| Patient ID              | P240628              |\n| Consulting Practitioner | Vaidya T. Krishnan   |\n| Treatment Category      | Ayurvedic Therapy    |\n\n## ITEMIZED HOSPITAL CHARGES\n\n| S.No                   | Medical Service Description         | Qty                    |   Amount () |\n|------------------------|-------------------------------------|------------------------|-------------|\n| 1                      | Panchakarma Therapy Session Package | 5                      |        3000 |\n| 2                      | Ayurvedic Consultation Charges      | 1                      |        1000 |\n| TOTAL HOSPITAL CHARGES | TOTAL HOSPITAL CHARGES              | TOTAL HOSPITAL CHARGES |        4000 |\n\nPAYMENT SUMMARY\n\nTotal Medical Bill Amount: 4000 Amount Paid: 4000 Outstanding Amount: 0 Payment Status: PAID\n\nDocument Type: HOSPITAL BILL Document Classification: MEDICAL BILL Billing Record: PATIENT BILLING STATEMENT Purpose: HOSPITAL CHARGES RECEIPT\n\nAuthorized Billing Officer\n\nAYUR WELLNESS CENTRE"
+}

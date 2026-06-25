@@ -2,7 +2,7 @@
     "classification": {
         "document_type": "PRESCRIPTION",
         "confidence": 0.95,
-        "reasoning": "The document contains a patient's name, age, gender, chief complaint, diagnosis, treatment system, prescription, and advice, which are typical components of a prescription document."
+        "reasoning": "The document contains a patient's name, age, gender, chief complaint, diagnosis, treatment system, prescription, and advice, which are all typical components of a prescription."
     },
     "document": {
         "document_type": "PRESCRIPTION",

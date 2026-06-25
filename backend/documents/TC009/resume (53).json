@@ -1,25 +1,25 @@
 {
     "classification": {
         "document_type": "PRESCRIPTION",
-        "confidence": 0.99,
-        "reasoning": "The document contains a doctor's header, patient details, a chief complaint, diagnosis, and a clearly labeled 'Prescription' section listing medications and dosage instructions. This structure aligns with typical medical prescription documents, not with billing, lab, diagnostic, discharge, or dental reports."
+        "confidence": 0.95,
+        "reasoning": "The document contains a patient's name, age, gender, chief complaint, diagnosis, and a list of prescribed medications, which are all typical components of a prescription."
     },
     "document": {
         "document_type": "PRESCRIPTION",
         "patient_name": "Ravi Menon",
-        "doctor_name": "S. Khan",
+        "doctor_name": "Dr. S. Khan",
         "doctor_registration": "MH/45781/2016",
         "diagnosis": "Migraine",
-        "hospital_name": null,
+        "hospital_name": "NeuroCare Clinic, Bengaluru",
         "date": "2026-06-20",
         "total_amount": null,
         "medicines": [
-            "Sumatriptan 50mg - SOS",
-            "Naproxen 500mg - Twice Daily"
+            "Sumatriptan 50mg",
+            "Naproxen 500mg"
         ],
         "line_items": [],
         "tests_ordered": [],
-        "confidence": 0.96
+        "confidence": 0.95
     },
     "markdown": "Dr. S. Khan MBBS, MD (Neurology) Reg. No: MH/45781/2016 NeuroCare Clinic, Bengaluru\n\n| Patient Name   | Ravi Menon   |\n|----------------|--------------|\n| Age            | 39 Years     |\n| Gender         | Male         |\n| Date           | 20-Jun-2026  |\n\n## Chief Complaint\n\nRecurring headache with light sensitivity.\n\n## Diagnosis\n\nMigraine\n\n## Prescription\n\n1. Sumatriptan 50mg - SOS 2. Naproxen 500mg - Twice Daily\n\n3. Adequate hydration and sleep"
 }

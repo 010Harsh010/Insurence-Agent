@@ -1,16 +1,16 @@
 {
     "classification": {
         "document_type": "PRESCRIPTION",
-        "confidence": 0.99,
-        "reasoning": "The document contains a doctor's header, patient details, diagnosis, and a list of prescribed medications with dosage instructions, which are characteristic features of a prescription."
+        "confidence": 0.95,
+        "reasoning": "The document contains a chief complaint, diagnosis, prescription with medication and dosage instructions, and advice for the patient, which are typical components of a prescription document."
     },
     "document": {
         "document_type": "PRESCRIPTION",
         "patient_name": "Sneha Reddy",
-        "doctor_name": "Dr. Ravi Kumar",
+        "doctor_name": "Ravi Kumar",
         "doctor_registration": "KA/48291/2018",
         "diagnosis": "Upper Respiratory Tract Infection (URTI)",
-        "hospital_name": null,
+        "hospital_name": "Care Plus Clinic, Bengaluru",
         "date": "2026-06-20",
         "total_amount": null,
         "medicines": [
@@ -20,7 +20,7 @@
         ],
         "line_items": [],
         "tests_ordered": [],
-        "confidence": 0.96
+        "confidence": 0.95
     },
     "markdown": "## Dr. Ravi Kumar\n\nMBBS, MD (General Medicine) Reg. No: KA/48291/2018 Care Plus Clinic, Bengaluru\n\n| Patient Name   | Sneha Reddy   |\n|----------------|---------------|\n| Age            | 34 Years      |\n| Gender         | Female        |\n| Date           | 20-Jun-2026   |\n\n## Chief Complaint\n\nFever, sore throat and headache for 2 days.\n\n## Diagnosis\n\nUpper Respiratory Tract Infection (URTI)\n\n## Prescription\n\n1. Azithromycin 500mg - Once daily for 3 days\n2. Paracetamol 650mg - SOS for fever\n3. Vitamin C 500mg - Once daily for 7 days\n\n## Advice\n\nDrink plenty of fluids and rest."
 }

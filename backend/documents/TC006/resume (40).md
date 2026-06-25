@@ -1,23 +1,69 @@
-## Smile Dental Clinic
+## SMILE DENTAL CLINIC
 
-45 Residency Road, Bengaluru - 560025 Ph: +91-80-45678901
+Dental Care &amp; Oral Health Centre Bengaluru, Karnataka Phone: +91-80-XXXX XXXX
 
 ## DENTAL TREATMENT BILL
 
-Bill No: SDC/2024/1015 Date: 15-Oct-2024 Patient Name: Priya Singh
+Bill No:
 
-Age/Gender:
+SDC/2024/1015
 
-34 / Female
+Bill Date:
+
+20-06-2026
+
+Patient Name:
+
+Priya Singh
+
+Patient ID:
+
+EMP002
+
+Treating Dentist:
+
+Dr. Rohan Mehta
+
+Department:
+
+Dental Care
+
+Case Type:
+
+Endodontic Treatment
+
+Payment Status:
+
+PAID
 
 | Description          |   Amount () |
 |----------------------|-------------|
-| Root Canal Treatment |    8,000.00 |
-| Teeth Whitening      |    4,000.00 |
-| Total Amount         |   12,000.00 |
+| Root Canal Treatment |       8,000 |
+| Teeth Whitening      |       4,000 |
+| Total Amount         |      12,000 |
 
-Payment Mode: UPI
+Amount Paid:
 
-## Authorized Signatory
+12,000
 
-## Smile Dental Clinic
+Payment Mode:
+
+UPI
+
+Transaction ID:
+
+TXN78451236
+
+Receipt Status:
+
+SUCCESSFUL
+
+## Treatment Notes
+
+- Root Canal Treatment completed on affected molar tooth.
+- Cosmetic Teeth Whitening performed as requested by patient.
+- Follow-up review advised after 7 days.
+
+Authorized Signatory
+
+Smile Dental Clinic

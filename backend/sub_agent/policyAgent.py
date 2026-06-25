@@ -1211,8 +1211,7 @@ class CoverageAgent(BaseAgent):
                     (item.get(
                         "description",
                         ""
-                    )
-                    + " ").lower()
+                    ) or "").lower()
                 )
                 
             # print("Search Text", search_text)
@@ -1241,7 +1240,7 @@ class CoverageAgent(BaseAgent):
                     if word in search_text:
                         output.exclusion_found = True
                         output.rejection_reasons.append(
-                            "EXCLUDED_CONDITION: {word}"
+                            f"EXCLUDED_CONDITION: {word}"
                         )
 
                         break
@@ -1576,7 +1575,9 @@ class FinancialAgent(BaseAgent):
         
         NETWORK_HOSPITALS = [hos.lower() for hos in NETWORK_HOSPITALS]
         print("Network Hospital", NETWORK_HOSPITALS)
-        hospital_name = document_data.hospital_name.strip().lower()
+        hospital_name = (
+    document_data.hospital_name or ""
+).strip().lower()
         print("HOSPITAL NAME", hospital_name)
         
         if hospital_name in NETWORK_HOSPITALS:
@@ -2181,7 +2182,8 @@ class ClaimRepository(BaseAgent):
         policy: PolicyData,
         documents: list[dict],
         document_output: DocumentValidationOutput,
-        financial_output: FinancialValidationOutput
+        financial_output: FinancialValidationOutput,
+        claim_category: str,
     ) -> str:
         
         treatment_date = None
@@ -2212,39 +2214,36 @@ class ClaimRepository(BaseAgent):
 
         print("Insert claim")
         result = self.fetch_one(
-            """
-            INSERT INTO claims (
-                member_id,
-                policy_id,
-                claim_category,
-                treatment_date,
-                submission_date,
-                claimed_amount,
-                claim_status,
-                confidence_score,
-                fraud_score
-            )
-            VALUES (
-                %s,%s,%s,%s,
-                CURRENT_DATE,
-                %s,
-                %s,
-                %s,
-                %s
-            )
-            RETURNING claim_id
-            """,
-            (
-                member.member_id,
-                policy.policy_id,
-                document_output.inferred_claim_category,
-                treatment_date,
-                financial_output.claimed_amount,
-                "PROCESSING",
-                1.0,
-                0.0
-            )
-        )
+    """
+    INSERT INTO claims (
+        member_id,
+        policy_id,
+        claim_category,
+        treatment_date,
+        submission_date,
+        claimed_amount,
+        claim_status,
+        confidence_score,
+        fraud_score
+    )
+    VALUES (
+        %s,%s,%s,%s,
+        CURRENT_DATE,
+        %s,%s,%s,%s
+    )
+    RETURNING claim_id
+    """,
+    (
+        member.member_id,
+        policy.policy_id,
+        claim_category,
+        treatment_date,
+        financial_output.claimed_amount,
+        "PROCESSING",
+        1.0,
+        0.0
+    )
+)
         print(result)
         
         print("Get claim id")
@@ -2730,7 +2729,8 @@ class ClaimProcessingPipeline:
                 policy=self.policy,
                 documents=self.documents,
                 document_output=DocumentValidationOutput(),
-                financial_output=FinancialValidationOutput()
+                financial_output=FinancialValidationOutput(),
+                claim_category=self.claim_category
             )
             self._save_step_trace(
                 self.document_result,

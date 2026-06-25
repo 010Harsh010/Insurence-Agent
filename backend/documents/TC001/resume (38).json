@@ -1,8 +1,8 @@
 {
     "classification": {
         "document_type": "PRESCRIPTION",
-        "confidence": 0.99,
-        "reasoning": "The document contains a doctor's header, patient details, a chief complaint, diagnosis, and a list of prescribed medications and instructions, which are characteristic elements of a medical prescription."
+        "confidence": 0.95,
+        "reasoning": "The document contains a patient's name, age, gender, and date, followed by a chief complaint, diagnosis, and prescription, which are typical components of a prescription document."
     },
     "document": {
         "document_type": "PRESCRIPTION",
@@ -14,13 +14,12 @@
         "date": "2024-11-01",
         "total_amount": null,
         "medicines": [
-            "Azithromycin 500mg - once daily for 3 days",
-            "Paracetamol 650mg - SOS",
-            "Steam inhalation twice daily"
+            "Azithromycin 500mg",
+            "Paracetamol 650mg"
         ],
         "line_items": [],
         "tests_ordered": [],
-        "confidence": 0.97
+        "confidence": 0.95
     },
     "markdown": "MBBS, DNB Reg. No: DL/34567/2016 Wellness Clinic, Bengaluru\n\n| Patient Name   | Rajesh Kumar   |\n|----------------|----------------|\n| Age            | 39 Years       |\n| Gender         | Male           |\n| Date           | 01-Nov-2024    |\n\n## Chief Complaint\n\nPersistent fever and mild headache.\n\n## Diagnosis\n\nUpper Respiratory Tract Infection\n\n## Prescription\n\n1. Azithromycin 500mg - once daily for 3 days\n2. Paracetamol 650mg - SOS\n3. Steam inhalation twice daily"
 }

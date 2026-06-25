@@ -243,10 +243,12 @@
         ],
         "inferred_claim_category": "DENTAL",
         "patient_name": "Priya Singh",
-        "hospital_name": "Smile Clinic",
+        "hospital_name": "Smile Multispeciality Hospital",
         "missing_document_types": [],
         "issues": [],
-        "warnings": [],
+        "warnings": [
+            "Hospital mismatch detected: 'Smile Multispeciality Hospital' vs 'Smile Dental Clinic'"
+        ],
         "validation_passed": true
     },
     "document_result": {
@@ -263,8 +265,10 @@
                 "DENTAL_REPORT"
             ],
             "patient_name": "Priya Singh",
-            "hospital_name": "Smile Clinic",
-            "warnings": []
+            "hospital_name": "Smile Multispeciality Hospital",
+            "warnings": [
+                "Hospital mismatch detected: 'Smile Multispeciality Hospital' vs 'Smile Dental Clinic'"
+            ]
         },
         "fatal": false,
         "checks": [
@@ -403,10 +407,10 @@
     "finance": {
         "claimed_amount": 12000.0,
         "eligible_amount": 12000.0,
-        "approved_amount": 4000.0,
-        "annual_limit_remaining": 30000.0,
-        "family_limit_remaining": 130000.0,
-        "per_claim_limit_applied": false,
+        "approved_amount": 5000.0,
+        "annual_limit_remaining": 50000.0,
+        "family_limit_remaining": 150000.0,
+        "per_claim_limit_applied": true,
         "annual_limit_applied": false,
         "co_pay": 0.0,
         "hospital_network": 0.0,
@@ -414,12 +418,8 @@
         "rejection_reasons": [],
         "family_limit": 0.0,
         "annual_limit": 0.0,
-        "per_claim_limit": 0.0,
+        "per_claim_limit": 3000.0,
         "reduct_items": [
-            {
-                "description": "Teeth Whitening",
-                "amount": 4000.0
-            },
             {
                 "description": "Teeth Whitening",
                 "amount": 4000.0
@@ -435,9 +435,9 @@
         "reason": "Financial validation passed.",
         "details": {
             "claimed_amount": 12000.0,
-            "approved_amount": 4000.0,
-            "annual_remaining": 30000.0,
-            "family_remaining": 130000.0,
+            "approved_amount": 5000,
+            "annual_remaining": 50000.0,
+            "family_remaining": 150000.0,
             "per_claim_limit": 5000
         },
         "fatal": false,
@@ -473,14 +473,11 @@
         ]
     },
     "fraud": {
-        "fraud_score": 0.55,
-        "monthly_claims_count": 6,
-        "same_day_claims_count": 6,
-        "manual_review_required": true,
-        "warnings": [
-            "Monthly claim count (6) exceeds limit (6).",
-            "Same-day claim count (6) exceeds limit (2)."
-        ]
+        "fraud_score": 0.0,
+        "monthly_claims_count": 1,
+        "same_day_claims_count": 1,
+        "manual_review_required": false,
+        "warnings": []
     },
     "fraud_result": {
         "step_name": "Fraud Validation",
@@ -489,14 +486,11 @@
         "confidence": 1.0,
         "reason": "Fraud validation completed.",
         "details": {
-            "fraud_score": 0.55,
-            "monthly_claims": 6,
-            "same_day_claims": 6,
-            "manual_review": true,
-            "warnings": [
-                "Monthly claim count (6) exceeds limit (6).",
-                "Same-day claim count (6) exceeds limit (2)."
-            ]
+            "fraud_score": 0.0,
+            "monthly_claims": 1,
+            "same_day_claims": 1,
+            "manual_review": false,
+            "warnings": []
         },
         "fatal": false,
         "checks": [
@@ -538,12 +532,12 @@
         ]
     },
     "decision": {
-        "decision": "MANUAL_REVIEW",
+        "decision": "PARTIALLY_APPROVED",
         "claimed_amount": 12000.0,
-        "approved_amount": 4000.0,
-        "fraud_score": 0.55,
-        "needs_manual_review": true,
-        "explanation": "Your claim is under manual review. Because the number of claims this month and same-day claims exceed our standard limits, we need to verify the details before a final decision. We'll notify you once the review is complete.",
+        "approved_amount": 5000.0,
+        "fraud_score": 0.0,
+        "needs_manual_review": false,
+        "explanation": "Your claim is partially approved for $5000. The amount was reduced due to non-eligible items like Teeth Whitening.",
         "financial_breakdown": [
             {
                 "step": "Network Hospital Discount",
@@ -559,7 +553,7 @@
             },
             {
                 "step": "Per-Claim limit Deduction",
-                "amount": 0.0
+                "amount": 3000.0
             },
             {
                 "step": "Annual limit Deduction",
@@ -572,10 +566,6 @@
             {
                 "step": "Excluded Item\nTeeth Whitening",
                 "amount": 4000.0
-            },
-            {
-                "step": "Excluded Item\nTeeth Whitening",
-                "amount": 4000.0
             }
         ]
     },
@@ -584,14 +574,14 @@
         "status": "PASSED",
         "passed": true,
         "confidence": 1.0,
-        "reason": "Final decision: MANUAL_REVIEW",
+        "reason": "Final decision: PARTIALLY_APPROVED",
         "details": {
-            "decision": "MANUAL_REVIEW",
+            "decision": "PARTIALLY_APPROVED",
             "claimed_amount": 12000.0,
-            "approved_amount": 4000.0,
-            "fraud_score": 0.55,
-            "needs_manual_review": true,
-            "explanation": "Your claim is under manual review. Because the number of claims this month and same-day claims exceed our standard limits, we need to verify the details before a final decision. We'll notify you once the review is complete.",
+            "approved_amount": 5000.0,
+            "fraud_score": 0.0,
+            "needs_manual_review": false,
+            "explanation": "Your claim is partially approved for $5000. The amount was reduced due to non-eligible items like Teeth Whitening.",
             "financial_breakdown": [
                 {
                     "step": "Network Hospital Discount",
@@ -607,7 +597,7 @@
                 },
                 {
                     "step": "Per-Claim limit Deduction",
-                    "amount": 0.0
+                    "amount": 3000.0
                 },
                 {
                     "step": "Annual limit Deduction",
@@ -616,10 +606,6 @@
                 {
                     "step": "Family limit Deduction",
                     "amount": 0.0
-                },
-                {
-                    "step": "Excluded Item\nTeeth Whitening",
-                    "amount": 4000.0
                 },
                 {
                     "step": "Excluded Item\nTeeth Whitening",

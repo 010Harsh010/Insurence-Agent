@@ -1,13 +1,13 @@
 {
     "classification": {
-        "document_type": "PRESCRIPTION",
-        "confidence": 0.99,
-        "reasoning": "The document explicitly states 'Document Type: PRESCRIPTION' and contains typical prescription elements such as doctor details, patient information, diagnosis, and an ordered investigation, indicating a high confidence that it is a prescription."
+        "document_type": "DIAGNOSTIC_REPORT",
+        "confidence": 0.8,
+        "reasoning": "The document contains a chief complaint, diagnosis, investigation ordered, and clinical notes, which are typical components of a diagnostic report. Although it is labeled as a prescription at the end, the content suggests it is more aligned with a diagnostic report."
     },
     "document": {
         "document_type": "PRESCRIPTION",
         "patient_name": "Suresh Patil",
-        "doctor_name": "Venkat Rao",
+        "doctor_name": "Dr. Venkat Rao",
         "doctor_registration": "AP/67890/2017",
         "diagnosis": "Suspected Lumbar Disc Herniation",
         "hospital_name": "Spine Care Centre, Hyderabad",
@@ -18,7 +18,7 @@
         "tests_ordered": [
             "MRI Lumbar Spine"
         ],
-        "confidence": 0.96
+        "confidence": 0.95
     },
     "markdown": "## Dr. Venkat Rao\n\nMBBS, MS (Orthopedics) Registration No: AP/67890/2017 Spine Care Centre, Hyderabad\n\n| Patient Name   | Suresh Patil   |\n|----------------|----------------|\n| Age            | 50 Years       |\n| Gender         | Male           |\n| Date           | 20-Jun-2026    |\n\n## Chief Complaint\n\nSevere lower back pain radiating to the left leg.\n\n## Diagnosis\n\nSuspected Lumbar Disc Herniation\n\n## Investigation Ordered\n\nMRI Lumbar Spine\n\n## Clinical Notes\n\nPatient reports pain for 3 weeks. Clinical examination suggests possible disc prolapse.\n\n## Document Type: PRESCRIPTION"
 }

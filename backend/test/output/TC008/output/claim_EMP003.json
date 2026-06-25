@@ -404,8 +404,8 @@
         "claimed_amount": 7500.0,
         "eligible_amount": 7500.0,
         "approved_amount": 2000.0,
-        "annual_limit_remaining": 34000.0,
-        "family_limit_remaining": 134000.0,
+        "annual_limit_remaining": 50000.0,
+        "family_limit_remaining": 150000.0,
         "per_claim_limit_applied": true,
         "annual_limit_applied": false,
         "co_pay": 750.0,
@@ -427,8 +427,8 @@
         "details": {
             "claimed_amount": 7500.0,
             "approved_amount": 2000,
-            "annual_remaining": 34000.0,
-            "family_remaining": 134000.0,
+            "annual_remaining": 50000.0,
+            "family_remaining": 150000.0,
             "per_claim_limit": 5000
         },
         "fatal": false,
@@ -464,14 +464,11 @@
         ]
     },
     "fraud": {
-        "fraud_score": 0.55,
-        "monthly_claims_count": 9,
-        "same_day_claims_count": 9,
-        "manual_review_required": true,
-        "warnings": [
-            "Monthly claim count (9) exceeds limit (6).",
-            "Same-day claim count (9) exceeds limit (2)."
-        ]
+        "fraud_score": 0.0,
+        "monthly_claims_count": 1,
+        "same_day_claims_count": 1,
+        "manual_review_required": false,
+        "warnings": []
     },
     "fraud_result": {
         "step_name": "Fraud Validation",
@@ -480,14 +477,11 @@
         "confidence": 1.0,
         "reason": "Fraud validation completed.",
         "details": {
-            "fraud_score": 0.55,
-            "monthly_claims": 9,
-            "same_day_claims": 9,
-            "manual_review": true,
-            "warnings": [
-                "Monthly claim count (9) exceeds limit (6).",
-                "Same-day claim count (9) exceeds limit (2)."
-            ]
+            "fraud_score": 0.0,
+            "monthly_claims": 1,
+            "same_day_claims": 1,
+            "manual_review": false,
+            "warnings": []
         },
         "fatal": false,
         "checks": [
@@ -529,12 +523,12 @@
         ]
     },
     "decision": {
-        "decision": "MANUAL_REVIEW",
+        "decision": "PARTIALLY_APPROVED",
         "claimed_amount": 7500.0,
         "approved_amount": 2000.0,
-        "fraud_score": 0.55,
-        "needs_manual_review": true,
-        "explanation": "Your claim is under manual review. Because of the high claim amount and multiple recent claims, we need additional verification before a final decision. We\u2019ll notify you once the review is complete.",
+        "fraud_score": 0.0,
+        "needs_manual_review": false,
+        "explanation": "Your claim is partially approved for $2000, reduced from $7500 due to policy limits.",
         "financial_breakdown": [
             {
                 "step": "Network Hospital Discount",
@@ -567,14 +561,14 @@
         "status": "PASSED",
         "passed": true,
         "confidence": 1.0,
-        "reason": "Final decision: MANUAL_REVIEW",
+        "reason": "Final decision: PARTIALLY_APPROVED",
         "details": {
-            "decision": "MANUAL_REVIEW",
+            "decision": "PARTIALLY_APPROVED",
             "claimed_amount": 7500.0,
             "approved_amount": 2000.0,
-            "fraud_score": 0.55,
-            "needs_manual_review": true,
-            "explanation": "Your claim is under manual review. Because of the high claim amount and multiple recent claims, we need additional verification before a final decision. We\u2019ll notify you once the review is complete.",
+            "fraud_score": 0.0,
+            "needs_manual_review": false,
+            "explanation": "Your claim is partially approved for $2000, reduced from $7500 due to policy limits.",
             "financial_breakdown": [
                 {
                     "step": "Network Hospital Discount",

@@ -2,7 +2,7 @@
     "classification": {
         "document_type": "HOSPITAL_BILL",
         "confidence": 0.99,
-        "reasoning": "The document contains a bill number, date, patient name, and a breakdown of charges with amounts, which are typical characteristics of a hospital bill."
+        "reasoning": "The document contains a hospital's name, bill number, date, patient's name, and a breakdown of charges with amounts, which are all characteristic of a hospital bill."
     },
     "document": {
         "document_type": "HOSPITAL_BILL",

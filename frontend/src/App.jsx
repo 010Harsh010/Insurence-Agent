@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+﻿import React, { useState, useRef, useEffect } from "react";
 import {
   Send,
   Paperclip,
@@ -862,150 +862,261 @@ const ConfidenceBar = ({ value }) => {
   );
 };
 
-/** Member info table */
-const MemberTable = ({ member }) => {
-  if (!member) return null;
-  const rows = [
-    ["Member ID", member.member_id],
-    ["Name", member.name],
-    ["Policy ID", member.policy_id],
-    ["Relationship", member.relationship],
-    ["Join Date", member.join_date],
-    ["Primary Member", member.primary_member_id ?? "—"],
-  ];
-  return (
-    <table className="tc-table">
-      <tbody>
-        {rows.map(([k, v]) => (
-          <tr key={k} className="tc-table__row">
-            <td className="tc-table__key">{k}</td>
-            <td className="tc-table__val">{String(v)}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  );
-};
 
-/** Validation step table — shows ALL *_result keys dynamically */
-const ValidationStepsTable = ({ actual }) => {
-  // Pick every key that ends with "_result" and has step_name/status/passed
-  const steps = Object.entries(actual)
-    .filter(([k, v]) => k.endsWith("_result") && v && typeof v === "object" && "step_name" in v)
-    .map(([, v]) => v);
-  if (steps.length === 0) return <p className="tc-empty">No validation step data.</p>;
-
+// ─── Shared: Result status header bar ────────────────────────────────────────
+const ResultBar = ({ result }) => {
+  if (!result) return null;
+  const pct = Math.round((result.confidence ?? 0) * 100);
   return (
-    <div className="tc-steps-grid">
-      {steps.map((step, i) => (
-        <div key={i} className={`tc-step-card tc-step-card--${step.passed ? "pass" : "fail"}`}>
-          <div className="tc-step-card__header">
-            <span className="tc-step-card__name">{step.step_name}</span>
-            <StatusPill passed={step.passed} />
-          </div>
-          <ConfidenceBar value={step.confidence} />
-          {step.reason && <p className="tc-step-card__reason">{step.reason}</p>}
-          {/* Sub-checks table */}
-          {step.checks && step.checks.length > 0 && (
-            <div className="tc-table-wrap">
-              <table className="tc-table tc-table--sm">
-                <thead>
-                  <tr>
-                    <th className="tc-table__th">Check</th>
-                    <th className="tc-table__th">Status</th>
-                    <th className="tc-table__th">Confidence</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {step.checks.map((ch, ci) => (
-                    <tr key={ci} className="tc-table__row">
-                      <td className="tc-table__key">{ch.check_name}</td>
-                      <td className="tc-table__val"><StatusPill passed={ch.passed} label={ch.status} /></td>
-                      <td className="tc-table__val"><ConfidenceBar value={ch.confidence} /></td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </div>
-      ))}
+    <div className={`tc-result-bar tc-result-bar--${result.passed ? "pass" : "fail"}`}>
+      <span className="tc-result-bar__name">{result.step_name}</span>
+      <div className="tc-result-bar__right">
+        <ConfidenceBar value={result.confidence} />
+        <StatusPill passed={result.passed} label={result.status} />
+      </div>
+      {result.reason && <p className="tc-result-bar__reason">{result.reason}</p>}
     </div>
   );
 };
 
-/** Document info table */
-const DocumentTable = ({ docData }) => {
-  if (!docData) return null;
+// ─── Shared: generic key-value table ─────────────────────────────────────────
+const KVTable = ({ rows }) => (
+  <table className="tc-table">
+    <tbody>
+      {rows.filter(([, v]) => v !== undefined).map(([k, v]) => (
+        <tr key={k} className="tc-table__row">
+          <td className="tc-table__key">{k}</td>
+          <td className="tc-table__val">
+            {typeof v === "boolean"
+              ? <span className={v ? "tc-bool-true" : "tc-bool-false"}>{v ? "Yes" : "No"}</span>
+              : Array.isArray(v) && v.length === 0
+                ? <span className="tc-null-pill">none</span>
+                : Array.isArray(v)
+                  ? <div className="tc-tag-row">{v.map((x, i) => <span key={i} className="tc-tag tc-tag--blue">{String(x)}</span>)}</div>
+                  : v == null ? <span className="tc-null-pill">—</span>
+                    : <span>{String(v)}</span>}
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+);
+
+// ─── Shared: warn / issue list ────────────────────────────────────────────────
+const WarnList = ({ items, icon: Icon = AlertCircle, cls = "tc-warn" }) =>
+  items?.length > 0 ? (
+    <div className={`${cls}-list`}>
+      {items.map((w, i) => (
+        <div key={i} className={`${cls}-item`}>
+          <Icon size={12} className={`${cls}-icon`} />
+          <span>{w}</span>
+        </div>
+      ))}
+    </div>
+  ) : null;
+
+// ─── 1. Member Section ────────────────────────────────────────────────────────
+const MemberSection = ({ member, memberResult }) => {
+  if (!member && !memberResult) return null;
+  const fmt = (v) => v ?? "—";
   return (
-    <div className="tc-doc-grid">
-      <table className="tc-table">
-        <tbody>
-          <tr className="tc-table__row">
-            <td className="tc-table__key">Patient</td>
-            <td className="tc-table__val">{docData.patient_name ?? "—"}</td>
-          </tr>
-          <tr className="tc-table__row">
-            <td className="tc-table__key">Hospital</td>
-            <td className="tc-table__val">{docData.hospital_name ?? "—"}</td>
-          </tr>
-          <tr className="tc-table__row">
-            <td className="tc-table__key">Claim Category</td>
-            <td className="tc-table__val">{docData.inferred_claim_category ?? "—"}</td>
-          </tr>
-          <tr className="tc-table__row">
-            <td className="tc-table__key">Validation</td>
-            <td className="tc-table__val"><StatusPill passed={docData.validation_passed} /></td>
-          </tr>
-        </tbody>
-      </table>
-
-      {/* Uploaded docs */}
-      {docData.uploaded_document_types?.length > 0 && (
-        <div className="tc-doc-tags">
-          <span className="tc-doc-tags__label">Uploaded Docs</span>
-          <div className="tc-tag-row">
-            {docData.uploaded_document_types.map((d, i) => (
-              <span key={i} className="tc-tag tc-tag--blue">{d}</span>
-            ))}
-          </div>
-        </div>
+    <div className="tc-data-section">
+      <ResultBar result={memberResult} />
+      {member && (
+        <KVTable rows={[
+          ["Member ID",      member.member_id],
+          ["Name",           member.name],
+          ["Policy ID",      member.policy_id],
+          ["Relationship",   member.relationship],
+          ["Join Date",      member.join_date],
+          ["Primary Member", member.primary_member_id ?? "—"],
+        ]} />
       )}
+    </div>
+  );
+};
 
-      {/* Missing docs */}
-      {docData.missing_document_types?.length > 0 && (
-        <div className="tc-doc-tags">
-          <span className="tc-doc-tags__label tc-doc-tags__label--warn">Missing Docs</span>
-          <div className="tc-tag-row">
-            {docData.missing_document_types.map((d, i) => (
-              <span key={i} className="tc-tag tc-tag--red">{d}</span>
-            ))}
-          </div>
-        </div>
+// ─── 2. Policy Section (result only, no raw policy dump) ─────────────────────
+const PolicySection = ({ policyResult }) => {
+  if (!policyResult) return null;
+  return (
+    <div className="tc-data-section">
+      <ResultBar result={policyResult} />
+      {policyResult.details && (
+        <KVTable rows={Object.entries(policyResult.details).map(([k, v]) => [
+          k.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase()), v
+        ])} />
       )}
+    </div>
+  );
+};
 
-      {/* Warnings */}
-      {docData.warnings?.length > 0 && (
-        <div className="tc-warn-list">
-          {docData.warnings.map((w, i) => (
-            <div key={i} className="tc-warn-item">
-              <AlertCircle size={12} className="tc-warn-icon" />
-              <span>{w}</span>
+// ─── 3. Document Section ──────────────────────────────────────────────────────
+const DocumentSection = ({ document: doc, documentResult }) => {
+  if (!doc && !documentResult) return null;
+  return (
+    <div className="tc-data-section">
+      <ResultBar result={documentResult} />
+      {doc && (
+        <>
+          <KVTable rows={[
+            ["Patient",         doc.patient_name],
+            ["Hospital",        doc.hospital_name],
+            ["Claim Category",  doc.inferred_claim_category],
+            ["Validation",      doc.validation_passed],
+          ]} />
+          {doc.uploaded_document_types?.length > 0 && (
+            <div className="tc-doc-tags">
+              <span className="tc-doc-tags__label">Uploaded Docs</span>
+              <div className="tc-tag-row">
+                {doc.uploaded_document_types.map((d, i) => (
+                  <span key={i} className="tc-tag tc-tag--blue">{d}</span>
+                ))}
+              </div>
             </div>
-          ))}
-        </div>
-      )}
-
-      {/* Issues */}
-      {docData.issues?.length > 0 && (
-        <div className="tc-issue-list">
-          {docData.issues.map((w, i) => (
-            <div key={i} className="tc-issue-item">
-              <XCircle size={12} className="tc-issue-icon" />
-              <span>{w}</span>
+          )}
+          {doc.missing_document_types?.length > 0 && (
+            <div className="tc-doc-tags">
+              <span className="tc-doc-tags__label tc-doc-tags__label--warn">Missing Docs</span>
+              <div className="tc-tag-row">
+                {doc.missing_document_types.map((d, i) => (
+                  <span key={i} className="tc-tag tc-tag--red">{d}</span>
+                ))}
+              </div>
             </div>
-          ))}
-        </div>
+          )}
+          <WarnList items={doc.warnings} icon={AlertCircle} cls="tc-warn" />
+          <WarnList items={doc.issues}   icon={XCircle}     cls="tc-issue" />
+        </>
+      )}
+    </div>
+  );
+};
+
+// ─── 4. Coverage Section ──────────────────────────────────────────────────────
+const CoverageSection = ({ coverage, coverageResult }) => {
+  if (!coverage && !coverageResult) return null;
+  return (
+    <div className="tc-data-section">
+      <ResultBar result={coverageResult} />
+      {coverage && (
+        <>
+          <KVTable rows={[
+            ["Relationship Covered",          coverage.relationship_covered],
+            ["Waiting Period Passed",          coverage.waiting_period_passed],
+            ["Specific Waiting Period Passed", coverage.specific_waiting_period_passed],
+            ["Submission Window Passed",       coverage.submission_window_passed],
+            ["Minimum Amount Passed",          coverage.minimum_amount_passed],
+            ["Exclusion Found",                coverage.exclusion_found],
+          ]} />
+          {coverage.rejection_reasons?.length > 0 && (
+            <div className="tc-doc-tags">
+              <span className="tc-doc-tags__label tc-doc-tags__label--warn">Rejection Reasons</span>
+              <div className="tc-tag-row">
+                {coverage.rejection_reasons.map((r, i) => (
+                  <span key={i} className="tc-tag tc-tag--red">{r}</span>
+                ))}
+              </div>
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  );
+};
+
+// ─── 5. Finance Section ───────────────────────────────────────────────────────
+const FinanceSection = ({ finance, financeResult }) => {
+  if (!finance && !financeResult) return null;
+  const fmt = (n) => n != null ? `₹${Number(n).toLocaleString("en-IN", { minimumFractionDigits: 0 })}` : "—";
+  return (
+    <div className="tc-data-section">
+      <ResultBar result={financeResult} />
+      {finance && (
+        <>
+          <KVTable rows={[
+            ["Claimed Amount",           fmt(finance.claimed_amount)],
+            ["Eligible Amount",          fmt(finance.eligible_amount)],
+            ["Approved Amount",          fmt(finance.approved_amount)],
+            ["Co-pay",                   fmt(finance.co_pay)],
+            ["Annual Limit Remaining",   fmt(finance.annual_limit_remaining)],
+            ["Family Limit Remaining",   fmt(finance.family_limit_remaining)],
+            ["Per Claim Limit Applied",  finance.per_claim_limit_applied],
+            ["Annual Limit Applied",     finance.annual_limit_applied],
+            ["Family Floater Applied",   finance.family_floater_limit_applied],
+          ]} />
+          {finance.rejection_reasons?.length > 0 && (
+            <div className="tc-doc-tags">
+              <span className="tc-doc-tags__label tc-doc-tags__label--warn">Rejection Reasons</span>
+              <div className="tc-tag-row">
+                {finance.rejection_reasons.map((r, i) => (
+                  <span key={i} className="tc-tag tc-tag--red">{r}</span>
+                ))}
+              </div>
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  );
+};
+
+// ─── 6. Fraud Section ─────────────────────────────────────────────────────────
+const FraudSection = ({ fraud, fraudResult }) => {
+  if (!fraud && !fraudResult) return null;
+  const scorePct = fraud?.fraud_score != null ? Math.round(fraud.fraud_score * 100) : null;
+  return (
+    <div className="tc-data-section">
+      <ResultBar result={fraudResult} />
+      {fraud && (
+        <>
+          <KVTable rows={[
+            ["Fraud Score",          scorePct != null ? `${scorePct}%` : "—"],
+            ["Monthly Claims",       fraud.monthly_claims_count],
+            ["Same-day Claims",      fraud.same_day_claims_count],
+            ["Manual Review Needed", fraud.manual_review_required],
+          ]} />
+          <WarnList items={fraud.warnings} icon={AlertCircle} cls="tc-warn" />
+        </>
+      )}
+    </div>
+  );
+};
+
+// ─── 7. Decision Section ──────────────────────────────────────────────────────
+const DecisionSection = ({ decision, decisionResult }) => {
+  if (!decision && !decisionResult) return null;
+  const fmt = (n) => n != null ? `₹${Number(n).toLocaleString("en-IN", { minimumFractionDigits: 0 })}` : "—";
+  const dec = decision || {};
+  const decStr = dec.decision || "—";
+  const activeBreakdown = dec.financial_breakdown?.filter(b => b.amount > 0) || [];
+  return (
+    <div className="tc-data-section">
+      <ResultBar result={decisionResult} />
+      {decision && (
+        <>
+          <KVTable rows={[
+            ["Decision",           decStr],
+            ["Claimed Amount",     fmt(dec.claimed_amount)],
+            ["Approved Amount",    fmt(dec.approved_amount)],
+            ["Fraud Score",        dec.fraud_score != null ? `${Math.round(dec.fraud_score * 100)}%` : undefined],
+            ["Needs Manual Review",dec.needs_manual_review],
+          ]} />
+          {dec.explanation && (
+            <div className="tc-explanation">{dec.explanation}</div>
+          )}
+          {activeBreakdown.length > 0 && (
+            <div className="tc-breakdown">
+              <div className="tc-breakdown__title">Financial Deductions</div>
+              {activeBreakdown.map((b, i) => (
+                <div key={i} className="tc-breakdown__row">
+                  <span>{b.step}</span>
+                  <span className="tc-breakdown__amt">− {fmt(b.amount)}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </>
       )}
     </div>
   );
@@ -1162,6 +1273,16 @@ const OutcomeComparisonTable = ({ expected, actual }) => {
   );
 };
 
+const PIPELINE_SECTIONS = [
+  { key: "member",   label: "Member",   icon: User,        DataComp: MemberSection,   dataKey: "member",   resultKey: "member_result"   },
+  { key: "policy",   label: "Policy",   icon: ShieldCheck, DataComp: PolicySection,   dataKey: null,       resultKey: "policy_result"   },
+  { key: "document", label: "Document", icon: FileText,    DataComp: DocumentSection, dataKey: "document", resultKey: "document_result" },
+  { key: "coverage", label: "Coverage", icon: CheckCircle, DataComp: CoverageSection, dataKey: "coverage", resultKey: "coverage_result" },
+  { key: "finance",  label: "Finance",  icon: DatabaseZap, DataComp: FinanceSection,  dataKey: "finance",  resultKey: "finance_result"  },
+  { key: "fraud",    label: "Fraud",    icon: AlertCircle, DataComp: FraudSection,    dataKey: "fraud",    resultKey: "fraud_result"    },
+  { key: "decision", label: "Decision", icon: Sparkles,    DataComp: DecisionSection, dataKey: "decision", resultKey: "decision_result" },
+];
+
 const TestCaseCard = ({ result, index }) => {
   const [expanded, setExpanded] = useState(false);
   const hasError = Boolean(result.error);
@@ -1205,41 +1326,34 @@ const TestCaseCard = ({ result, index }) => {
             <OutcomeComparisonTable expected={expected} actual={actual} />
           </div>
 
-          {/* ── Section 2: Member Information ── */}
-          {actual.member && (
-            <div className="tc-section">
-              <div className="tc-section__title">
-                <User size={14} className="tc-section__icon" />
-                Member Information
+          {/* ── Sections 2-8: Pipeline stages (data + result) ── */}
+          {PIPELINE_SECTIONS.map(({ key, label, icon: Icon, DataComp, dataKey, resultKey }) => {
+            const dataObj    = dataKey   ? actual[dataKey]   : null;
+            const resultObj  = resultKey ? actual[resultKey] : null;
+            if (!dataObj && !resultObj) return null;
+            return (
+              <div key={key} className="tc-section">
+                <div className="tc-section__title">
+                  <Icon size={14} className="tc-section__icon" />
+                  {label}
+                </div>
+                <DataComp
+                  {...(dataKey   ? { [dataKey]:   dataObj   } : {})}
+                  {...(resultKey ? { [resultKey]: resultObj } : {})}
+                />
               </div>
-              <MemberTable member={actual.member} />
-            </div>
-          )}
-
-          {/* ── Section 3: Validation Pipeline ── */}
-          <div className="tc-section">
-            <div className="tc-section__title">
-              <CheckCircle size={14} className="tc-section__icon" />
-              Validation Pipeline
-            </div>
-            <ValidationStepsTable actual={actual} />
-          </div>
-
-          {/* ── Section 4: Document Info ── */}
-          {actual.document && (
-            <div className="tc-section">
-              <div className="tc-section__title">
-                <FileText size={14} className="tc-section__icon" />
-                Document Details
-              </div>
-              <DocumentTable docData={actual.document} />
-            </div>
-          )}
+            );
+          })}
         </div>
       )}
     </div>
   );
 };
+
+
+
+
+
 
 const TestPage = ({ onBack }) => {
   const [status, setStatus]   = useState("idle"); // idle | loading | running | done | error
@@ -1286,15 +1400,7 @@ const TestPage = ({ onBack }) => {
     }
   };
 
-  const passed  = results ? results.filter(r => {
-    if (r.error) return false;
-    const exp = r.expected?.decision;
-    const act = r.actual?.decision;
-    if (exp === null || exp === undefined) return !act;
-    return exp === act;
-  }).length : 0;
-  const total   = results?.length || 0;
-  const failed  = total - passed;
+  const total = results?.length || 0;
 
   return (
     <div className="tp-shell">
@@ -1314,10 +1420,7 @@ const TestPage = ({ onBack }) => {
         </div>
         <div className="app-header__status">
           {status === "done" && results && (
-            <>
-              <span className="tp-stat tp-stat--pass">{passed} passed</span>
-              {failed > 0 && <span className="tp-stat tp-stat--fail">{failed} failed</span>}
-            </>
+            <span className="tp-stat tp-stat--neutral">{total} test case{total !== 1 ? "s" : ""}</span>
           )}
           <button
             className={`tp-run-btn${status === "running" ? " tp-run-btn--busy" : ""}`}
@@ -1363,21 +1466,7 @@ const TestPage = ({ onBack }) => {
             <div className="tp-summary">
               <div className="tp-summary__item">
                 <span className="tp-summary__num">{total}</span>
-                <span className="tp-summary__label">Total</span>
-              </div>
-              <div className="tp-summary__item tp-summary__item--pass">
-                <span className="tp-summary__num">{passed}</span>
-                <span className="tp-summary__label">Passed</span>
-              </div>
-              <div className="tp-summary__item tp-summary__item--fail">
-                <span className="tp-summary__num">{failed}</span>
-                <span className="tp-summary__label">Failed</span>
-              </div>
-              <div className="tp-summary__progress">
-                <div
-                  className="tp-summary__bar"
-                  style={{ width: total ? `${(passed / total) * 100}%` : "0%" }}
-                />
+                <span className="tp-summary__label">Test Cases</span>
               </div>
             </div>
 

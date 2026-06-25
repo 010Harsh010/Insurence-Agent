@@ -1,8 +1,8 @@
 {
     "classification": {
         "document_type": "HOSPITAL_BILL",
-        "confidence": 0.98,
-        "reasoning": "The document is a tax invoice from a clinic that includes patient details, a list of services (consultation and lab tests), and monetary amounts, which matches the characteristics of a hospital bill."
+        "confidence": 0.99,
+        "reasoning": "The document contains a tax invoice number, patient details, and a breakdown of charges for medical services, which are typical characteristics of a hospital bill."
     },
     "document": {
         "document_type": "HOSPITAL_BILL",
@@ -44,7 +44,7 @@
             "CBC Test",
             "Dengue NS1 Test"
         ],
-        "confidence": 0.96
+        "confidence": 0.95
     },
     "markdown": "| CITY CLINIC            |\n|------------------------|\n| 12 MG Road, Bengaluru  |\n| GSTIN: 29ABCDE1234F1Z5 |\n| Phone: +91-80-45678900 |\n\n## TAX INVOICE\n\n| Invoice Number   | CMC-2026-10215   |\n|------------------|------------------|\n| Invoice Date     | 20-Jun-2026      |\n| Patient Name     | Arjun Mehta      |\n| Age              | 35 Years         |\n| Gender           | Male             |\n| Referring Doctor | Dr. Arun Sharma  |\n\n| Description      |   Amount |\n|------------------|----------|\n| Consultation Fee |     1000 |\n| CBC Test         |      300 |\n| Dengue NS1 Test  |      200 |\n\n| Subtotal    |   1500 |\n|-------------|--------|\n| GST         |      0 |\n| Grand Total |   1500 |"
 }

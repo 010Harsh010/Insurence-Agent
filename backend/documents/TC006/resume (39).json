@@ -1,0 +1,63 @@
+{
+    "classification": {
+        "document_type": "HOSPITAL_BILL",
+        "confidence": 0.99,
+        "reasoning": "The document contains a hospital's letterhead, a bill number, patient information, treatment details, and payment information, which are all characteristic of a hospital bill."
+    },
+    "document": {
+        "document_type": "HOSPITAL_BILL",
+        "patient_name": "Priya Singh",
+        "doctor_name": "Dr. Rohan Mehta",
+        "doctor_registration": null,
+        "diagnosis": null,
+        "hospital_name": "Smile Multispeciality Hospital",
+        "date": "2026-06-20",
+        "total_amount": 12000.0,
+        "medicines": [],
+        "line_items": [
+            {
+                "quantity": null,
+                "description": "Room Charges (General Ward)",
+                "maker": null,
+                "batch_number": null,
+                "expiry_date": null,
+                "amount": 4500.0
+            },
+            {
+                "quantity": null,
+                "description": "Doctor Consultation Fee",
+                "maker": null,
+                "batch_number": null,
+                "expiry_date": null,
+                "amount": 2000.0
+            },
+            {
+                "quantity": null,
+                "description": "Nursing Charges",
+                "maker": null,
+                "batch_number": null,
+                "expiry_date": null,
+                "amount": 1500.0
+            },
+            {
+                "quantity": null,
+                "description": "Laboratory Services",
+                "maker": null,
+                "batch_number": null,
+                "expiry_date": null,
+                "amount": 1200.0
+            },
+            {
+                "quantity": null,
+                "description": "Medicines and Consumables",
+                "maker": null,
+                "batch_number": null,
+                "expiry_date": null,
+                "amount": 2800.0
+            }
+        ],
+        "tests_ordered": [],
+        "confidence": 0.95
+    },
+    "markdown": "## SMILE MULTISPECIALITY HOSPITAL\n\nBengaluru, Karnataka\n\nPhone: +91-80-XXXX XXXX\n\nGSTIN: 29ABCDE1234F1Z5\n\n## HOSPITAL BILL\n\nBill No:\n\nSMH/2026/1015\n\nBill Date:\n\n20-Jun-2026\n\nPatient Name:\n\nPriya Singh\n\nPatient ID:\n\nEMP002\n\nTreating Doctor:\n\nDr. Rohan Mehta\n\nDepartment:\n\nGeneral Medicine\n\nAdmission Type:\n\nOPD\n\nPayment Status:\n\nPAID\n\n| Description                 |   Amount () |\n|-----------------------------|-------------|\n| Room Charges (General Ward) |       4,500 |\n| Doctor Consultation Fee     |       2,000 |\n| Nursing Charges             |       1,500 |\n| Laboratory Services         |       1,200 |\n| Medicines and Consumables   |       2,800 |\n| Total Amount                |      12,000 |\n\nAmount Paid:\n\n12,000\n\nPayment Mode:\n\nUPI\n\nTransaction ID:\n\nTXN45892136\n\nReceipt Status:\n\nSUCCESSFUL\n\n## Hospital Services Summary\n\n- Consultation and examination completed.\n- Laboratory investigations performed.\n- Medicines dispensed to patient.\n- All charges settled successfully.\n\nAuthorized Signatory Smile Multispeciality Hospital"
+}

@@ -1,8 +1,8 @@
 {
     "classification": {
         "document_type": "PRESCRIPTION",
-        "confidence": 0.99,
-        "reasoning": "The document contains a doctor's header, patient details, diagnosis, and a list of prescribed medications with dosage instructions, which are characteristic elements of a prescription. No billing, lab results, or discharge information are present."
+        "confidence": 0.95,
+        "reasoning": "The document contains a prescription for medications, including dosage and frequency, which is a characteristic of a prescription document. Additionally, it includes a diagnosis and investigations ordered, which further supports this classification."
     },
     "document": {
         "document_type": "PRESCRIPTION",
@@ -14,8 +14,8 @@
         "date": "2026-06-20",
         "total_amount": null,
         "medicines": [
-            "Paracetamol 650mg - 1 tablet three times daily for 5 days",
-            "Vitamin C 500mg - Once daily for 7 days"
+            "Paracetamol 650mg",
+            "Vitamin C 500mg"
         ],
         "line_items": [],
         "tests_ordered": [

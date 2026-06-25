@@ -299,7 +299,7 @@
                 "Missing required documents: HOSPITAL_BILL"
             ],
             "error": "PRESCRIPTIONUploaded Documents: PRESCRIPTION\n Missing required documents: HOSPITAL_BILL\nMissing required documents: HOSPITAL_BILL",
-            "error_message": "Your claim couldn\u2019t move past Document Validation because the required hospital\u2011bill is missing. The prescription document you uploaded is fine, but we still need the hospital bill to complete the claim. Please upload a clear copy of the hospital bill and resubmit. Once that document is added, we can continue processing your claim."
+            "error_message": "Your claim is missing a required hospital bill document. We need this to process your claim."
         }
     },
     {
@@ -559,39 +559,379 @@
                 "patient_name": "Sneha Reddy",
                 "hospital_name": "Care Plus Clinic, Bengaluru",
                 "missing_document_types": [],
-                "issues": [
+                "issues": [],
+                "warnings": [
                     "Hospital Name not Found"
                 ],
-                "warnings": [],
-                "validation_passed": false
+                "validation_passed": true
             },
             "document_result": {
                 "step_name": "Document Validation",
-                "status": "FAILED",
-                "passed": false,
-                "confidence": 0.0,
-                "reason": "Hospital Name not Found",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "reason": "All documents validated successfully.",
                 "details": {
                     "claim_category": "PHARMACY",
-                    "missing_documents": [],
-                    "issues": [
-                        "Hospital Name not Found"
-                    ],
-                    "warnings": [],
+                    "document_count": 2,
                     "uploaded_document_types": [
                         "PRESCRIPTION",
                         "PHARMACY_BILL"
+                    ],
+                    "patient_name": "Sneha Reddy",
+                    "hospital_name": "Care Plus Clinic, Bengaluru",
+                    "warnings": [
+                        "Hospital Name not Found"
                     ]
                 },
-                "fatal": true,
-                "checks": []
+                "fatal": false,
+                "checks": [
+                    {
+                        "check_name": "Document Uploads Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    },
+                    {
+                        "check_name": "Claim Category Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    },
+                    {
+                        "check_name": "PRESCRIPTION Document Confidence Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    },
+                    {
+                        "check_name": "PHARMACY_BILL Document Confidence Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    },
+                    {
+                        "check_name": "Patient Name Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    },
+                    {
+                        "check_name": "Hospital Name Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    },
+                    {
+                        "check_name": "Duplicate Document Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    },
+                    {
+                        "check_name": "Missing Documents Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    }
+                ]
             },
-            "error_step": "Document Validation",
-            "error_issues": [
-                "Hospital Name not Found"
-            ],
-            "error": "Hospital Name not Found",
-            "error_message": "Your claim couldn\u2019t be processed because the hospital name you entered wasn\u2019t recognized. Please check the spelling or provide the exact name as it appears on your bill. If you need help, contact us."
+            "coverage": {
+                "relationship_covered": true,
+                "waiting_period_passed": true,
+                "specific_waiting_period_passed": true,
+                "submission_window_passed": true,
+                "minimum_amount_passed": true,
+                "exclusion_found": false,
+                "rejection_reasons": []
+            },
+            "coverage_result": {
+                "step_name": "Coverage Validation",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "reason": "Coverage validation passed.",
+                "details": {
+                    "claim_category": "PHARMACY",
+                    "diagnosis": "Upper Respiratory Tract Infection (URTI)",
+                    "claimed_amount": 800.0,
+                    "treatment_date": "2026-06-20"
+                },
+                "fatal": false,
+                "checks": [
+                    {
+                        "check_name": "Items Claimed Amount Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    },
+                    {
+                        "check_name": "Relationship Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    },
+                    {
+                        "check_name": "Treatment Date Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    },
+                    {
+                        "check_name": "Specific Waiting Period Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    },
+                    {
+                        "check_name": "Exclusion Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    },
+                    {
+                        "check_name": "Minimum Amount Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    },
+                    {
+                        "check_name": "Submission Window Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    }
+                ]
+            },
+            "finance": {
+                "claimed_amount": 800.0,
+                "eligible_amount": 800.0,
+                "approved_amount": 800.0,
+                "annual_limit_remaining": 50000.0,
+                "family_limit_remaining": 150000.0,
+                "per_claim_limit_applied": false,
+                "annual_limit_applied": false,
+                "co_pay": 0.0,
+                "hospital_network": 0.0,
+                "family_floater_limit_applied": false,
+                "rejection_reasons": [],
+                "family_limit": 0.0,
+                "annual_limit": 0.0,
+                "per_claim_limit": 0.0,
+                "reduct_items": [],
+                "sub_limit": 0.0
+            },
+            "finance_result": {
+                "step_name": "Financial Validation",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "reason": "Financial validation passed.",
+                "details": {
+                    "claimed_amount": 800.0,
+                    "approved_amount": 800.0,
+                    "annual_remaining": 50000.0,
+                    "family_remaining": 150000.0,
+                    "per_claim_limit": 5000
+                },
+                "fatal": false,
+                "checks": [
+                    {
+                        "check_name": "Claimed Amount Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    },
+                    {
+                        "check_name": "Per Claim Limit Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    },
+                    {
+                        "check_name": "Annual Limit Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    },
+                    {
+                        "check_name": "Family Floater Limit Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    }
+                ]
+            },
+            "fraud": {
+                "fraud_score": 0.0,
+                "monthly_claims_count": 1,
+                "same_day_claims_count": 1,
+                "manual_review_required": false,
+                "warnings": []
+            },
+            "fraud_result": {
+                "step_name": "Fraud Validation",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "reason": "Fraud validation completed.",
+                "details": {
+                    "fraud_score": 0.0,
+                    "monthly_claims": 1,
+                    "same_day_claims": 1,
+                    "manual_review": false,
+                    "warnings": []
+                },
+                "fatal": false,
+                "checks": [
+                    {
+                        "check_name": "Monthly Claim Count Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    },
+                    {
+                        "check_name": "Same-day Claim Count Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    },
+                    {
+                        "check_name": "High-value Claim Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    },
+                    {
+                        "check_name": "Manual Review Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    },
+                    {
+                        "check_name": "Fraud Score Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    }
+                ]
+            },
+            "decision": {
+                "decision": "APPROVED",
+                "claimed_amount": 800.0,
+                "approved_amount": 800.0,
+                "fraud_score": 0.0,
+                "needs_manual_review": false,
+                "explanation": "Your claim is approved for $800.00.",
+                "financial_breakdown": [
+                    {
+                        "step": "Network Hospital Discount",
+                        "amount": 0.0
+                    },
+                    {
+                        "step": "Copay Deduction",
+                        "amount": 0.0
+                    },
+                    {
+                        "step": "Sub-limit Deduction",
+                        "amount": 0.0
+                    },
+                    {
+                        "step": "Per-Claim limit Deduction",
+                        "amount": 0.0
+                    },
+                    {
+                        "step": "Annual limit Deduction",
+                        "amount": 0.0
+                    },
+                    {
+                        "step": "Family limit Deduction",
+                        "amount": 0.0
+                    }
+                ]
+            },
+            "decision_result": {
+                "step_name": "Decision",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "reason": "Final decision: APPROVED",
+                "details": {
+                    "decision": "APPROVED",
+                    "claimed_amount": 800.0,
+                    "approved_amount": 800.0,
+                    "fraud_score": 0.0,
+                    "needs_manual_review": false,
+                    "explanation": "Your claim is approved for $800.00.",
+                    "financial_breakdown": [
+                        {
+                            "step": "Network Hospital Discount",
+                            "amount": 0.0
+                        },
+                        {
+                            "step": "Copay Deduction",
+                            "amount": 0.0
+                        },
+                        {
+                            "step": "Sub-limit Deduction",
+                            "amount": 0.0
+                        },
+                        {
+                            "step": "Per-Claim limit Deduction",
+                            "amount": 0.0
+                        },
+                        {
+                            "step": "Annual limit Deduction",
+                            "amount": 0.0
+                        },
+                        {
+                            "step": "Family limit Deduction",
+                            "amount": 0.0
+                        }
+                    ]
+                },
+                "fatal": false,
+                "checks": [
+                    {
+                        "check_name": "Decision Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    },
+                    {
+                        "check_name": "Explanation Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    }
+                ]
+            }
         }
     },
     {
@@ -887,7 +1227,7 @@
                 "Patient mismatch detected: 'Rajesh Kumar' vs 'Arjun Mehta'"
             ],
             "error": "Patient mismatch detected: 'Rajesh Kumar' vs 'Arjun Mehta'",
-            "error_message": "Your claim couldn\u2019t move past document validation because the patient name on the form doesn\u2019t match our records. The claim lists **Rajesh\u202fKumar**, but the system has **Arjun\u202fMehta** for this case. Please correct the patient name to match the insured\u2019s record and resubmit."
+            "error_message": "The claim couldn't be processed because the patient's name on the claim, 'Rajesh Kumar', doesn't match the name in our records, 'Arjun Mehta'."
         }
     },
     {
@@ -1308,8 +1648,8 @@
                 "claimed_amount": 1500.0,
                 "eligible_amount": 1500.0,
                 "approved_amount": 1350.0,
-                "annual_limit_remaining": 37850.0,
-                "family_limit_remaining": 137850.0,
+                "annual_limit_remaining": 50000.0,
+                "family_limit_remaining": 150000.0,
                 "per_claim_limit_applied": false,
                 "annual_limit_applied": false,
                 "co_pay": 150.0,
@@ -1331,8 +1671,8 @@
                 "details": {
                     "claimed_amount": 1500.0,
                     "approved_amount": 1350.0,
-                    "annual_remaining": 37850.0,
-                    "family_remaining": 137850.0,
+                    "annual_remaining": 50000.0,
+                    "family_remaining": 150000.0,
                     "per_claim_limit": 5000
                 },
                 "fatal": false,
@@ -1368,14 +1708,11 @@
                 ]
             },
             "fraud": {
-                "fraud_score": 0.55,
-                "monthly_claims_count": 10,
-                "same_day_claims_count": 10,
-                "manual_review_required": true,
-                "warnings": [
-                    "Monthly claim count (10) exceeds limit (6).",
-                    "Same-day claim count (10) exceeds limit (2)."
-                ]
+                "fraud_score": 0.0,
+                "monthly_claims_count": 1,
+                "same_day_claims_count": 1,
+                "manual_review_required": false,
+                "warnings": []
             },
             "fraud_result": {
                 "step_name": "Fraud Validation",
@@ -1384,14 +1721,11 @@
                 "confidence": 1.0,
                 "reason": "Fraud validation completed.",
                 "details": {
-                    "fraud_score": 0.55,
-                    "monthly_claims": 10,
-                    "same_day_claims": 10,
-                    "manual_review": true,
-                    "warnings": [
-                        "Monthly claim count (10) exceeds limit (6).",
-                        "Same-day claim count (10) exceeds limit (2)."
-                    ]
+                    "fraud_score": 0.0,
+                    "monthly_claims": 1,
+                    "same_day_claims": 1,
+                    "manual_review": false,
+                    "warnings": []
                 },
                 "fatal": false,
                 "checks": [
@@ -1433,12 +1767,12 @@
                 ]
             },
             "decision": {
-                "decision": "MANUAL_REVIEW",
+                "decision": "PARTIALLY_APPROVED",
                 "claimed_amount": 1500.0,
                 "approved_amount": 1350.0,
-                "fraud_score": 0.55,
-                "needs_manual_review": true,
-                "explanation": "Your claim is under manual review. Our team is evaluating the details, including recent claim frequency. We will notify you of the final decision soon.",
+                "fraud_score": 0.0,
+                "needs_manual_review": false,
+                "explanation": "Your claim is partially approved for $1350. The amount was reduced by $150.",
                 "financial_breakdown": [
                     {
                         "step": "Network Hospital Discount",
@@ -1471,14 +1805,14 @@
                 "status": "PASSED",
                 "passed": true,
                 "confidence": 1.0,
-                "reason": "Final decision: MANUAL_REVIEW",
+                "reason": "Final decision: PARTIALLY_APPROVED",
                 "details": {
-                    "decision": "MANUAL_REVIEW",
+                    "decision": "PARTIALLY_APPROVED",
                     "claimed_amount": 1500.0,
                     "approved_amount": 1350.0,
-                    "fraud_score": 0.55,
-                    "needs_manual_review": true,
-                    "explanation": "Your claim is under manual review. Our team is evaluating the details, including recent claim frequency. We will notify you of the final decision soon.",
+                    "fraud_score": 0.0,
+                    "needs_manual_review": false,
+                    "explanation": "Your claim is partially approved for $1350. The amount was reduced by $150.",
                     "financial_breakdown": [
                         {
                             "step": "Network Hospital Discount",
@@ -1784,39 +2118,329 @@
                 "patient_name": "Vikram Joshi",
                 "hospital_name": "Diabetes Care Centre, Ahmedabad",
                 "missing_document_types": [],
-                "issues": [
-                    "Hospital Name not Found"
-                ],
+                "issues": [],
                 "warnings": [],
-                "validation_passed": false
+                "validation_passed": true
             },
             "document_result": {
                 "step_name": "Document Validation",
-                "status": "FAILED",
-                "passed": false,
-                "confidence": 0.0,
-                "reason": "Hospital Name not Found",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "reason": "All documents validated successfully.",
                 "details": {
                     "claim_category": "CONSULTATION",
-                    "missing_documents": [],
-                    "issues": [
-                        "Hospital Name not Found"
-                    ],
-                    "warnings": [],
+                    "document_count": 2,
                     "uploaded_document_types": [
                         "HOSPITAL_BILL",
                         "PRESCRIPTION"
+                    ],
+                    "patient_name": "Vikram Joshi",
+                    "hospital_name": "Diabetes Care Centre, Ahmedabad",
+                    "warnings": []
+                },
+                "fatal": false,
+                "checks": [
+                    {
+                        "check_name": "Document Uploads Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    },
+                    {
+                        "check_name": "Claim Category Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    },
+                    {
+                        "check_name": "HOSPITAL_BILL Document Confidence Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    },
+                    {
+                        "check_name": "PRESCRIPTION Document Confidence Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    },
+                    {
+                        "check_name": "Patient Name Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    },
+                    {
+                        "check_name": "Hospital Name Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    },
+                    {
+                        "check_name": "Duplicate Document Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    },
+                    {
+                        "check_name": "Missing Documents Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    }
+                ]
+            },
+            "coverage": {
+                "relationship_covered": true,
+                "waiting_period_passed": true,
+                "specific_waiting_period_passed": false,
+                "submission_window_passed": false,
+                "minimum_amount_passed": true,
+                "exclusion_found": false,
+                "rejection_reasons": [
+                    "Condition 'diabetes' requires 90 days waiting period.",
+                    "Claim submitted after allowed 30 day limit."
+                ]
+            },
+            "coverage_result": {
+                "step_name": "Coverage Validation",
+                "status": "FAILED",
+                "passed": false,
+                "confidence": 0.0,
+                "reason": "Condition 'diabetes' requires 90 days waiting period.; Claim submitted after allowed 30 day limit.",
+                "details": {
+                    "claim_category": "CONSULTATION",
+                    "rejection_reasons": [
+                        "Condition 'diabetes' requires 90 days waiting period.",
+                        "Claim submitted after allowed 30 day limit."
                     ]
                 },
                 "fatal": true,
                 "checks": []
             },
-            "error_step": "Document Validation",
-            "error_issues": [
-                "Hospital Name not Found"
-            ],
-            "error": "Hospital Name not Found",
-            "error_message": "Your claim couldn\u2019t move past the document\u2011validation step because the **hospital name you entered wasn\u2019t found** in our system. This means the name is missing or spelled incorrectly. Please double\u2011check the hospital\u2019s name (including any abbreviations) and resend the claim."
+            "finance": {
+                "claimed_amount": 3000.0,
+                "eligible_amount": 3000.0,
+                "approved_amount": 2000.0,
+                "annual_limit_remaining": 50000.0,
+                "family_limit_remaining": 150000.0,
+                "per_claim_limit_applied": false,
+                "annual_limit_applied": false,
+                "co_pay": 300.0,
+                "hospital_network": 0.0,
+                "family_floater_limit_applied": false,
+                "rejection_reasons": [],
+                "family_limit": 0.0,
+                "annual_limit": 0.0,
+                "per_claim_limit": 0.0,
+                "reduct_items": [],
+                "sub_limit": 700.0
+            },
+            "finance_result": {
+                "step_name": "Financial Validation",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "reason": "Financial validation passed.",
+                "details": {
+                    "claimed_amount": 3000.0,
+                    "approved_amount": 2000,
+                    "annual_remaining": 50000.0,
+                    "family_remaining": 150000.0,
+                    "per_claim_limit": 5000
+                },
+                "fatal": false,
+                "checks": [
+                    {
+                        "check_name": "Claimed Amount Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    },
+                    {
+                        "check_name": "Per Claim Limit Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    },
+                    {
+                        "check_name": "Annual Limit Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    },
+                    {
+                        "check_name": "Family Floater Limit Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    }
+                ]
+            },
+            "fraud": {
+                "fraud_score": 0.0,
+                "monthly_claims_count": 1,
+                "same_day_claims_count": 1,
+                "manual_review_required": false,
+                "warnings": []
+            },
+            "fraud_result": {
+                "step_name": "Fraud Validation",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "reason": "Fraud validation completed.",
+                "details": {
+                    "fraud_score": 0.0,
+                    "monthly_claims": 1,
+                    "same_day_claims": 1,
+                    "manual_review": false,
+                    "warnings": []
+                },
+                "fatal": false,
+                "checks": [
+                    {
+                        "check_name": "Monthly Claim Count Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    },
+                    {
+                        "check_name": "Same-day Claim Count Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    },
+                    {
+                        "check_name": "High-value Claim Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    },
+                    {
+                        "check_name": "Manual Review Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    },
+                    {
+                        "check_name": "Fraud Score Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    }
+                ]
+            },
+            "decision": {
+                "decision": "REJECTED",
+                "claimed_amount": 3000.0,
+                "approved_amount": 2000.0,
+                "fraud_score": 0.0,
+                "needs_manual_review": false,
+                "explanation": "Claim rejected due to 90-day waiting period for diabetes and late submission.",
+                "financial_breakdown": [
+                    {
+                        "step": "Network Hospital Discount",
+                        "amount": 0.0
+                    },
+                    {
+                        "step": "Copay Deduction",
+                        "amount": 300.0
+                    },
+                    {
+                        "step": "Sub-limit Deduction",
+                        "amount": 700.0
+                    },
+                    {
+                        "step": "Per-Claim limit Deduction",
+                        "amount": 0.0
+                    },
+                    {
+                        "step": "Annual limit Deduction",
+                        "amount": 0.0
+                    },
+                    {
+                        "step": "Family limit Deduction",
+                        "amount": 0.0
+                    }
+                ]
+            },
+            "decision_result": {
+                "step_name": "Decision",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "reason": "Final decision: REJECTED",
+                "details": {
+                    "decision": "REJECTED",
+                    "claimed_amount": 3000.0,
+                    "approved_amount": 2000.0,
+                    "fraud_score": 0.0,
+                    "needs_manual_review": false,
+                    "explanation": "Claim rejected due to 90-day waiting period for diabetes and late submission.",
+                    "financial_breakdown": [
+                        {
+                            "step": "Network Hospital Discount",
+                            "amount": 0.0
+                        },
+                        {
+                            "step": "Copay Deduction",
+                            "amount": 300.0
+                        },
+                        {
+                            "step": "Sub-limit Deduction",
+                            "amount": 700.0
+                        },
+                        {
+                            "step": "Per-Claim limit Deduction",
+                            "amount": 0.0
+                        },
+                        {
+                            "step": "Annual limit Deduction",
+                            "amount": 0.0
+                        },
+                        {
+                            "step": "Family limit Deduction",
+                            "amount": 0.0
+                        }
+                    ]
+                },
+                "fatal": false,
+                "checks": [
+                    {
+                        "check_name": "Decision Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    },
+                    {
+                        "check_name": "Explanation Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    }
+                ]
+            }
         }
     },
     {
@@ -2070,15 +2694,15 @@
             "document": {
                 "uploaded_document_types": [
                     "HOSPITAL_BILL",
-                    "HOSPITAL_BILL"
+                    "DENTAL_REPORT"
                 ],
                 "inferred_claim_category": "DENTAL",
                 "patient_name": "Priya Singh",
-                "hospital_name": "SMILE CLINIC",
+                "hospital_name": "Smile Multispeciality Hospital",
                 "missing_document_types": [],
                 "issues": [],
                 "warnings": [
-                    "Duplicate document uploaded: HOSPITAL_BILL"
+                    "Hospital mismatch detected: 'Smile Multispeciality Hospital' vs 'Smile Dental Clinic'"
                 ],
                 "validation_passed": true
             },
@@ -2093,12 +2717,12 @@
                     "document_count": 2,
                     "uploaded_document_types": [
                         "HOSPITAL_BILL",
-                        "HOSPITAL_BILL"
+                        "DENTAL_REPORT"
                     ],
                     "patient_name": "Priya Singh",
-                    "hospital_name": "SMILE CLINIC",
+                    "hospital_name": "Smile Multispeciality Hospital",
                     "warnings": [
-                        "Duplicate document uploaded: HOSPITAL_BILL"
+                        "Hospital mismatch detected: 'Smile Multispeciality Hospital' vs 'Smile Dental Clinic'"
                     ]
                 },
                 "fatal": false,
@@ -2125,7 +2749,7 @@
                         "details": {}
                     },
                     {
-                        "check_name": "HOSPITAL_BILL Document Confidence Check",
+                        "check_name": "DENTAL_REPORT Document Confidence Check",
                         "status": "PASSED",
                         "passed": true,
                         "confidence": 1.0,
@@ -2238,10 +2862,10 @@
             "finance": {
                 "claimed_amount": 12000.0,
                 "eligible_amount": 12000.0,
-                "approved_amount": 4000.0,
-                "annual_limit_remaining": 34000.0,
-                "family_limit_remaining": 134000.0,
-                "per_claim_limit_applied": false,
+                "approved_amount": 5000.0,
+                "annual_limit_remaining": 50000.0,
+                "family_limit_remaining": 150000.0,
+                "per_claim_limit_applied": true,
                 "annual_limit_applied": false,
                 "co_pay": 0.0,
                 "hospital_network": 0.0,
@@ -2249,12 +2873,8 @@
                 "rejection_reasons": [],
                 "family_limit": 0.0,
                 "annual_limit": 0.0,
-                "per_claim_limit": 0.0,
+                "per_claim_limit": 3000.0,
                 "reduct_items": [
-                    {
-                        "description": "Teeth Whitening",
-                        "amount": 4000.0
-                    },
                     {
                         "description": "Teeth Whitening",
                         "amount": 4000.0
@@ -2270,9 +2890,9 @@
                 "reason": "Financial validation passed.",
                 "details": {
                     "claimed_amount": 12000.0,
-                    "approved_amount": 4000.0,
-                    "annual_remaining": 34000.0,
-                    "family_remaining": 134000.0,
+                    "approved_amount": 5000,
+                    "annual_remaining": 50000.0,
+                    "family_remaining": 150000.0,
                     "per_claim_limit": 5000
                 },
                 "fatal": false,
@@ -2308,13 +2928,11 @@
                 ]
             },
             "fraud": {
-                "fraud_score": 0.25,
-                "monthly_claims_count": 5,
-                "same_day_claims_count": 5,
-                "manual_review_required": true,
-                "warnings": [
-                    "Same-day claim count (5) exceeds limit (2)."
-                ]
+                "fraud_score": 0.0,
+                "monthly_claims_count": 1,
+                "same_day_claims_count": 1,
+                "manual_review_required": false,
+                "warnings": []
             },
             "fraud_result": {
                 "step_name": "Fraud Validation",
@@ -2323,13 +2941,11 @@
                 "confidence": 1.0,
                 "reason": "Fraud validation completed.",
                 "details": {
-                    "fraud_score": 0.25,
-                    "monthly_claims": 5,
-                    "same_day_claims": 5,
-                    "manual_review": true,
-                    "warnings": [
-                        "Same-day claim count (5) exceeds limit (2)."
-                    ]
+                    "fraud_score": 0.0,
+                    "monthly_claims": 1,
+                    "same_day_claims": 1,
+                    "manual_review": false,
+                    "warnings": []
                 },
                 "fatal": false,
                 "checks": [
@@ -2371,12 +2987,12 @@
                 ]
             },
             "decision": {
-                "decision": "MANUAL_REVIEW",
+                "decision": "PARTIALLY_APPROVED",
                 "claimed_amount": 12000.0,
-                "approved_amount": 4000.0,
-                "fraud_score": 0.25,
-                "needs_manual_review": true,
-                "explanation": "Your claim is under manual review. We need to verify details before a final decision. We will contact you if we need more information. Thank you for your patience.",
+                "approved_amount": 5000.0,
+                "fraud_score": 0.0,
+                "needs_manual_review": false,
+                "explanation": "Your claim is partially approved for $5000. The amount was reduced due to non-eligible items like Teeth Whitening.",
                 "financial_breakdown": [
                     {
                         "step": "Network Hospital Discount",
@@ -2392,7 +3008,7 @@
                     },
                     {
                         "step": "Per-Claim limit Deduction",
-                        "amount": 0.0
+                        "amount": 3000.0
                     },
                     {
                         "step": "Annual limit Deduction",
@@ -2405,10 +3021,6 @@
                     {
                         "step": "Excluded Item\nTeeth Whitening",
                         "amount": 4000.0
-                    },
-                    {
-                        "step": "Excluded Item\nTeeth Whitening",
-                        "amount": 4000.0
                     }
                 ]
             },
@@ -2417,14 +3029,14 @@
                 "status": "PASSED",
                 "passed": true,
                 "confidence": 1.0,
-                "reason": "Final decision: MANUAL_REVIEW",
+                "reason": "Final decision: PARTIALLY_APPROVED",
                 "details": {
-                    "decision": "MANUAL_REVIEW",
+                    "decision": "PARTIALLY_APPROVED",
                     "claimed_amount": 12000.0,
-                    "approved_amount": 4000.0,
-                    "fraud_score": 0.25,
-                    "needs_manual_review": true,
-                    "explanation": "Your claim is under manual review. We need to verify details before a final decision. We will contact you if we need more information. Thank you for your patience.",
+                    "approved_amount": 5000.0,
+                    "fraud_score": 0.0,
+                    "needs_manual_review": false,
+                    "explanation": "Your claim is partially approved for $5000. The amount was reduced due to non-eligible items like Teeth Whitening.",
                     "financial_breakdown": [
                         {
                             "step": "Network Hospital Discount",
@@ -2440,7 +3052,7 @@
                         },
                         {
                             "step": "Per-Claim limit Deduction",
-                            "amount": 0.0
+                            "amount": 3000.0
                         },
                         {
                             "step": "Annual limit Deduction",
@@ -2449,10 +3061,6 @@
                         {
                             "step": "Family limit Deduction",
                             "amount": 0.0
-                        },
-                        {
-                            "step": "Excluded Item\nTeeth Whitening",
-                            "amount": 4000.0
                         },
                         {
                             "step": "Excluded Item\nTeeth Whitening",
@@ -2743,7 +3351,7 @@
                 "issues": [],
                 "warnings": [
                     "Hospital mismatch detected: 'PRECISION HOSPITAL' vs 'Spine Care Centre, Hyderabad'",
-                    "Hospital mismatch detected: 'PRECISION HOSPITAL' vs 'Precision Diagnostics'"
+                    "Hospital mismatch detected: 'PRECISION HOSPITAL' vs 'PRECISION DIAGNOSTICS'"
                 ],
                 "validation_passed": true
             },
@@ -2765,7 +3373,7 @@
                     "hospital_name": "PRECISION HOSPITAL",
                     "warnings": [
                         "Hospital mismatch detected: 'PRECISION HOSPITAL' vs 'Spine Care Centre, Hyderabad'",
-                        "Hospital mismatch detected: 'PRECISION HOSPITAL' vs 'Precision Diagnostics'"
+                        "Hospital mismatch detected: 'PRECISION HOSPITAL' vs 'PRECISION DIAGNOSTICS'"
                     ]
                 },
                 "fatal": false,
@@ -2843,7 +3451,7 @@
                 "minimum_amount_passed": true,
                 "exclusion_found": false,
                 "rejection_reasons": [
-                    "Pre-authorization was required for MRI Lumbar Spine, MRI Lumbar Spine, MRI Lumbar Spine, MRI Lumbar Spine because the claim amount \u20b915000.0 exceeds \u20b910000."
+                    "Pre-authorization was required for MRI Lumbar Spine, , MRI Lumbar Spine, MRI Lumbar Spine because the claim amount \u20b915000.0 exceeds \u20b910000."
                 ]
             },
             "coverage_result": {
@@ -2851,11 +3459,11 @@
                 "status": "FAILED",
                 "passed": false,
                 "confidence": 0.0,
-                "reason": "Pre-authorization was required for MRI Lumbar Spine, MRI Lumbar Spine, MRI Lumbar Spine, MRI Lumbar Spine because the claim amount \u20b915000.0 exceeds \u20b910000.",
+                "reason": "Pre-authorization was required for MRI Lumbar Spine, , MRI Lumbar Spine, MRI Lumbar Spine because the claim amount \u20b915000.0 exceeds \u20b910000.",
                 "details": {
                     "claim_category": "DIAGNOSTIC",
                     "rejection_reasons": [
-                        "Pre-authorization was required for MRI Lumbar Spine, MRI Lumbar Spine, MRI Lumbar Spine, MRI Lumbar Spine because the claim amount \u20b915000.0 exceeds \u20b910000."
+                        "Pre-authorization was required for MRI Lumbar Spine, , MRI Lumbar Spine, MRI Lumbar Spine because the claim amount \u20b915000.0 exceeds \u20b910000."
                     ]
                 },
                 "fatal": true,
@@ -2865,8 +3473,8 @@
                 "claimed_amount": 15000.0,
                 "eligible_amount": 15000.0,
                 "approved_amount": 5000.0,
-                "annual_limit_remaining": 25000.0,
-                "family_limit_remaining": 125000.0,
+                "annual_limit_remaining": 50000.0,
+                "family_limit_remaining": 150000.0,
                 "per_claim_limit_applied": true,
                 "annual_limit_applied": false,
                 "co_pay": 0.0,
@@ -2888,8 +3496,8 @@
                 "details": {
                     "claimed_amount": 15000.0,
                     "approved_amount": 5000,
-                    "annual_remaining": 25000.0,
-                    "family_remaining": 125000.0,
+                    "annual_remaining": 50000.0,
+                    "family_remaining": 150000.0,
                     "per_claim_limit": 5000
                 },
                 "fatal": false,
@@ -2925,14 +3533,11 @@
                 ]
             },
             "fraud": {
-                "fraud_score": 0.55,
-                "monthly_claims_count": 6,
-                "same_day_claims_count": 6,
-                "manual_review_required": true,
-                "warnings": [
-                    "Monthly claim count (6) exceeds limit (6).",
-                    "Same-day claim count (6) exceeds limit (2)."
-                ]
+                "fraud_score": 0.0,
+                "monthly_claims_count": 1,
+                "same_day_claims_count": 1,
+                "manual_review_required": false,
+                "warnings": []
             },
             "fraud_result": {
                 "step_name": "Fraud Validation",
@@ -2941,14 +3546,11 @@
                 "confidence": 1.0,
                 "reason": "Fraud validation completed.",
                 "details": {
-                    "fraud_score": 0.55,
-                    "monthly_claims": 6,
-                    "same_day_claims": 6,
-                    "manual_review": true,
-                    "warnings": [
-                        "Monthly claim count (6) exceeds limit (6).",
-                        "Same-day claim count (6) exceeds limit (2)."
-                    ]
+                    "fraud_score": 0.0,
+                    "monthly_claims": 1,
+                    "same_day_claims": 1,
+                    "manual_review": false,
+                    "warnings": []
                 },
                 "fatal": false,
                 "checks": [
@@ -2993,9 +3595,9 @@
                 "decision": "REJECTED",
                 "claimed_amount": 15000.0,
                 "approved_amount": 5000.0,
-                "fraud_score": 0.55,
-                "needs_manual_review": true,
-                "explanation": "Your claim was rejected because a pre\u2011authorization was required for the MRI lumbar spine procedure as the amount exceeds the \u20b910,000 limit, and because your monthly and same\u2011day claim counts have exceeded the allowed limits.",
+                "fraud_score": 0.0,
+                "needs_manual_review": false,
+                "explanation": "Claim rejected due to required pre-authorization for MRI Lumbar Spine, as claim amount exceeds \u20b910000.",
                 "financial_breakdown": [
                     {
                         "step": "Network Hospital Discount",
@@ -3033,9 +3635,9 @@
                     "decision": "REJECTED",
                     "claimed_amount": 15000.0,
                     "approved_amount": 5000.0,
-                    "fraud_score": 0.55,
-                    "needs_manual_review": true,
-                    "explanation": "Your claim was rejected because a pre\u2011authorization was required for the MRI lumbar spine procedure as the amount exceeds the \u20b910,000 limit, and because your monthly and same\u2011day claim counts have exceeded the allowed limits.",
+                    "fraud_score": 0.0,
+                    "needs_manual_review": false,
+                    "explanation": "Claim rejected due to required pre-authorization for MRI Lumbar Spine, as claim amount exceeds \u20b910000.",
                     "financial_breakdown": [
                         {
                             "step": "Network Hospital Discount",
@@ -3500,8 +4102,8 @@
                 "claimed_amount": 7500.0,
                 "eligible_amount": 7500.0,
                 "approved_amount": 2000.0,
-                "annual_limit_remaining": 34000.0,
-                "family_limit_remaining": 134000.0,
+                "annual_limit_remaining": 50000.0,
+                "family_limit_remaining": 150000.0,
                 "per_claim_limit_applied": true,
                 "annual_limit_applied": false,
                 "co_pay": 750.0,
@@ -3523,8 +4125,8 @@
                 "details": {
                     "claimed_amount": 7500.0,
                     "approved_amount": 2000,
-                    "annual_remaining": 34000.0,
-                    "family_remaining": 134000.0,
+                    "annual_remaining": 50000.0,
+                    "family_remaining": 150000.0,
                     "per_claim_limit": 5000
                 },
                 "fatal": false,
@@ -3560,14 +4162,11 @@
                 ]
             },
             "fraud": {
-                "fraud_score": 0.55,
-                "monthly_claims_count": 9,
-                "same_day_claims_count": 9,
-                "manual_review_required": true,
-                "warnings": [
-                    "Monthly claim count (9) exceeds limit (6).",
-                    "Same-day claim count (9) exceeds limit (2)."
-                ]
+                "fraud_score": 0.0,
+                "monthly_claims_count": 1,
+                "same_day_claims_count": 1,
+                "manual_review_required": false,
+                "warnings": []
             },
             "fraud_result": {
                 "step_name": "Fraud Validation",
@@ -3576,14 +4175,11 @@
                 "confidence": 1.0,
                 "reason": "Fraud validation completed.",
                 "details": {
-                    "fraud_score": 0.55,
-                    "monthly_claims": 9,
-                    "same_day_claims": 9,
-                    "manual_review": true,
-                    "warnings": [
-                        "Monthly claim count (9) exceeds limit (6).",
-                        "Same-day claim count (9) exceeds limit (2)."
-                    ]
+                    "fraud_score": 0.0,
+                    "monthly_claims": 1,
+                    "same_day_claims": 1,
+                    "manual_review": false,
+                    "warnings": []
                 },
                 "fatal": false,
                 "checks": [
@@ -3625,12 +4221,12 @@
                 ]
             },
             "decision": {
-                "decision": "MANUAL_REVIEW",
+                "decision": "PARTIALLY_APPROVED",
                 "claimed_amount": 7500.0,
                 "approved_amount": 2000.0,
-                "fraud_score": 0.55,
-                "needs_manual_review": true,
-                "explanation": "Your claim is under manual review. Because of the high claim amount and multiple recent claims, we need additional verification before a final decision. We\u2019ll notify you once the review is complete.",
+                "fraud_score": 0.0,
+                "needs_manual_review": false,
+                "explanation": "Your claim is partially approved for $2000, reduced from $7500 due to policy limits.",
                 "financial_breakdown": [
                     {
                         "step": "Network Hospital Discount",
@@ -3663,14 +4259,14 @@
                 "status": "PASSED",
                 "passed": true,
                 "confidence": 1.0,
-                "reason": "Final decision: MANUAL_REVIEW",
+                "reason": "Final decision: PARTIALLY_APPROVED",
                 "details": {
-                    "decision": "MANUAL_REVIEW",
+                    "decision": "PARTIALLY_APPROVED",
                     "claimed_amount": 7500.0,
                     "approved_amount": 2000.0,
-                    "fraud_score": 0.55,
-                    "needs_manual_review": true,
-                    "explanation": "Your claim is under manual review. Because of the high claim amount and multiple recent claims, we need additional verification before a final decision. We\u2019ll notify you once the review is complete.",
+                    "fraud_score": 0.0,
+                    "needs_manual_review": false,
+                    "explanation": "Your claim is partially approved for $2000, reduced from $7500 due to policy limits.",
                     "financial_breakdown": [
                         {
                             "step": "Network Hospital Discount",
@@ -3973,7 +4569,7 @@
                 ],
                 "inferred_claim_category": "CONSULTATION",
                 "patient_name": "Ravi Menon",
-                "hospital_name": "NEUROCARE CLINIC",
+                "hospital_name": "NeuroCare Clinic, Bengaluru",
                 "missing_document_types": [],
                 "issues": [],
                 "warnings": [],
@@ -3993,7 +4589,7 @@
                         "HOSPITAL_BILL"
                     ],
                     "patient_name": "Ravi Menon",
-                    "hospital_name": "NEUROCARE CLINIC",
+                    "hospital_name": "NeuroCare Clinic, Bengaluru",
                     "warnings": []
                 },
                 "fatal": false,
@@ -4134,8 +4730,8 @@
                 "claimed_amount": 4800.0,
                 "eligible_amount": 4800.0,
                 "approved_amount": 2000.0,
-                "annual_limit_remaining": 36000.0,
-                "family_limit_remaining": 136000.0,
+                "annual_limit_remaining": 50000.0,
+                "family_limit_remaining": 150000.0,
                 "per_claim_limit_applied": false,
                 "annual_limit_applied": false,
                 "co_pay": 480.0,
@@ -4157,8 +4753,8 @@
                 "details": {
                     "claimed_amount": 4800.0,
                     "approved_amount": 2000,
-                    "annual_remaining": 36000.0,
-                    "family_remaining": 136000.0,
+                    "annual_remaining": 50000.0,
+                    "family_remaining": 150000.0,
                     "per_claim_limit": 5000
                 },
                 "fatal": false,
@@ -4194,14 +4790,11 @@
                 ]
             },
             "fraud": {
-                "fraud_score": 0.55,
-                "monthly_claims_count": 8,
-                "same_day_claims_count": 8,
-                "manual_review_required": true,
-                "warnings": [
-                    "Monthly claim count (8) exceeds limit (6).",
-                    "Same-day claim count (8) exceeds limit (2)."
-                ]
+                "fraud_score": 0.0,
+                "monthly_claims_count": 1,
+                "same_day_claims_count": 1,
+                "manual_review_required": false,
+                "warnings": []
             },
             "fraud_result": {
                 "step_name": "Fraud Validation",
@@ -4210,14 +4803,11 @@
                 "confidence": 1.0,
                 "reason": "Fraud validation completed.",
                 "details": {
-                    "fraud_score": 0.55,
-                    "monthly_claims": 8,
-                    "same_day_claims": 8,
-                    "manual_review": true,
-                    "warnings": [
-                        "Monthly claim count (8) exceeds limit (6).",
-                        "Same-day claim count (8) exceeds limit (2)."
-                    ]
+                    "fraud_score": 0.0,
+                    "monthly_claims": 1,
+                    "same_day_claims": 1,
+                    "manual_review": false,
+                    "warnings": []
                 },
                 "fatal": false,
                 "checks": [
@@ -4259,12 +4849,12 @@
                 ]
             },
             "decision": {
-                "decision": "MANUAL_REVIEW",
+                "decision": "PARTIALLY_APPROVED",
                 "claimed_amount": 4800.0,
                 "approved_amount": 2000.0,
-                "fraud_score": 0.55,
-                "needs_manual_review": true,
-                "explanation": "Your claim is under manual review. Because the number of claims this month and on the same day exceed our usual limits, we need to verify the details before finalizing. We will contact you if we need more information. Thank you for your patience.",
+                "fraud_score": 0.0,
+                "needs_manual_review": false,
+                "explanation": "Your claim is partially approved for $2000, reduced from $4800 due to coverage limits.",
                 "financial_breakdown": [
                     {
                         "step": "Network Hospital Discount",
@@ -4297,14 +4887,14 @@
                 "status": "PASSED",
                 "passed": true,
                 "confidence": 1.0,
-                "reason": "Final decision: MANUAL_REVIEW",
+                "reason": "Final decision: PARTIALLY_APPROVED",
                 "details": {
-                    "decision": "MANUAL_REVIEW",
+                    "decision": "PARTIALLY_APPROVED",
                     "claimed_amount": 4800.0,
                     "approved_amount": 2000.0,
-                    "fraud_score": 0.55,
-                    "needs_manual_review": true,
-                    "explanation": "Your claim is under manual review. Because the number of claims this month and on the same day exceed our usual limits, we need to verify the details before finalizing. We will contact you if we need more information. Thank you for your patience.",
+                    "fraud_score": 0.0,
+                    "needs_manual_review": false,
+                    "explanation": "Your claim is partially approved for $2000, reduced from $4800 due to coverage limits.",
                     "financial_breakdown": [
                         {
                             "step": "Network Hospital Discount",
@@ -4769,8 +5359,8 @@
                 "claimed_amount": 4500.0,
                 "eligible_amount": 4500.0,
                 "approved_amount": 2000.0,
-                "annual_limit_remaining": 24000.0,
-                "family_limit_remaining": 124000.0,
+                "annual_limit_remaining": 50000.0,
+                "family_limit_remaining": 150000.0,
                 "per_claim_limit_applied": false,
                 "annual_limit_applied": false,
                 "co_pay": 288.0,
@@ -4792,8 +5382,8 @@
                 "details": {
                     "claimed_amount": 4500.0,
                     "approved_amount": 2000,
-                    "annual_remaining": 24000.0,
-                    "family_remaining": 124000.0,
+                    "annual_remaining": 50000.0,
+                    "family_remaining": 150000.0,
                     "per_claim_limit": 5000
                 },
                 "fatal": false,
@@ -4829,14 +5419,11 @@
                 ]
             },
             "fraud": {
-                "fraud_score": 0.55,
-                "monthly_claims_count": 15,
-                "same_day_claims_count": 15,
-                "manual_review_required": true,
-                "warnings": [
-                    "Monthly claim count (15) exceeds limit (6).",
-                    "Same-day claim count (15) exceeds limit (2)."
-                ]
+                "fraud_score": 0.0,
+                "monthly_claims_count": 1,
+                "same_day_claims_count": 1,
+                "manual_review_required": false,
+                "warnings": []
             },
             "fraud_result": {
                 "step_name": "Fraud Validation",
@@ -4845,14 +5432,11 @@
                 "confidence": 1.0,
                 "reason": "Fraud validation completed.",
                 "details": {
-                    "fraud_score": 0.55,
-                    "monthly_claims": 15,
-                    "same_day_claims": 15,
-                    "manual_review": true,
-                    "warnings": [
-                        "Monthly claim count (15) exceeds limit (6).",
-                        "Same-day claim count (15) exceeds limit (2)."
-                    ]
+                    "fraud_score": 0.0,
+                    "monthly_claims": 1,
+                    "same_day_claims": 1,
+                    "manual_review": false,
+                    "warnings": []
                 },
                 "fatal": false,
                 "checks": [
@@ -4894,12 +5478,12 @@
                 ]
             },
             "decision": {
-                "decision": "MANUAL_REVIEW",
+                "decision": "PARTIALLY_APPROVED",
                 "claimed_amount": 4500.0,
                 "approved_amount": 2000.0,
-                "fraud_score": 0.55,
-                "needs_manual_review": true,
-                "explanation": "Your claim is currently under manual review. We need to verify some details before a final decision. We will contact you if we require more information. Thank you for your patience.",
+                "fraud_score": 0.0,
+                "needs_manual_review": false,
+                "explanation": "Your claim is partially approved for $2000, reduced from $4500 due to policy limits.",
                 "financial_breakdown": [
                     {
                         "step": "Network Hospital Discount",
@@ -4932,14 +5516,14 @@
                 "status": "PASSED",
                 "passed": true,
                 "confidence": 1.0,
-                "reason": "Final decision: MANUAL_REVIEW",
+                "reason": "Final decision: PARTIALLY_APPROVED",
                 "details": {
-                    "decision": "MANUAL_REVIEW",
+                    "decision": "PARTIALLY_APPROVED",
                     "claimed_amount": 4500.0,
                     "approved_amount": 2000.0,
-                    "fraud_score": 0.55,
-                    "needs_manual_review": true,
-                    "explanation": "Your claim is currently under manual review. We need to verify some details before a final decision. We will contact you if we require more information. Thank you for your patience.",
+                    "fraud_score": 0.0,
+                    "needs_manual_review": false,
+                    "explanation": "Your claim is partially approved for $2000, reduced from $4500 due to policy limits.",
                     "financial_breakdown": [
                         {
                             "step": "Network Hospital Discount",
@@ -5238,49 +5822,382 @@
             },
             "document": {
                 "uploaded_document_types": [
+                    "HOSPITAL_BILL",
                     "PRESCRIPTION"
                 ],
                 "inferred_claim_category": "ALTERNATIVE_MEDICINE",
                 "patient_name": "Kavita Nair",
-                "hospital_name": "Ayur Wellness Centre, Bengaluru",
-                "missing_document_types": [
-                    "HOSPITAL_BILL"
-                ],
-                "issues": [
-                    "PRESCRIPTION\n Missing required documents: HOSPITAL_BILL"
-                ],
+                "hospital_name": "AYUR WELLNESS CENTRE",
+                "missing_document_types": [],
+                "issues": [],
                 "warnings": [],
-                "validation_passed": false
+                "validation_passed": true
             },
             "document_result": {
                 "step_name": "Document Validation",
-                "status": "FAILED",
-                "passed": false,
-                "confidence": 0.0,
-                "reason": "PRESCRIPTION\n Missing required documents: HOSPITAL_BILL",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "reason": "All documents validated successfully.",
                 "details": {
                     "claim_category": "ALTERNATIVE_MEDICINE",
-                    "missing_documents": [
-                        "HOSPITAL_BILL"
-                    ],
-                    "issues": [
-                        "PRESCRIPTION\n Missing required documents: HOSPITAL_BILL"
-                    ],
-                    "warnings": [],
+                    "document_count": 2,
                     "uploaded_document_types": [
+                        "HOSPITAL_BILL",
                         "PRESCRIPTION"
+                    ],
+                    "patient_name": "Kavita Nair",
+                    "hospital_name": "AYUR WELLNESS CENTRE",
+                    "warnings": []
+                },
+                "fatal": false,
+                "checks": [
+                    {
+                        "check_name": "Document Uploads Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    },
+                    {
+                        "check_name": "Claim Category Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    },
+                    {
+                        "check_name": "HOSPITAL_BILL Document Confidence Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    },
+                    {
+                        "check_name": "PRESCRIPTION Document Confidence Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    },
+                    {
+                        "check_name": "Patient Name Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    },
+                    {
+                        "check_name": "Hospital Name Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    },
+                    {
+                        "check_name": "Duplicate Document Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    },
+                    {
+                        "check_name": "Missing Documents Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    }
+                ]
+            },
+            "coverage": {
+                "relationship_covered": true,
+                "waiting_period_passed": true,
+                "specific_waiting_period_passed": true,
+                "submission_window_passed": true,
+                "minimum_amount_passed": true,
+                "exclusion_found": false,
+                "rejection_reasons": []
+            },
+            "coverage_result": {
+                "step_name": "Coverage Validation",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "reason": "Coverage validation passed.",
+                "details": {
+                    "claim_category": "ALTERNATIVE_MEDICINE",
+                    "diagnosis": "Chronic Joint Pain",
+                    "claimed_amount": 4000.0,
+                    "treatment_date": "2026-06-20"
+                },
+                "fatal": false,
+                "checks": [
+                    {
+                        "check_name": "Items Claimed Amount Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    },
+                    {
+                        "check_name": "Relationship Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    },
+                    {
+                        "check_name": "Treatment Date Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    },
+                    {
+                        "check_name": "Specific Waiting Period Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    },
+                    {
+                        "check_name": "Exclusion Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    },
+                    {
+                        "check_name": "Minimum Amount Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    },
+                    {
+                        "check_name": "Submission Window Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    }
+                ]
+            },
+            "finance": {
+                "claimed_amount": 4000.0,
+                "eligible_amount": 4000.0,
+                "approved_amount": 4000.0,
+                "annual_limit_remaining": 50000.0,
+                "family_limit_remaining": 150000.0,
+                "per_claim_limit_applied": false,
+                "annual_limit_applied": false,
+                "co_pay": 0.0,
+                "hospital_network": 0.0,
+                "family_floater_limit_applied": false,
+                "rejection_reasons": [],
+                "family_limit": 0.0,
+                "annual_limit": 0.0,
+                "per_claim_limit": 0.0,
+                "reduct_items": [],
+                "sub_limit": 0.0
+            },
+            "finance_result": {
+                "step_name": "Financial Validation",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "reason": "Financial validation passed.",
+                "details": {
+                    "claimed_amount": 4000.0,
+                    "approved_amount": 4000.0,
+                    "annual_remaining": 50000.0,
+                    "family_remaining": 150000.0,
+                    "per_claim_limit": 5000
+                },
+                "fatal": false,
+                "checks": [
+                    {
+                        "check_name": "Claimed Amount Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    },
+                    {
+                        "check_name": "Per Claim Limit Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    },
+                    {
+                        "check_name": "Annual Limit Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    },
+                    {
+                        "check_name": "Family Floater Limit Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    }
+                ]
+            },
+            "fraud": {
+                "fraud_score": 0.0,
+                "monthly_claims_count": 1,
+                "same_day_claims_count": 1,
+                "manual_review_required": false,
+                "warnings": []
+            },
+            "fraud_result": {
+                "step_name": "Fraud Validation",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "reason": "Fraud validation completed.",
+                "details": {
+                    "fraud_score": 0.0,
+                    "monthly_claims": 1,
+                    "same_day_claims": 1,
+                    "manual_review": false,
+                    "warnings": []
+                },
+                "fatal": false,
+                "checks": [
+                    {
+                        "check_name": "Monthly Claim Count Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    },
+                    {
+                        "check_name": "Same-day Claim Count Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    },
+                    {
+                        "check_name": "High-value Claim Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    },
+                    {
+                        "check_name": "Manual Review Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    },
+                    {
+                        "check_name": "Fraud Score Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    }
+                ]
+            },
+            "decision": {
+                "decision": "APPROVED",
+                "claimed_amount": 4000.0,
+                "approved_amount": 4000.0,
+                "fraud_score": 0.0,
+                "needs_manual_review": false,
+                "explanation": "Your claim is approved for $4000.0.",
+                "financial_breakdown": [
+                    {
+                        "step": "Network Hospital Discount",
+                        "amount": 0.0
+                    },
+                    {
+                        "step": "Copay Deduction",
+                        "amount": 0.0
+                    },
+                    {
+                        "step": "Sub-limit Deduction",
+                        "amount": 0.0
+                    },
+                    {
+                        "step": "Per-Claim limit Deduction",
+                        "amount": 0.0
+                    },
+                    {
+                        "step": "Annual limit Deduction",
+                        "amount": 0.0
+                    },
+                    {
+                        "step": "Family limit Deduction",
+                        "amount": 0.0
+                    }
+                ]
+            },
+            "decision_result": {
+                "step_name": "Decision",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "reason": "Final decision: APPROVED",
+                "details": {
+                    "decision": "APPROVED",
+                    "claimed_amount": 4000.0,
+                    "approved_amount": 4000.0,
+                    "fraud_score": 0.0,
+                    "needs_manual_review": false,
+                    "explanation": "Your claim is approved for $4000.0.",
+                    "financial_breakdown": [
+                        {
+                            "step": "Network Hospital Discount",
+                            "amount": 0.0
+                        },
+                        {
+                            "step": "Copay Deduction",
+                            "amount": 0.0
+                        },
+                        {
+                            "step": "Sub-limit Deduction",
+                            "amount": 0.0
+                        },
+                        {
+                            "step": "Per-Claim limit Deduction",
+                            "amount": 0.0
+                        },
+                        {
+                            "step": "Annual limit Deduction",
+                            "amount": 0.0
+                        },
+                        {
+                            "step": "Family limit Deduction",
+                            "amount": 0.0
+                        }
                     ]
                 },
-                "fatal": true,
-                "checks": []
-            },
-            "error_step": "Document Validation",
-            "error_issues": [
-                "PRESCRIPTION\n Missing required documents: HOSPITAL_BILL",
-                "Missing required documents: HOSPITAL_BILL"
-            ],
-            "error": "PRESCRIPTION\n Missing required documents: HOSPITAL_BILL\nMissing required documents: HOSPITAL_BILL",
-            "error_message": "Your claim couldn\u2019t be processed because the prescription part is missing a required document\u2014the hospital bill. The system needs that hospital bill attached to complete the claim. Please upload the hospital bill and resubmit."
+                "fatal": false,
+                "checks": [
+                    {
+                        "check_name": "Decision Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    },
+                    {
+                        "check_name": "Explanation Check",
+                        "status": "PASSED",
+                        "passed": true,
+                        "confidence": 1.0,
+                        "details": {}
+                    }
+                ]
+            }
         }
     },
     {
@@ -5628,8 +6545,8 @@
                 "minimum_amount_passed": true,
                 "exclusion_found": true,
                 "rejection_reasons": [
-                    "EXCLUDED_CONDITION: {word}",
-                    "EXCLUDED_CONDITION: {word}"
+                    "EXCLUDED_CONDITION: obesity",
+                    "EXCLUDED_CONDITION: bariatric"
                 ]
             },
             "coverage_result": {
@@ -5637,12 +6554,12 @@
                 "status": "FAILED",
                 "passed": false,
                 "confidence": 0.0,
-                "reason": "EXCLUDED_CONDITION: {word}; EXCLUDED_CONDITION: {word}",
+                "reason": "EXCLUDED_CONDITION: obesity; EXCLUDED_CONDITION: bariatric",
                 "details": {
                     "claim_category": "CONSULTATION",
                     "rejection_reasons": [
-                        "EXCLUDED_CONDITION: {word}",
-                        "EXCLUDED_CONDITION: {word}"
+                        "EXCLUDED_CONDITION: obesity",
+                        "EXCLUDED_CONDITION: bariatric"
                     ]
                 },
                 "fatal": true,
@@ -5652,8 +6569,8 @@
                 "claimed_amount": 8000.0,
                 "eligible_amount": 8000.0,
                 "approved_amount": 2000.0,
-                "annual_limit_remaining": 44920.0,
-                "family_limit_remaining": 144920.0,
+                "annual_limit_remaining": 50000.0,
+                "family_limit_remaining": 150000.0,
                 "per_claim_limit_applied": true,
                 "annual_limit_applied": false,
                 "co_pay": 800.0,
@@ -5675,8 +6592,8 @@
                 "details": {
                     "claimed_amount": 8000.0,
                     "approved_amount": 2000,
-                    "annual_remaining": 44920.0,
-                    "family_remaining": 144920.0,
+                    "annual_remaining": 50000.0,
+                    "family_remaining": 150000.0,
                     "per_claim_limit": 5000
                 },
                 "fatal": false,
@@ -5712,13 +6629,11 @@
                 ]
             },
             "fraud": {
-                "fraud_score": 0.25,
-                "monthly_claims_count": 4,
-                "same_day_claims_count": 4,
-                "manual_review_required": true,
-                "warnings": [
-                    "Same-day claim count (4) exceeds limit (2)."
-                ]
+                "fraud_score": 0.0,
+                "monthly_claims_count": 1,
+                "same_day_claims_count": 1,
+                "manual_review_required": false,
+                "warnings": []
             },
             "fraud_result": {
                 "step_name": "Fraud Validation",
@@ -5727,13 +6642,11 @@
                 "confidence": 1.0,
                 "reason": "Fraud validation completed.",
                 "details": {
-                    "fraud_score": 0.25,
-                    "monthly_claims": 4,
-                    "same_day_claims": 4,
-                    "manual_review": true,
-                    "warnings": [
-                        "Same-day claim count (4) exceeds limit (2)."
-                    ]
+                    "fraud_score": 0.0,
+                    "monthly_claims": 1,
+                    "same_day_claims": 1,
+                    "manual_review": false,
+                    "warnings": []
                 },
                 "fatal": false,
                 "checks": [
@@ -5778,9 +6691,9 @@
                 "decision": "REJECTED",
                 "claimed_amount": 8000.0,
                 "approved_amount": 2000.0,
-                "fraud_score": 0.25,
-                "needs_manual_review": true,
-                "explanation": "Your claim was rejected because the services involve conditions that are excluded from your coverage and because you submitted multiple claims on the same day, exceeding the allowed claim limit.",
+                "fraud_score": 0.0,
+                "needs_manual_review": false,
+                "explanation": "Claim rejected due to excluded conditions: obesity and bariatric.",
                 "financial_breakdown": [
                     {
                         "step": "Network Hospital Discount",
@@ -5818,9 +6731,9 @@
                     "decision": "REJECTED",
                     "claimed_amount": 8000.0,
                     "approved_amount": 2000.0,
-                    "fraud_score": 0.25,
-                    "needs_manual_review": true,
-                    "explanation": "Your claim was rejected because the services involve conditions that are excluded from your coverage and because you submitted multiple claims on the same day, exceeding the allowed claim limit.",
+                    "fraud_score": 0.0,
+                    "needs_manual_review": false,
+                    "explanation": "Claim rejected due to excluded conditions: obesity and bariatric.",
                     "financial_breakdown": [
                         {
                             "step": "Network Hospital Discount",

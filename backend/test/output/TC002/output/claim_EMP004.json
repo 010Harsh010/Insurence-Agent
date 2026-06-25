@@ -1,10 +1,10 @@
 {
     "member": {
-        "member_id": "EMP005",
-        "name": "Vikram Joshi",
+        "member_id": "EMP004",
+        "name": "Sneha Reddy",
         "policy_id": "PLUM_GHI_2024",
         "relationship": "SELF",
-        "join_date": "2024-09-01",
+        "join_date": "2024-04-01",
         "primary_member_id": null
     },
     "member_result": {
@@ -14,11 +14,11 @@
         "confidence": 1.0,
         "reason": "Member validation passed.",
         "details": {
-            "member_id": "EMP005",
-            "name": "Vikram Joshi",
+            "member_id": "EMP004",
+            "name": "Sneha Reddy",
             "policy_id": "PLUM_GHI_2024",
             "relationship": "SELF",
-            "join_date": "2024-09-01"
+            "join_date": "2024-04-01"
         },
         "fatal": false,
         "checks": [
@@ -238,15 +238,17 @@
     },
     "document": {
         "uploaded_document_types": [
-            "HOSPITAL_BILL",
-            "PRESCRIPTION"
+            "PRESCRIPTION",
+            "PHARMACY_BILL"
         ],
-        "inferred_claim_category": "CONSULTATION",
-        "patient_name": "Vikram Joshi",
-        "hospital_name": "Diabetes Care Centre, Ahmedabad",
+        "inferred_claim_category": "PHARMACY",
+        "patient_name": "Sneha Reddy",
+        "hospital_name": "Care Plus Clinic, Bengaluru",
         "missing_document_types": [],
         "issues": [],
-        "warnings": [],
+        "warnings": [
+            "Hospital Name not Found"
+        ],
         "validation_passed": true
     },
     "document_result": {
@@ -256,15 +258,17 @@
         "confidence": 1.0,
         "reason": "All documents validated successfully.",
         "details": {
-            "claim_category": "CONSULTATION",
+            "claim_category": "PHARMACY",
             "document_count": 2,
             "uploaded_document_types": [
-                "HOSPITAL_BILL",
-                "PRESCRIPTION"
+                "PRESCRIPTION",
+                "PHARMACY_BILL"
             ],
-            "patient_name": "Vikram Joshi",
-            "hospital_name": "Diabetes Care Centre, Ahmedabad",
-            "warnings": []
+            "patient_name": "Sneha Reddy",
+            "hospital_name": "Care Plus Clinic, Bengaluru",
+            "warnings": [
+                "Hospital Name not Found"
+            ]
         },
         "fatal": false,
         "checks": [
@@ -283,14 +287,14 @@
                 "details": {}
             },
             {
-                "check_name": "HOSPITAL_BILL Document Confidence Check",
+                "check_name": "PRESCRIPTION Document Confidence Check",
                 "status": "PASSED",
                 "passed": true,
                 "confidence": 1.0,
                 "details": {}
             },
             {
-                "check_name": "PRESCRIPTION Document Confidence Check",
+                "check_name": "PHARMACY_BILL Document Confidence Check",
                 "status": "PASSED",
                 "passed": true,
                 "confidence": 1.0,
@@ -329,40 +333,86 @@
     "coverage": {
         "relationship_covered": true,
         "waiting_period_passed": true,
-        "specific_waiting_period_passed": false,
-        "submission_window_passed": false,
+        "specific_waiting_period_passed": true,
+        "submission_window_passed": true,
         "minimum_amount_passed": true,
         "exclusion_found": false,
-        "rejection_reasons": [
-            "Condition 'diabetes' requires 90 days waiting period.",
-            "Claim submitted after allowed 30 day limit."
-        ]
+        "rejection_reasons": []
     },
     "coverage_result": {
         "step_name": "Coverage Validation",
-        "status": "FAILED",
-        "passed": false,
-        "confidence": 0.0,
-        "reason": "Condition 'diabetes' requires 90 days waiting period.; Claim submitted after allowed 30 day limit.",
+        "status": "PASSED",
+        "passed": true,
+        "confidence": 1.0,
+        "reason": "Coverage validation passed.",
         "details": {
-            "claim_category": "CONSULTATION",
-            "rejection_reasons": [
-                "Condition 'diabetes' requires 90 days waiting period.",
-                "Claim submitted after allowed 30 day limit."
-            ]
+            "claim_category": "PHARMACY",
+            "diagnosis": "Upper Respiratory Tract Infection (URTI)",
+            "claimed_amount": 800.0,
+            "treatment_date": "2026-06-20"
         },
-        "fatal": true,
-        "checks": []
+        "fatal": false,
+        "checks": [
+            {
+                "check_name": "Items Claimed Amount Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "Relationship Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "Treatment Date Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "Specific Waiting Period Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "Exclusion Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "Minimum Amount Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            },
+            {
+                "check_name": "Submission Window Check",
+                "status": "PASSED",
+                "passed": true,
+                "confidence": 1.0,
+                "details": {}
+            }
+        ]
     },
     "finance": {
-        "claimed_amount": 3000.0,
-        "eligible_amount": 3000.0,
-        "approved_amount": 2000.0,
+        "claimed_amount": 800.0,
+        "eligible_amount": 800.0,
+        "approved_amount": 800.0,
         "annual_limit_remaining": 50000.0,
         "family_limit_remaining": 150000.0,
         "per_claim_limit_applied": false,
         "annual_limit_applied": false,
-        "co_pay": 300.0,
+        "co_pay": 0.0,
         "hospital_network": 0.0,
         "family_floater_limit_applied": false,
         "rejection_reasons": [],
@@ -370,7 +420,7 @@
         "annual_limit": 0.0,
         "per_claim_limit": 0.0,
         "reduct_items": [],
-        "sub_limit": 700.0
+        "sub_limit": 0.0
     },
     "finance_result": {
         "step_name": "Financial Validation",
@@ -379,8 +429,8 @@
         "confidence": 1.0,
         "reason": "Financial validation passed.",
         "details": {
-            "claimed_amount": 3000.0,
-            "approved_amount": 2000,
+            "claimed_amount": 800.0,
+            "approved_amount": 800.0,
             "annual_remaining": 50000.0,
             "family_remaining": 150000.0,
             "per_claim_limit": 5000
@@ -477,12 +527,12 @@
         ]
     },
     "decision": {
-        "decision": "REJECTED",
-        "claimed_amount": 3000.0,
-        "approved_amount": 2000.0,
+        "decision": "APPROVED",
+        "claimed_amount": 800.0,
+        "approved_amount": 800.0,
         "fraud_score": 0.0,
         "needs_manual_review": false,
-        "explanation": "Claim rejected due to 90-day waiting period for diabetes and late submission.",
+        "explanation": "Your claim is approved for $800.00.",
         "financial_breakdown": [
             {
                 "step": "Network Hospital Discount",
@@ -490,11 +540,11 @@
             },
             {
                 "step": "Copay Deduction",
-                "amount": 300.0
+                "amount": 0.0
             },
             {
                 "step": "Sub-limit Deduction",
-                "amount": 700.0
+                "amount": 0.0
             },
             {
                 "step": "Per-Claim limit Deduction",
@@ -515,14 +565,14 @@
         "status": "PASSED",
         "passed": true,
         "confidence": 1.0,
-        "reason": "Final decision: REJECTED",
+        "reason": "Final decision: APPROVED",
         "details": {
-            "decision": "REJECTED",
-            "claimed_amount": 3000.0,
-            "approved_amount": 2000.0,
+            "decision": "APPROVED",
+            "claimed_amount": 800.0,
+            "approved_amount": 800.0,
             "fraud_score": 0.0,
             "needs_manual_review": false,
-            "explanation": "Claim rejected due to 90-day waiting period for diabetes and late submission.",
+            "explanation": "Your claim is approved for $800.00.",
             "financial_breakdown": [
                 {
                     "step": "Network Hospital Discount",
@@ -530,11 +580,11 @@
                 },
                 {
                     "step": "Copay Deduction",
-                    "amount": 300.0
+                    "amount": 0.0
                 },
                 {
                     "step": "Sub-limit Deduction",
-                    "amount": 700.0
+                    "amount": 0.0
                 },
                 {
                     "step": "Per-Claim limit Deduction",

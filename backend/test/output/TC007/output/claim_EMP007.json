@@ -249,7 +249,7 @@
         "issues": [],
         "warnings": [
             "Hospital mismatch detected: 'PRECISION HOSPITAL' vs 'Spine Care Centre, Hyderabad'",
-            "Hospital mismatch detected: 'PRECISION HOSPITAL' vs 'Precision Diagnostics'"
+            "Hospital mismatch detected: 'PRECISION HOSPITAL' vs 'PRECISION DIAGNOSTICS'"
         ],
         "validation_passed": true
     },
@@ -271,7 +271,7 @@
             "hospital_name": "PRECISION HOSPITAL",
             "warnings": [
                 "Hospital mismatch detected: 'PRECISION HOSPITAL' vs 'Spine Care Centre, Hyderabad'",
-                "Hospital mismatch detected: 'PRECISION HOSPITAL' vs 'Precision Diagnostics'"
+                "Hospital mismatch detected: 'PRECISION HOSPITAL' vs 'PRECISION DIAGNOSTICS'"
             ]
         },
         "fatal": false,
@@ -349,7 +349,7 @@
         "minimum_amount_passed": true,
         "exclusion_found": false,
         "rejection_reasons": [
-            "Pre-authorization was required for MRI Lumbar Spine, MRI Lumbar Spine, MRI Lumbar Spine, MRI Lumbar Spine because the claim amount \u20b915000.0 exceeds \u20b910000."
+            "Pre-authorization was required for MRI Lumbar Spine, , MRI Lumbar Spine, MRI Lumbar Spine because the claim amount \u20b915000.0 exceeds \u20b910000."
         ]
     },
     "coverage_result": {
@@ -357,11 +357,11 @@
         "status": "FAILED",
         "passed": false,
         "confidence": 0.0,
-        "reason": "Pre-authorization was required for MRI Lumbar Spine, MRI Lumbar Spine, MRI Lumbar Spine, MRI Lumbar Spine because the claim amount \u20b915000.0 exceeds \u20b910000.",
+        "reason": "Pre-authorization was required for MRI Lumbar Spine, , MRI Lumbar Spine, MRI Lumbar Spine because the claim amount \u20b915000.0 exceeds \u20b910000.",
         "details": {
             "claim_category": "DIAGNOSTIC",
             "rejection_reasons": [
-                "Pre-authorization was required for MRI Lumbar Spine, MRI Lumbar Spine, MRI Lumbar Spine, MRI Lumbar Spine because the claim amount \u20b915000.0 exceeds \u20b910000."
+                "Pre-authorization was required for MRI Lumbar Spine, , MRI Lumbar Spine, MRI Lumbar Spine because the claim amount \u20b915000.0 exceeds \u20b910000."
             ]
         },
         "fatal": true,
@@ -371,8 +371,8 @@
         "claimed_amount": 15000.0,
         "eligible_amount": 15000.0,
         "approved_amount": 5000.0,
-        "annual_limit_remaining": 25000.0,
-        "family_limit_remaining": 125000.0,
+        "annual_limit_remaining": 50000.0,
+        "family_limit_remaining": 150000.0,
         "per_claim_limit_applied": true,
         "annual_limit_applied": false,
         "co_pay": 0.0,
@@ -394,8 +394,8 @@
         "details": {
             "claimed_amount": 15000.0,
             "approved_amount": 5000,
-            "annual_remaining": 25000.0,
-            "family_remaining": 125000.0,
+            "annual_remaining": 50000.0,
+            "family_remaining": 150000.0,
             "per_claim_limit": 5000
         },
         "fatal": false,
@@ -431,14 +431,11 @@
         ]
     },
     "fraud": {
-        "fraud_score": 0.55,
-        "monthly_claims_count": 6,
-        "same_day_claims_count": 6,
-        "manual_review_required": true,
-        "warnings": [
-            "Monthly claim count (6) exceeds limit (6).",
-            "Same-day claim count (6) exceeds limit (2)."
-        ]
+        "fraud_score": 0.0,
+        "monthly_claims_count": 1,
+        "same_day_claims_count": 1,
+        "manual_review_required": false,
+        "warnings": []
     },
     "fraud_result": {
         "step_name": "Fraud Validation",
@@ -447,14 +444,11 @@
         "confidence": 1.0,
         "reason": "Fraud validation completed.",
         "details": {
-            "fraud_score": 0.55,
-            "monthly_claims": 6,
-            "same_day_claims": 6,
-            "manual_review": true,
-            "warnings": [
-                "Monthly claim count (6) exceeds limit (6).",
-                "Same-day claim count (6) exceeds limit (2)."
-            ]
+            "fraud_score": 0.0,
+            "monthly_claims": 1,
+            "same_day_claims": 1,
+            "manual_review": false,
+            "warnings": []
         },
         "fatal": false,
         "checks": [
@@ -499,9 +493,9 @@
         "decision": "REJECTED",
         "claimed_amount": 15000.0,
         "approved_amount": 5000.0,
-        "fraud_score": 0.55,
-        "needs_manual_review": true,
-        "explanation": "Your claim was rejected because a pre\u2011authorization was required for the MRI lumbar spine procedure as the amount exceeds the \u20b910,000 limit, and because your monthly and same\u2011day claim counts have exceeded the allowed limits.",
+        "fraud_score": 0.0,
+        "needs_manual_review": false,
+        "explanation": "Claim rejected due to required pre-authorization for MRI Lumbar Spine, as claim amount exceeds \u20b910000.",
         "financial_breakdown": [
             {
                 "step": "Network Hospital Discount",
@@ -539,9 +533,9 @@
             "decision": "REJECTED",
             "claimed_amount": 15000.0,
             "approved_amount": 5000.0,
-            "fraud_score": 0.55,
-            "needs_manual_review": true,
-            "explanation": "Your claim was rejected because a pre\u2011authorization was required for the MRI lumbar spine procedure as the amount exceeds the \u20b910,000 limit, and because your monthly and same\u2011day claim counts have exceeded the allowed limits.",
+            "fraud_score": 0.0,
+            "needs_manual_review": false,
+            "explanation": "Claim rejected due to required pre-authorization for MRI Lumbar Spine, as claim amount exceeds \u20b910000.",
             "financial_breakdown": [
                 {
                     "step": "Network Hospital Discount",

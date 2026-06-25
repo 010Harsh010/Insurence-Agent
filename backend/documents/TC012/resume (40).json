@@ -2,7 +2,7 @@
     "classification": {
         "document_type": "PRESCRIPTION",
         "confidence": 0.99,
-        "reasoning": "The document contains a clear 'PRESCRIPTION' heading, patient information, diagnosis, treatment plan, and doctor's signature, which are typical characteristics of a prescription document."
+        "reasoning": "The document contains a clear 'PRESCRIPTION' header, patient information, diagnosis, treatment plan, and doctor's signature, which are all characteristic of a medical prescription."
     },
     "document": {
         "document_type": "PRESCRIPTION",

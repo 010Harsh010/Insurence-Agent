@@ -2,7 +2,7 @@
     "classification": {
         "document_type": "HOSPITAL_BILL",
         "confidence": 0.99,
-        "reasoning": "The document contains a tax invoice number, patient name, patient ID, and itemized charges, which are typical components of a hospital bill."
+        "reasoning": "The document contains a tax invoice number, invoice date, patient name, patient ID, and itemized charges, which are typical components of a hospital bill."
     },
     "document": {
         "document_type": "HOSPITAL_BILL",
