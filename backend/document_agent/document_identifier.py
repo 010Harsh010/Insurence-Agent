@@ -7,6 +7,7 @@ from langchain_docling.loader import DoclingLoader
 from langchain_docling.loader import ExportType
 import sub_agent.llm
 import re
+from metrics import DOCUMENTS_PROCESSED
 
 import json
 
@@ -519,6 +520,9 @@ DOCUMENT CONTENT:
             classification = self._classify(
                 markdown
             )
+            
+            DOCUMENTS_PROCESSED.labels(classification.document_type).inc()
+        
 
             extracted = self._extract(
                 markdown,

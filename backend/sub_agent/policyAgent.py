@@ -16,8 +16,9 @@ import sub_agent.llm
 from collections import Counter
 from difflib import SequenceMatcher
 from document_agent.document_identifier import DocumentType
+from time import time
 
-
+from metrics import CLAIM_PROCESSING_TIME, CLAIMS_PROCESSED, CLAIM_PIPELINE_ERROR, AGENT_DURATION
 
 class StepStatus(str, Enum):
     PASSED = "PASSED"
@@ -2709,81 +2710,101 @@ class ClaimProcessingPipeline:
         return False
 
     def run(self):
+        start = time()
         try:
-            self._validate_member()
-            if self._fail_early(self.member_result):
-                return self.response
+            with AGENT_DURATION.labels("member_validation").time():
+                self._validate_member()
+                if self._fail_early(self.member_result):
+                    return self.response
 
-            self._validate_policy()
-            if self._fail_early(self.policy_result):
-                return self.response
+            with AGENT_DURATION.labels("policy_validation").time():
+                self._validate_policy()
+                if self._fail_early(self.policy_result):
+                    return self.response
 
-            self._load_documents()
-            self._validate_documents()
-            if self._fail_early(self.document_result, self.document_output):
-                return self.response
-                                
-            repo = ClaimRepository()
-            self.claim_id = repo.create_claim(
-                member=self.member,
-                policy=self.policy,
-                documents=self.documents,
-                document_output=DocumentValidationOutput(),
-                financial_output=FinancialValidationOutput(),
-                claim_category=self.claim_category
-            )
-            self._save_step_trace(
-                self.document_result,
-                input_data={
-                    "claim_category": self.claim_category
-                },
-                output_data=self.response["document"]
-            )
+            with AGENT_DURATION.labels("document_validation").time():
+                self._load_documents()
+                self._validate_documents()
+                if self._fail_early(self.document_result, self.document_output):
+                    return self.response
             
-            repo.submit_document(
-                claim_id=self.claim_id,
-                documents=self.documents,
-                member_id=self.member_id
-            )
+            with AGENT_DURATION.labels("claim_creation").time():                    
+                repo = ClaimRepository()
+                self.claim_id = repo.create_claim(
+                    member=self.member,
+                    policy=self.policy,
+                    documents=self.documents,
+                    document_output=DocumentValidationOutput(),
+                    financial_output=FinancialValidationOutput(),
+                    claim_category=self.claim_category
+                )
+                self._save_step_trace(
+                    self.document_result,
+                    input_data={
+                        "claim_category": self.claim_category
+                    },
+                    output_data=self.response["document"]
+                )
+                
+                repo.submit_document(
+                    claim_id=self.claim_id,
+                    documents=self.documents,
+                    member_id=self.member_id
+                )
             
-            self._validate_coverage()
-            self._save_step_trace(
-                self.coverage_result,
-                output_data=self.response["coverage"]
-            )
+            with AGENT_DURATION.labels("coverage_validation").time():
+                self._validate_coverage()
+                self._save_step_trace(
+                    self.coverage_result,
+                    output_data=self.response["coverage"]
+                )
             
-            self._validate_finance()
-            self._save_step_trace(
-                self.finance_result,
-                output_data=self.response["finance"]
-            )
+            with AGENT_DURATION.labels("financial_validation").time():
+                self._validate_finance()
+                self._save_step_trace(
+                    self.finance_result,
+                    output_data=self.response["finance"]
+                )
             
-            self._validate_fraud()
-            self._save_step_trace(
-                self.fraud_result,
-                output_data=self.response["fraud"]
-            )
-            self._make_decision()
-            self._save_step_trace(
-                self.decision_result,
-                output_data=self.response["decision"]
-            )
-            self.decision_repo.save_decision(
-                claim_id=self.claim_id,
-                decision_output=self.decision_output,
-                trace=self.response
-            )
-            repo.update_claim(
-                claim_id=self.claim_id,
-                decision_output=self.decision_output,
-            )
-            self._save_output()
+            with AGENT_DURATION.labels("fraud_validation").time():
+                self._validate_fraud()
+                self._save_step_trace(
+                    self.fraud_result,
+                    output_data=self.response["fraud"]
+                )
+                
+            with AGENT_DURATION.labels("decision_engine").time():
+                self._make_decision()
+                self._save_step_trace(
+                    self.decision_result,
+                    output_data=self.response["decision"]
+                )
+                self.decision_repo.save_decision(
+                    claim_id=self.claim_id,
+                    decision_output=self.decision_output,
+                    trace=self.response
+                )
+                
+            with AGENT_DURATION.labels("save_output").time():
+                repo.update_claim(
+                    claim_id=self.claim_id,
+                    decision_output=self.decision_output,
+                )
+                self._save_output()
         except Exception as e:
-            print("Unexpected pipeline error:", e)
-            self.response["error"] = str(e)
-            self.response["error_issues"] = [str(e)]
-            self._generate_message()
-            
+            with AGENT_DURATION.labels("error").time():
+                print("Unexpected pipeline error:", e)
+                self.response["error"] = str(e)
+                self.response["error_issues"] = [str(e)]
+                
+                CLAIM_PIPELINE_ERROR.inc()
+                self._generate_message()
+        finally:
+            CLAIM_PROCESSING_TIME.observe(time() - start)
+            if self.response["decision"]:
+                CLAIMS_PROCESSED.labels(
+                    self.response["decision"]["decision"]
+                ).inc()
         return self.response
 
     # ---------------------------------------------------

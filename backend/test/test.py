@@ -81,8 +81,8 @@ class ClaimTest:
                 "error": str(e)
             }
             
-def process():
-        with open("../test_cases.json") as f:
+def process(test_path: str):
+        with open(test_path, "r") as f:
             testcases = json.load(f)["test_cases"]
 
         results = []

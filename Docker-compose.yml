@@ -1,4 +1,39 @@
 services:
+
+  # ── Backend (Flask) ──────────────────────────────────────────────────────────
+  backend:
+    build:
+      context: .          # repo root — gives access to .venv/ and backend/
+      dockerfile: backend/Dockerfile
+    expose:
+      - "8000"            # internal only; nginx proxies to this port
+    env_file:
+      - ./backend/.env    # loads GROQ_API_KEY, HF_API_KEY, ADMIN_PASSWORD, etc.
+    environment:
+      # Override DB_HOST/PORT from .env to use the Docker service name
+      DB_HOST: postgres
+      DB_PORT: 5432
+    volumes:
+      # Mount backend source into the container for live-reload during development.
+      # Deps are installed inside the image via uv (NOT from host .venv).
+      - ./backend:/app/backend
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # ── Frontend (React → nginx reverse proxy) ───────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"           # publicly exposed; nginx serves React + proxies /api/*
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  # ── PostgreSQL ───────────────────────────────────────────────────────────────
   postgres:
     image: postgres:17
     environment:
@@ -6,9 +41,42 @@ services:
       POSTGRES_PASSWORD: admin
       POSTGRES_DB: claims
     ports:
-      - "8800:5432"
+      - "8800:5432"       # expose for local DB tools (DBeaver, psql, etc.)
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d claims"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # ── Prometheus ───────────────────────────────────────────────────────────────
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./backend/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    restart: unless-stopped
+
+  # ── Grafana ──────────────────────────────────────────────────────────────────
+  grafana:
+    image: grafana/grafana-oss:latest
+    container_name: grafana
+    restart: unless-stopped
+    ports:
+      - "3001:3000"       # 3000 was conflicting with the React dev port; moved to 3001
+    depends_on:
+      - prometheus
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+    volumes:
+      - grafana_data:/var/lib/grafana
+
 volumes:
   postgres_data:
+  prometheus_data:
+  grafana_data:

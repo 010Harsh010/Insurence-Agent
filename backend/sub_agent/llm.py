@@ -3,6 +3,7 @@ import os
 dotenv.load_dotenv()
 import openai
 import json
+from metrics import LLM_CALLS, LLM_DURATION
 
 class LLMClient:
     def __init__(self):   
@@ -16,13 +17,15 @@ class LLMClient:
         
     def call_llm(self,messages, temperature=0.7, **extra_args):
             try:
-                response = self.client.chat.completions.create(
-                    model=self.model,
-                    messages=messages,
-                    temperature=temperature,
-                    **extra_args
-                )
-                return response.choices[0].message.content
+                LLM_CALLS.inc()
+                with LLM_DURATION.time():
+                    response = self.client.chat.completions.create(
+                        model=self.model,
+                        messages=messages,
+                        temperature=temperature,
+                        **extra_args
+                    )
+                    return response.choices[0].message.content
             except Exception as e:
                 print(f"Error calling LLM: {e}")
                 return None
@@ -36,25 +39,27 @@ class LLMClient:
         fallback = fallback or {}
 
         try:
-            response = self.client.chat.completions.create(
-                model=self.model,
-                messages=messages,
-                temperature=temperature,
-                response_format={
-                    "type": "json_object"
-                }
-            )
+            LLM_CALLS.inc()
+            with LLM_DURATION.time():
+                response = self.client.chat.completions.create(
+                    model=self.model,
+                    messages=messages,
+                    temperature=temperature,
+                    response_format={
+                        "type": "json_object"
+                    }
+                )
 
-            content = (
-                response.choices[0]
-                .message
-                .content
-            )
+                content = (
+                    response.choices[0]
+                    .message
+                    .content
+                )
 
-            if not content:
-                return fallback
+                if not content:
+                    return fallback
 
-            return json.loads(content)
+                return json.loads(content)
 
         except Exception as e:
 

@@ -9,6 +9,16 @@ import json
 import shutil
 from test.test import process
 import uuid
+from prometheus_client import generate_latest, CONTENT_TYPE_LATEST
+from metrics import (
+    REQUEST_COUNT,
+    REQUEST_LATENCY,
+    ACTIVE_REQUESTS,
+    SUCCESS_DOCUMENT_UPLOADED,
+    DOCUMENT_UPLOAD_FAILED,
+    DOCUMENT_PROCESS_LATENCY
+)
+from time import time
 
 app = flask.Flask(__name__)
 
@@ -17,6 +27,27 @@ flask_cors.CORS(app)
 data_loader = None
 document_agents = None
 orchestrator = None
+
+@app.before_request
+def before_request():
+    ACTIVE_REQUESTS.inc()
+    request.start_time = time()
+    
+@app.after_request
+def after(response):
+    ACTIVE_REQUESTS.dec()
+
+    REQUEST_COUNT.labels(
+        request.method,
+        request.path,
+        response.status_code
+    ).inc()
+
+    REQUEST_LATENCY.labels(
+        request.method,
+        request.path
+    ).observe(time() - request.start_time)
+    return response
 
 def response_cleaner(response):
 
@@ -82,6 +113,8 @@ def upload():
 
     if not file or file.filename == "":
         return {"error": "No file selected"}, 400
+    
+    start = time()
 
     upload_folder = os.path.join("documents", member_id)
 
@@ -106,14 +139,19 @@ def upload():
 
         with open(json_path, "w", encoding="utf-8") as f:
             json.dump(response, f, indent=2, ensure_ascii=False)
+            
+        SUCCESS_DOCUMENT_UPLOADED.inc()
 
     except Exception as e:
         print(e)
+        DOCUMENT_UPLOAD_FAILED.inc()
         return {
             "filename": file.filename,
             "path": filepath,
             "error": str(e)
         }, 500
+        
+    DOCUMENT_PROCESS_LATENCY.observe(time() - start)
 
     return {
         "filename": file.filename,
@@ -266,7 +304,8 @@ def delete_member_documents(member_id):
 @app.route("/test", methods=["POST"])
 def run_tests():
     try:
-        results = process()
+        test_path = os.getenv("TEST_PATH", "./test.json")
+        results = process(test_path)
         return jsonify({
             "success": True,
             "results": results,
@@ -284,6 +323,14 @@ def get_test_results():
     with open(result_file, "r", encoding="utf-8") as f:
         results = json.load(f)
     return jsonify({"success": True, "results": results}), 200
+
+# Prometheus
+@app.route("/metrics")
+def metrics():
+    return flask.Response(
+        generate_latest(),
+        mimetype=CONTENT_TYPE_LATEST
+    )
 
 if __name__ == "__main__":
     try:
