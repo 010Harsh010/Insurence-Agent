@@ -27,7 +27,7 @@ import {
   ArrowLeft,
 } from "lucide-react";
 
-const BASE_URL = ""; // Vite proxy forwards /chat and /upload to Flask:8000
+const BASE_URL = import.meta.env.VITE_BACKEND_BASE || "http://localhost:8000"; // Vite proxy forwards /chat and /upload to Flask:8000
 
 // ─── Typing Indicator ───────────────────────────────────────────────────────
 const TypingDots = () => (
@@ -1366,7 +1366,7 @@ const TestPage = ({ onBack }) => {
   // Load existing results on mount
   useEffect(() => {
     setStatus("loading");
-    fetch("/test")
+    fetch(`${BASE_URL}/test`)
       .then(r => r.json())
       .then(d => {
         if (d.success) { setResults(d.results); setStatus("done"); }
@@ -1381,7 +1381,7 @@ const TestPage = ({ onBack }) => {
     setStdout("");
     setStderr("");
     try {
-      const res = await fetch("/test", { method: "POST" });
+      const res = await fetch(`${BASE_URL}/test`, { method: "POST" });
       const data = await res.json();
       if (data.success) {
         setResults(data.results);

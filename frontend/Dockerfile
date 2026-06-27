@@ -16,11 +16,14 @@ COPY package*.json ./
 
 RUN npm ci
 
+ARG VITE_BACKEND_BASE
+RUN echo $VITE_BACKEND_BASE
+
+
 # Copy the rest of the source (build context is ./frontend)
 COPY . .
 
 RUN npm run build
-
 
 # ---------- Runtime Stage ----------
 FROM nginx:alpine

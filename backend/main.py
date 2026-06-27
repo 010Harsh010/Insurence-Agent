@@ -22,7 +22,7 @@ from time import time
 
 app = flask.Flask(__name__)
 
-flask_cors.CORS(app)
+# flask_cors.CORS(app)
 
 data_loader = None
 document_agents = None
@@ -189,10 +189,6 @@ def chat():
             "message": f"An error occurred: {str(e)}"
         }
 
-@app.route("/health")
-def health():
-    return {"status": 200, "message": "Backend is healthy"}
-
 # ── Add Policy ────────────────────────────────────────────────────────────────
 @app.route("/addPolicy", methods=["GET", "POST"])
 @admin_auth
@@ -331,6 +327,11 @@ def metrics():
         generate_latest(),
         mimetype=CONTENT_TYPE_LATEST
     )
+    
+@app.route("/health")
+def health():
+    return {"status": 200, "message": "Backend is healthy"}
+
 
 if __name__ == "__main__":
     try:
@@ -349,6 +350,6 @@ if __name__ == "__main__":
         orchestrator = AgentOrchestrator()
         
         # Step 3
-        app.run(debug=True, port=8000)
+        app.run(host="0.0.0.0",debug=True, port=8000)
     except Exception as e:
         print(f"Error initializing database: {e}")

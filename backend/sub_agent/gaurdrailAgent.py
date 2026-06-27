@@ -6,8 +6,14 @@ import sub_agent.llm as llm
 
 
 class GuardrailResponse(pydantic.BaseModel):
-    allowed: bool
-    reply: typing.Optional[str] = None
+    allowed: typing.Annotated[
+        bool,
+        pydantic.Field(description="Whether the user's request is allowed")
+    ]
+    reply: typing.Annotated[
+        str | None,
+        pydantic.Field(description="A clear rejection message explaining why the request was denied; null if the request is allowed.")
+    ] = None
 
 
 class GuardrailAgent:
@@ -15,10 +21,11 @@ class GuardrailAgent:
         self.client = client
 
     def run(self, query: str) -> GuardrailResponse:
+        schema = GuardrailResponse.model_json_schema()
         messages = [
             {
                 "role": "system",
-                "content": """
+                "content": f"""
 You are a security guardrail for an OPD Claims Assistant.
 
 Allow:
@@ -37,17 +44,8 @@ Block:
 
 Return ONLY valid JSON.
 
-Allowed:
-{
-  "allowed": true,
-  "reply": ""
-}
+{schema}
 
-Blocked:
-{
-  "allowed": false,
-  "reply": "I can only assist with health insurance claims and policy-related queries."
-}
 """
             },
             {

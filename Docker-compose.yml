@@ -20,6 +20,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    networks:
+      - app-network
     restart: unless-stopped
 
   # ── Frontend (React → nginx reverse proxy) ───────────────────────────────────
@@ -27,10 +29,14 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      args:
+          VITE_BACKEND_BASE: /api
     ports:
       - "80:80"           # publicly exposed; nginx serves React + proxies /api/*
     depends_on:
       - backend
+    networks:
+      - app-network
     restart: unless-stopped
 
   # ── PostgreSQL ───────────────────────────────────────────────────────────────
@@ -49,6 +55,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - app-network
     restart: unless-stopped
 
   # ── Prometheus ───────────────────────────────────────────────────────────────
@@ -59,6 +67,8 @@ services:
     volumes:
       - ./backend/prometheus.yml:/etc/prometheus/prometheus.yml
       - prometheus_data:/prometheus
+    networks:
+      - app-network
     restart: unless-stopped
 
   # ── Grafana ──────────────────────────────────────────────────────────────────
@@ -73,6 +83,8 @@ services:
     environment:
       GF_SECURITY_ADMIN_USER: admin
       GF_SECURITY_ADMIN_PASSWORD: admin
+    networks:
+      - app-network
     volumes:
       - grafana_data:/var/lib/grafana
 
@@ -80,3 +92,7 @@ volumes:
   postgres_data:
   prometheus_data:
   grafana_data:
+
+networks:
+  app-network:
+    driver: bridge
