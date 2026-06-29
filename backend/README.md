@@ -8,7 +8,7 @@ An AI-powered backend for processing OPD (Out-Patient Department) health insuran
 graph TD
     Client([Client / Frontend])
 
-    subgraph Flask API  - Rate Limiting: 120 req/min
+    subgraph Flask API  - Rate Limiting: 20 req/min
         A["/chat Endpoint"]
         B["/upload Endpoint"]
         C[Admin Endpoints]
