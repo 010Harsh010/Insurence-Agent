@@ -5,6 +5,7 @@ import dotenv
 import psycopg2
 from psycopg2.extras import Json
 dotenv.load_dotenv()
+import uuid
 
 class PolicyLoader:
     def __db_connect(self):
@@ -19,11 +20,26 @@ class PolicyLoader:
     def load_policy_file(self, policy) -> bool:
         return self.ingest_data(policy)
     
+    def is_valid_uuid(self,uuid_to_test):
+        try:
+            uuid_obj = uuid.UUID(uuid_to_test)
+            # Checking string match ensures '1234' isn't parsed as '00000000-0000-0000-0000-000000001234'
+            return str(uuid_obj) == uuid_to_test.lower()
+        except ValueError:
+            return False
+        
     def updatePolicyClaim(self, claim_id, claim_status, approve_amount):
         conn = None
         print("start")
 
         try:
+            if not self.is_valid_uuid(claim_id):
+                return {
+                    "success": False,
+                    "status": "INVALID_ID",
+                    "message": "Invalid claim ID"
+                }
+                
             conn = self.__db_connect()
             cursor = conn.cursor()
             query = None
@@ -54,7 +70,24 @@ RETURNING decision
                     )
                 )
 
-                decision = cursor.fetchone()[0]
+                row = cursor.fetchone()
+            
+                # Safe check before subscripting index [0]
+                if not row:
+                    return {
+                        "success": False,
+                        "status": "NOT_FOUND",
+                        "message": f"Claim {claim_id} not found"
+                    }
+                    
+                decision = row[0]
+                 
+                if not decision:
+                    return {
+                        "success": False,
+                        "status": "NOT_FOUND",
+                        "message": f"Claim {claim_id} not found"
+                    }
                 
                 query = """
                 UPDATE claims
@@ -119,6 +152,7 @@ WHERE claim_id = %s
 
             return {
                 "status": "ERROR",
+                "status": "NOT_FOUND",
                 "message": str(e)
             }
 

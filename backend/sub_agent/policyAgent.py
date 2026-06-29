@@ -2790,7 +2790,17 @@ class ClaimProcessingPipeline:
                     claim_id=self.claim_id,
                     decision_output=self.decision_output,
                 )
+                
                 self._save_output()
+            CLAIM_PROCESSING_TIME.observe(time() - start)
+            try:
+                if self.response["decision"]["decision"]:
+                    CLAIMS_PROCESSED.labels(
+                        self.response["decision"]["decision"]
+                    ).inc() 
+            except Exception as e:
+                print("Claim processing label error:", e)
+                
         except Exception as e:
             with AGENT_DURATION.labels("error").time():
                 print("Unexpected pipeline error:", e)
@@ -2799,12 +2809,6 @@ class ClaimProcessingPipeline:
                 
                 CLAIM_PIPELINE_ERROR.inc()
                 self._generate_message()
-        finally:
-            CLAIM_PROCESSING_TIME.observe(time() - start)
-            if self.response["decision"]:
-                CLAIMS_PROCESSED.labels(
-                    self.response["decision"]["decision"]
-                ).inc()
         return self.response
 
     # ---------------------------------------------------

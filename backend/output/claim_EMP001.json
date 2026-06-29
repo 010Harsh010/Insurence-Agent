@@ -365,8 +365,8 @@
         "claimed_amount": 15000.0,
         "eligible_amount": 15000.0,
         "approved_amount": 5000.0,
-        "annual_limit_remaining": 37300.0,
-        "family_limit_remaining": 137300.0,
+        "annual_limit_remaining": 10550.0,
+        "family_limit_remaining": 110550.0,
         "per_claim_limit_applied": true,
         "annual_limit_applied": false,
         "co_pay": 0.0,
@@ -388,8 +388,8 @@
         "details": {
             "claimed_amount": 15000.0,
             "approved_amount": 5000,
-            "annual_remaining": 37300.0,
-            "family_remaining": 137300.0,
+            "annual_remaining": 10550.0,
+            "family_remaining": 110550.0,
             "per_claim_limit": 5000
         },
         "fatal": false,
@@ -425,12 +425,13 @@
         ]
     },
     "fraud": {
-        "fraud_score": 0.25,
-        "monthly_claims_count": 5,
-        "same_day_claims_count": 3,
+        "fraud_score": 0.55,
+        "monthly_claims_count": 14,
+        "same_day_claims_count": 7,
         "manual_review_required": true,
         "warnings": [
-            "Same-day claim count (3) exceeds limit (2)."
+            "Monthly claim count (14) exceeds limit (6).",
+            "Same-day claim count (7) exceeds limit (2)."
         ]
     },
     "fraud_result": {
@@ -440,12 +441,13 @@
         "confidence": 1.0,
         "reason": "Fraud validation completed.",
         "details": {
-            "fraud_score": 0.25,
-            "monthly_claims": 5,
-            "same_day_claims": 3,
+            "fraud_score": 0.55,
+            "monthly_claims": 14,
+            "same_day_claims": 7,
             "manual_review": true,
             "warnings": [
-                "Same-day claim count (3) exceeds limit (2)."
+                "Monthly claim count (14) exceeds limit (6).",
+                "Same-day claim count (7) exceeds limit (2)."
             ]
         },
         "fatal": false,
@@ -491,9 +493,9 @@
         "decision": "REJECTED",
         "claimed_amount": 15000.0,
         "approved_amount": 5000.0,
-        "fraud_score": 0.25,
+        "fraud_score": 0.55,
         "needs_manual_review": true,
-        "explanation": "Claim rejected due to excluded condition and suspicious activity.",
+        "explanation": "Claim rejected due to excluded condition and excessive claims.",
         "financial_breakdown": [
             {
                 "step": "Network Hospital Discount",
@@ -531,9 +533,9 @@
             "decision": "REJECTED",
             "claimed_amount": 15000.0,
             "approved_amount": 5000.0,
-            "fraud_score": 0.25,
+            "fraud_score": 0.55,
             "needs_manual_review": true,
-            "explanation": "Claim rejected due to excluded condition and suspicious activity.",
+            "explanation": "Claim rejected due to excluded condition and excessive claims.",
             "financial_breakdown": [
                 {
                     "step": "Network Hospital Discount",

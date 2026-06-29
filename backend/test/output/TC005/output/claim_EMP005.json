@@ -358,8 +358,8 @@
         "claimed_amount": 3000.0,
         "eligible_amount": 3000.0,
         "approved_amount": 2000.0,
-        "annual_limit_remaining": 48000.0,
-        "family_limit_remaining": 148000.0,
+        "annual_limit_remaining": 38000.0,
+        "family_limit_remaining": 138000.0,
         "per_claim_limit_applied": false,
         "annual_limit_applied": false,
         "co_pay": 300.0,
@@ -381,8 +381,8 @@
         "details": {
             "claimed_amount": 3000.0,
             "approved_amount": 2000,
-            "annual_remaining": 48000.0,
-            "family_remaining": 148000.0,
+            "annual_remaining": 38000.0,
+            "family_remaining": 138000.0,
             "per_claim_limit": 5000
         },
         "fatal": false,
@@ -418,12 +418,13 @@
         ]
     },
     "fraud": {
-        "fraud_score": 0.25,
-        "monthly_claims_count": 2,
-        "same_day_claims_count": 2,
+        "fraud_score": 0.55,
+        "monthly_claims_count": 7,
+        "same_day_claims_count": 7,
         "manual_review_required": true,
         "warnings": [
-            "Same-day claim count (2) exceeds limit (2)."
+            "Monthly claim count (7) exceeds limit (6).",
+            "Same-day claim count (7) exceeds limit (2)."
         ]
     },
     "fraud_result": {
@@ -433,12 +434,13 @@
         "confidence": 1.0,
         "reason": "Fraud validation completed.",
         "details": {
-            "fraud_score": 0.25,
-            "monthly_claims": 2,
-            "same_day_claims": 2,
+            "fraud_score": 0.55,
+            "monthly_claims": 7,
+            "same_day_claims": 7,
             "manual_review": true,
             "warnings": [
-                "Same-day claim count (2) exceeds limit (2)."
+                "Monthly claim count (7) exceeds limit (6).",
+                "Same-day claim count (7) exceeds limit (2)."
             ]
         },
         "fatal": false,
@@ -484,9 +486,9 @@
         "decision": "REJECTED",
         "claimed_amount": 3000.0,
         "approved_amount": 2000.0,
-        "fraud_score": 0.25,
+        "fraud_score": 0.55,
         "needs_manual_review": true,
-        "explanation": "Claim rejected due to coverage issues and late submission.",
+        "explanation": "Claim rejected due to coverage issues and exceeding claim limits.",
         "financial_breakdown": [
             {
                 "step": "Network Hospital Discount",
@@ -524,9 +526,9 @@
             "decision": "REJECTED",
             "claimed_amount": 3000.0,
             "approved_amount": 2000.0,
-            "fraud_score": 0.25,
+            "fraud_score": 0.55,
             "needs_manual_review": true,
-            "explanation": "Claim rejected due to coverage issues and late submission.",
+            "explanation": "Claim rejected due to coverage issues and exceeding claim limits.",
             "financial_breakdown": [
                 {
                     "step": "Network Hospital Discount",

@@ -404,8 +404,8 @@
         "claimed_amount": 4000.0,
         "eligible_amount": 4000.0,
         "approved_amount": 4000.0,
-        "annual_limit_remaining": 46000.0,
-        "family_limit_remaining": 146000.0,
+        "annual_limit_remaining": 26000.0,
+        "family_limit_remaining": 126000.0,
         "per_claim_limit_applied": false,
         "annual_limit_applied": false,
         "co_pay": 0.0,
@@ -427,8 +427,8 @@
         "details": {
             "claimed_amount": 4000.0,
             "approved_amount": 4000.0,
-            "annual_remaining": 46000.0,
-            "family_remaining": 146000.0,
+            "annual_remaining": 26000.0,
+            "family_remaining": 126000.0,
             "per_claim_limit": 5000
         },
         "fatal": false,
@@ -464,12 +464,13 @@
         ]
     },
     "fraud": {
-        "fraud_score": 0.25,
-        "monthly_claims_count": 2,
-        "same_day_claims_count": 2,
+        "fraud_score": 0.55,
+        "monthly_claims_count": 7,
+        "same_day_claims_count": 7,
         "manual_review_required": true,
         "warnings": [
-            "Same-day claim count (2) exceeds limit (2)."
+            "Monthly claim count (7) exceeds limit (6).",
+            "Same-day claim count (7) exceeds limit (2)."
         ]
     },
     "fraud_result": {
@@ -479,12 +480,13 @@
         "confidence": 1.0,
         "reason": "Fraud validation completed.",
         "details": {
-            "fraud_score": 0.25,
-            "monthly_claims": 2,
-            "same_day_claims": 2,
+            "fraud_score": 0.55,
+            "monthly_claims": 7,
+            "same_day_claims": 7,
             "manual_review": true,
             "warnings": [
-                "Same-day claim count (2) exceeds limit (2)."
+                "Monthly claim count (7) exceeds limit (6).",
+                "Same-day claim count (7) exceeds limit (2)."
             ]
         },
         "fatal": false,
@@ -530,7 +532,7 @@
         "decision": "MANUAL_REVIEW",
         "claimed_amount": 4000.0,
         "approved_amount": 4000.0,
-        "fraud_score": 0.25,
+        "fraud_score": 0.55,
         "needs_manual_review": true,
         "explanation": "Your claim is under manual review.",
         "financial_breakdown": [
@@ -570,7 +572,7 @@
             "decision": "MANUAL_REVIEW",
             "claimed_amount": 4000.0,
             "approved_amount": 4000.0,
-            "fraud_score": 0.25,
+            "fraud_score": 0.55,
             "needs_manual_review": true,
             "explanation": "Your claim is under manual review.",
             "financial_breakdown": [

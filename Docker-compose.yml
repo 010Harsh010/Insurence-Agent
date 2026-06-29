@@ -1,21 +1,38 @@
 services:
 
+# ── PostgreSQL ───────────────────────────────────────────────────────────────
+  postgres:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: claims
+    ports:
+      - "8800:5432"       # expose for local DB tools (DBeaver, psql, etc.)
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d claims"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app-network
+    restart: unless-stopped
+
   # ── Backend (Flask) ──────────────────────────────────────────────────────────
   backend:
     build:
-      context: .          # repo root — gives access to .venv/ and backend/
+      context: .         
       dockerfile: backend/Dockerfile
     expose:
       - "8000"            # internal only; nginx proxies to this port
     env_file:
       - ./backend/.env    # loads GROQ_API_KEY, HF_API_KEY, ADMIN_PASSWORD, etc.
     environment:
-      # Override DB_HOST/PORT from .env to use the Docker service name
       DB_HOST: postgres
       DB_PORT: 5432
     volumes:
-      # Mount backend source into the container for live-reload during development.
-      # Deps are installed inside the image via uv (NOT from host .venv).
       - ./backend:/app/backend
     depends_on:
       postgres:
@@ -35,26 +52,6 @@ services:
       - "80:80"           # publicly exposed; nginx serves React + proxies /api/*
     depends_on:
       - backend
-    networks:
-      - app-network
-    restart: unless-stopped
-
-  # ── PostgreSQL ───────────────────────────────────────────────────────────────
-  postgres:
-    image: postgres:17
-    environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: admin
-      POSTGRES_DB: claims
-    ports:
-      - "8800:5432"       # expose for local DB tools (DBeaver, psql, etc.)
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U admin -d claims"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
     networks:
       - app-network
     restart: unless-stopped

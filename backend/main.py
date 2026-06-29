@@ -22,7 +22,7 @@ from time import time
 
 app = flask.Flask(__name__)
 
-# flask_cors.CORS(app)
+flask_cors.CORS(app)
 
 data_loader = None
 document_agents = None
@@ -300,7 +300,7 @@ def delete_member_documents(member_id):
 @app.route("/test", methods=["POST"])
 def run_tests():
     try:
-        test_path = os.getenv("TEST_PATH", "./test.json")
+        test_path = os.getenv("TEST_PATH", "./test_cases.json")
         results = process(test_path)
         return jsonify({
             "success": True,

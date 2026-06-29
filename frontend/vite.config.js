@@ -9,7 +9,7 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
     host: '0.0.0.0',
-    port: 5173,
+    port: 5999,
     proxy: {
       '/chat':        { target: backendTarget, changeOrigin: true },
       '/upload':      { target: backendTarget, changeOrigin: true },
