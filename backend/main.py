@@ -19,6 +19,7 @@ from metrics import (
     DOCUMENT_PROCESS_LATENCY
 )
 from time import time
+from rate_limiter import RateLimiter
 
 app = flask.Flask(__name__)
 
@@ -27,14 +28,24 @@ flask_cors.CORS(app)
 data_loader = None
 document_agents = None
 orchestrator = None
+rate_limit = None
 
 @app.before_request
 def before_request():
+    if rate_limit:
+        if not rate_limit.allow_request():
+            request.rate_limit_exceeded = True
+            return {"error": "Rate limit exceeded"}, 429
+
     ACTIVE_REQUESTS.inc()
     request.start_time = time()
+    request.rate_limit_exceeded = False
     
 @app.after_request
 def after(response):
+    if request.rate_limit_exceeded:
+        return response
+
     ACTIVE_REQUESTS.dec()
 
     REQUEST_COUNT.labels(
@@ -350,6 +361,7 @@ if __name__ == "__main__":
         orchestrator = AgentOrchestrator()
         
         # Step 3
+        rate_limit = RateLimiter(rate_limit_per_minute=15,refill_rate=10)
         app.run(host="0.0.0.0",debug=True, port=8000)
     except Exception as e:
         print(f"Error initializing database: {e}")

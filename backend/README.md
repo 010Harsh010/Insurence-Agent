@@ -8,7 +8,7 @@ An AI-powered backend for processing OPD (Out-Patient Department) health insuran
 graph TD
     Client([Client / Frontend])
 
-    subgraph Flask API
+    subgraph Flask API  - Rate Limiting: 120 req/min
         A["/chat Endpoint"]
         B["/upload Endpoint"]
         C[Admin Endpoints]
@@ -73,24 +73,6 @@ The claim pipeline is structured as a **sequential agent graph** — each node i
 
 The Q&A path converts natural-language questions into SQL via a schema-aware LLM agent, executes the query, and returns structured results — useful for questions like "What are my recent claims?" without triggering the full claim pipeline.
 
-## Request Lifecycle
-
-1. **Chat request** arrives at `/chat` with a query, member ID, and claim category.
-2. **Greeting Agent** checks if the message is a simple greeting — if so, replies immediately.
-3. **Guardrail Agent** blocks off-topic or adversarial prompts.
-4. **Router Agent** classifies the intent as `CLAIM_PROCESSING` or `QUESTION_ANSWERING`.
-5. **Claim Processing** (if routed):
-   - Validates the member exists and has an active policy.
-   - Loads previously uploaded documents from disk.
-   - Validates documents (type, quality, patient-name cross-check, required docs).
-   - Creates a claim record in PostgreSQL.
-   - Runs coverage checks (waiting periods, exclusions, pre-authorization).
-   - Calculates financials (sub-limits, co-pay, network discounts, annual caps).
-   - Evaluates fraud signals (claim frequency, same-day duplicates).
-   - Decision engine aggregates all results → `APPROVED` / `PARTIALLY_APPROVED` / `REJECTED` / `MANUAL_REVIEW`.
-   - Full trace is persisted; decision is saved.
-6. **Q&A** (if routed): Text-to-SQL agent generates, validates, and executes a `SELECT` query.
-7. **Response** is cleaned by `response_cleaner` into a consistent UI-friendly format.
 
 ## Folder Structure
 
@@ -98,6 +80,7 @@ The Q&A path converts natural-language questions into SQL via a schema-aware LLM
 backend/
 ├── main.py                  # Flask app, routes, startup
 ├── metrics.py               # Prometheus metric definitions
+├── rate_limiter.py          # Custom Rate limiting decorator
 ├── db/
 │   ├── schema.sql           # DDL for all tables and indexes
 │   ├── metadata.json        # Column descriptions for Text-to-SQL agent
@@ -125,6 +108,25 @@ backend/
 └── pyproject.toml            # Python 3.12, dependencies
 ```
 
+## Request Lifecycle
+
+1. **Chat request** arrives at `/chat` with a query, member ID, and claim category.
+2. **Greeting Agent** checks if the message is a simple greeting — if so, replies immediately.
+3. **Guardrail Agent** blocks off-topic or adversarial prompts.
+4. **Router Agent** classifies the intent as `CLAIM_PROCESSING` or `QUESTION_ANSWERING`.
+5. **Claim Processing** (if routed):
+   - Validates the member exists and has an active policy.
+   - Loads previously uploaded documents from disk.
+   - Validates documents (type, quality, patient-name cross-check, required docs).
+   - Creates a claim record in PostgreSQL.
+   - Runs coverage checks (waiting periods, exclusions, pre-authorization).
+   - Calculates financials (sub-limits, co-pay, network discounts, annual caps).
+   - Evaluates fraud signals (claim frequency, same-day duplicates).
+   - Decision engine aggregates all results → `APPROVED` / `PARTIALLY_APPROVED` / `REJECTED` / `MANUAL_REVIEW`.
+   - Full trace is persisted; decision is saved.
+6. **Q&A** (if routed): Text-to-SQL agent generates, validates, and executes a `SELECT` query.
+7. **Response** is cleaned by `response_cleaner` into a consistent UI-friendly format.
+
 ## Tech Stack
 
 | Category | Technology |
@@ -151,6 +153,59 @@ backend/
 - **Full audit trace** — every pipeline step is recorded in `claim_trace_steps` with inputs, outputs, and confidence scores.
 - **Admin endpoints** — add policies, update claim decisions, reset database (protected by `X-Admin-Password` header).
 - **Prometheus metrics** — HTTP latency, active requests, LLM call counts, per-agent duration, claim outcomes.
+
+
+## Rate Limiting On Backend:
+
+> **Rate Limiting:** Implemented using a Token Bucket algorithm to protect the API from request bursts. The bucket capacity is N requests per minute (configured via RATE_LIMIT_PER_MINUTE), and requests exceeding the available tokens receive an HTTP 429 (Too Many Requests) response until tokens are replenished.
+
+```shell
+PS C:\Users\Plum Assignment - 12-04-2026\test> k6 run test.js
+
+         /\      Grafana   /‾‾/  
+    /\  /  \     |\  __   /  /   
+   /  \/    \    | |/ /  /   ‾‾\ 
+  /          \   |   (  |  (‾)  |
+ / __________ \  |_|\_\  \_____/ 
+
+
+     execution: local
+        script: test.js
+        output: -
+
+     scenarios: (100.00%) 1 scenario, 20 max VUs, 1m10s max duration (incl. graceful stop):
+              * default: Up to 20 looping VUs for 40s over 3 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+
+
+
+  █ TOTAL RESULTS 
+
+    CUSTOM
+    rate_limited_requests..........: 10350  258.73735/s
+    success_requests...............: 21     0.524974/s
+
+    HTTP
+    http_req_duration..............: avg=56.65ms min=560.2µs med=44.17ms max=179.47ms p(90)=128.65ms p(95)=141.23ms
+      { expected_response:true }...: avg=26.52ms min=2.68ms  med=4.88ms  max=137.45ms p(90)=125.34ms p(95)=125.98ms
+    http_req_failed................: 99.79% 10350 out of 10371
+    http_reqs......................: 10371  259.262324/s
+
+    EXECUTION
+    iteration_duration.............: avg=58.36ms min=1.16ms  med=45.55ms max=182.49ms p(90)=131.84ms p(95)=144.33ms
+    iterations.....................: 10371  259.262324/s
+    vus............................: 1      min=1              max=20
+    vus_max........................: 20     min=20             max=20
+
+    NETWORK
+    data_received..................: 2.6 MB 65 kB/s
+    data_sent......................: 788 kB 20 kB/s
+
+
+
+
+running (0m40.0s), 00/20 VUs, 10371 complete and 0 interrupted iterations
+default ✓ [======================================] 00/20 VUs  40s 
+```
 
 ## Agent / Graph Pipeline
 
@@ -294,11 +349,10 @@ Admin endpoints require the `X-Admin-Password` header.
 
 **Single LLM client** — All agents share the same Groq model. In production, you'd use different models for different tasks (a small model for routing, a large one for extraction).
 
-**What I'd improve with more time:**
+**What I'd improve: **
 - Add Gunicorn + worker processes for concurrent request handling.
 - Implement structured logging (JSON) with correlation IDs.
 - Move document storage to S3 with pre-signed URLs.
-- Add API rate limiting and request authentication beyond admin endpoints.
 - Implement async processing for claim pipelines with webhook callbacks.
 - Add unit tests for individual agents (currently only integration tests exist).
 
